@@ -17,7 +17,7 @@ void irqDispatcher(uint64_t irq, uint64_t * registers) {
 }
 
 void int_20() {
-	timer_handler();
+	timer_handler((void *)registers);
 }
 void int_21(uint64_t * registers){
 	keyboard_handler((registerArgs * )registers);

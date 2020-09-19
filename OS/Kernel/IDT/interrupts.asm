@@ -61,17 +61,16 @@ SECTION .text
 
 %endmacro
 
-%macro irqHandlerMaster 1
+%macro irqHandlerMaster 1 ;stack viejo,rip,cs,flags, rsp del stack viejo
 	add rsp, 3*8
 	mov [rsp-4*8],rsp
 	sub rsp,4*8
 
 	pushState
-
 	mov rdi, %1 ; pasaje de parametro
 	mov rsi, rsp
 	call irqDispatcher
-
+	;mov rsp,rax
 	; signal pic EOI (End of Interrupt)
 	mov al, 20h
 	out 20h, al
@@ -137,6 +136,7 @@ picSlaveMask:
 
 ;8254 Timer (Timer Tick)
 _irq00Handler:
+	;push
 	irqHandlerMaster 0
 
 ;Keyboard
