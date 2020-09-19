@@ -1,11 +1,13 @@
 #include <time.h>
+#include <scheduler.h>
 
 static unsigned long ticks = 0;
 
 void timer_handler(void * rsp) {
 	ticks++;
-	//rsp = schedule(rsp)
-	//
+	rsp = schedule(rsp);
+	return rsp;
+
 }
 
 int ticks_elapsed() {

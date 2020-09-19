@@ -18,7 +18,9 @@ GLOBAL _syscallsHandler
 GLOBAL _exception0Handler
 GLOBAL _exception6Handler
 
-EXTERN irqDispatcher
+EXTERN keyboard_handler
+EXTERN timer_handler
+
 EXTERN exceptionDispatcher
 EXTERN syscallsDispatcher
 
@@ -60,27 +62,6 @@ SECTION .text
 	pop rax
 
 %endmacro
-
-%macro irqHandlerMaster 1 ;stack viejo,rip,cs,flags, rsp del stack viejo
-	add rsp, 3*8
-	mov [rsp-4*8],rsp
-	sub rsp,4*8
-
-	pushState
-	mov rdi, %1 ; pasaje de parametro
-	mov rsi, rsp
-	call irqDispatcher
-	;mov rsp,rax
-	; signal pic EOI (End of Interrupt)
-	mov al, 20h
-	out 20h, al
-
-	popState
-
-	add rsp,8
-	iretq
-%endmacro
-
 
 ;potential error stack struct ==== error,rip,cs,flags
 %macro exceptionHandler 1
@@ -136,28 +117,33 @@ picSlaveMask:
 
 ;8254 Timer (Timer Tick)
 _irq00Handler:
-	;push
-	irqHandlerMaster 0
+	pushState
+	mov rdi, rsp ; pasaje de parametro
+	call timer_handler
+	; signal pic EOI (End of Interrupt)
+	mov rsp,rax
+	mov al, 20h
+	out 20h, al
+	popState
+	iretq
 
 ;Keyboard
 _irq01Handler:
-	irqHandlerMaster 1
+	add rsp, 3*8
+	mov [rsp-4*8],rsp
+	sub rsp,4*8
 
-;Cascade pic never called
-_irq02Handler:
-	irqHandlerMaster 2
+	pushState
+	mov rdi, rsp
+	call keyboard_handler
+	; signal pic EOI (End of Interrupt)
+	mov al, 20h
+	out 20h, al
 
-;Serial Port 2 and 4
-_irq03Handler:
-	irqHandlerMaster 3
+	popState
+	add rsp,8
+	iretq
 
-;Serial Port 1 and 3
-_irq04Handler:
-	irqHandlerMaster 4
-
-;USB
-_irq05Handler:
-	irqHandlerMaster 5
 
 
 _syscallsHandler:;rax id, 
