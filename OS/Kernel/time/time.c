@@ -3,10 +3,9 @@
 
 static unsigned long ticks = 0;
 
-void timer_handler(void * rsp) {
+void * timer_handler(void * rsp) {
 	ticks++;
-	rsp = schedule(rsp);
-	return rsp;
+	return schedule(rsp);
 
 }
 

@@ -8,18 +8,18 @@ MemoryManager * mm;
 
 void initialize_mem_man(void * memory, size_t ps, size_t qty){
     mm->bitmap=memory;
-    (int *)memory += qty;
+   memory += qty*sizeof(int);
     mm->base=memory;
     mm->page_size = ps;
     mm->pages_q = qty;
 
-    for
+    
 }
 
 void * m_alloc( size_t size ){
 
     
-    uint blocks_q = (size-1)/mm->page_size + 1;
+    unsigned int blocks_q = (size-1)/mm->page_size + 1;
     
     int i = 0;
     int cont = 0;
@@ -37,21 +37,16 @@ void * m_alloc( size_t size ){
     }
     if(cont == blocks_q){
         mm->bitmap[i-cont] = cont;
-        return calc_ptr_from_idx(i-cont, mm);
+        return calc_ptr_from_idx(i-cont);
     }else{
         //setear erno no sirve aca creo
         //podemos imprimir un log
         return NULL;
     }
-    
-    
-    
-    
-    
 }
 
 void m_free( void * ptr){
-    int idx = calc_idx_from_ptr(ptr, mm);
+    int idx = calc_idx_from_ptr(ptr);
     mm->bitmap[idx] = FREE;    
 }
 

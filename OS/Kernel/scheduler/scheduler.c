@@ -1,4 +1,6 @@
 #include <scheduler.h>
+#include <memorymanager.h>
+#include <video.h>
 
 /*
 .Crear y finalizar procesos.
@@ -11,23 +13,89 @@
 */
 Scheduler scheduler;
 
-int createProcess(void * proc){
+void initialize_scheduler(){
+    scheduler.procIndex=0;
+    scheduler.size=0;
+}
+
+int createProcess(void * proc, int argc, char * argv[]){
+    
+
+    // TODO recorrer para sobreescribir en el KILLED
+    PCB * pcb = scheduler.processes + scheduler.size;
+    
+    pcb->state = READY;
+    pcb->pid = scheduler.size;
+    unsigned long * bp;
+    unsigned long * stack = 0x700000; 
+    //unsigned long * stack = bp = (unsigned long *)m_alloc(PAGE_SIZE)+PAGE_SIZE;
+
+    //*stack = 0x0;
+    //stack --;
+    //*stack = (unsigned long)bp;
+    //stack --;
+    // *stack=0x202;
+    // stack --;
+    // *stack = 0x8;
+    // stack --;
+    // *stack= (unsigned long)proc;
+    // stack --;
+    // *stack=0;
+    // stack -= RSI_POS;
+    // *stack = argc;
+    // stack --;
+    // *stack = (unsigned long) argv;
+    // stack -= (SAVED_REGISTERS-RSI_POS-1);
+    
+    //rip,cs,flags
+    
+    
+    *stack= (unsigned long)proc;
+    stack --;
+    *stack = 0x8;
+    stack --;
+    *stack=0x202;
+    stack-=SAVED_REGISTERS;
+
+    
+    // stack -= RSI_POS;
+    // *stack = argc;
+    // stack --;
+    // *stack = (unsigned long) argv;
+    // stack -= (SAVED_REGISTERS-RSI_POS-1);
+    
+    // | SS	    | -> 0x0
+    // | RSP	| -> BP
+    // | RFLAGS | -> 0x202
+    // | CS	    | -> 0x8
+    // | RIP	| -> main
+    // | rax	| -> 0
+    // | rbx	| -> 0
+    // | rcx	| -> 0
+    // | ...	| -> 0
+    // | rdi	| -> argc
+    // | ...	| -> 0
+    // | rsi	| -> (rsi) argv
+    // | ...	| -> 0
     //create stack and complete with values
-    //create pcb
-    //insert pcb into array mark as ready
+    pcb->rsp = (void *)stack;
+    scheduler.size++;
+    return 1;
 
 }
 
 void * schedule(void * rsp){
-    
+    static int i;
+    if(i++>100)scheduler.processes[scheduler.procIndex++%scheduler.size].rsp=rsp;
+
     while(scheduler.processes[scheduler.procIndex%scheduler.size].state!=READY){
         scheduler.procIndex++;
     }
-    return scheduler.processes[scheduler.procIndex++].rsp;
+    return scheduler.processes[scheduler.procIndex%scheduler.size].rsp;
 }
 
 void * fork(){
-    
+    return 0;
 }
 
 

@@ -3,7 +3,9 @@
 #include <lib.h>
 #include <moduleLoader.h>
 #include <idtLoader.h>
-#include <memoryManager.h>
+#include <memorymanager.h>
+#include <scheduler.h>
+#include <video.h>
 
 extern uint8_t text;
 extern uint8_t rodata;
@@ -51,14 +53,18 @@ void * initializeKernelBinary()
 
 int main()
 {	
-	load_idt();
-	
 	uint32_t memSize = *(uint32_t *)0x5020;
 
-	initialize_mem_man(baseAddress ,PAGE_SIZE, (memSize-baseAddress)/PAGE_SIZE); // el ultimo parametro se puede eliminar, se calculan en funcion de parametros anteriores
+	drawCharacter(100, 100, 20, 'a');
+	initialize_mem_man(baseAddress ,PAGE_SIZE, (memSize-(unsigned long)baseAddress)/PAGE_SIZE); // el ultimo parametro se puede eliminar, se calculan en funcion de parametros anteriores
+	drawCharacter(120, 100, 20, 'b');
 	initialize_scheduler();
-	createProcess(userlandCodeModuleAddress);
-	schedule();
+	drawCharacter(140, 100, 20, 'c');
+	createProcess(userlandCodeModuleAddress,0,0);
+	drawCharacter(160, 100, 20, 'd');
+	load_idt();
+	//schedule(0);
+	drawCharacter(180, 100, 20, 'e');
 	while(1);
 	return 0;
 }

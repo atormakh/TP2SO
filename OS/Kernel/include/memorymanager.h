@@ -9,6 +9,8 @@
 #define FREE 0
 #define TAKEN 1
 
+typedef unsigned long size_t;
+
 typedef struct MemoryManager{
     void * base;
     unsigned char * bitmap;
