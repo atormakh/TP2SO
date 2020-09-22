@@ -53,18 +53,17 @@ void * initializeKernelBinary()
 
 int main()
 {	
-	uint32_t memSize = *(uint32_t *)0x5020;
+	uint32_t memSize = *(uint32_t *)0x5020*1024*1024;
 
-	drawCharacter(100, 100, 20, 'a');
-	initialize_mem_man(baseAddress ,PAGE_SIZE, (memSize-(unsigned long)baseAddress)/PAGE_SIZE); // el ultimo parametro se puede eliminar, se calculan en funcion de parametros anteriores
-	drawCharacter(120, 100, 20, 'b');
+
+	initialize_mem_man(baseAddress ,PAGE_SIZE, (memSize-(unsigned long long)baseAddress)/PAGE_SIZE); // el ultimo parametro se puede eliminar, se calculan en funcion de parametros anteriores
+
 	initialize_scheduler();
-	drawCharacter(140, 100, 20, 'c');
+
 	createProcess(userlandCodeModuleAddress,0,0);
-	drawCharacter(160, 100, 20, 'd');
+
 	load_idt();
 	//schedule(0);
-	drawCharacter(180, 100, 20, 'e');
 	while(1);
 	return 0;
 }
