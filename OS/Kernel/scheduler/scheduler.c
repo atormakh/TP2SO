@@ -26,43 +26,25 @@ int createProcess(void * proc, int argc, char * argv[]){
     
     pcb->state = READY;
     pcb->pid = scheduler.size;
-    unsigned long * bp;
-    unsigned long * stack = 0x700000; 
+    unsigned long long * bp;
+    unsigned long long * stack = bp = 0x700000; 
     //unsigned long * stack = bp = (unsigned long *)m_alloc(PAGE_SIZE)+PAGE_SIZE;
 
-    //*stack = 0x0;
-    //stack --;
-    //*stack = (unsigned long)bp;
-    //stack --;
-    // *stack=0x202;
-    // stack --;
-    // *stack = 0x8;
-    // stack --;
-    // *stack= (unsigned long)proc;
-    // stack --;
-    // *stack=0;
-    // stack -= RSI_POS;
-    // *stack = argc;
-    // stack --;
-    // *stack = (unsigned long) argv;
-    // stack -= (SAVED_REGISTERS-RSI_POS-1);
-    
-    //rip,cs,flags
-    
-    
-    *stack= (unsigned long)proc;
+    *stack = 0x0;
+    stack --;
+    *stack = (unsigned long long)bp;
+    stack --;
+    *stack=0x202;
     stack --;
     *stack = 0x8;
     stack --;
-    *stack=0x202;
-    stack-=SAVED_REGISTERS;
-
+    *stack= (unsigned long long)proc;
+    stack -= RSI_POS;
+    *stack = argc;
+    stack --;
+    *stack = (unsigned long long) argv;
+    stack -= (SAVED_REGISTERS-RSI_POS-1);
     
-    // stack -= RSI_POS;
-    // *stack = argc;
-    // stack --;
-    // *stack = (unsigned long) argv;
-    // stack -= (SAVED_REGISTERS-RSI_POS-1);
     
     // | SS	    | -> 0x0
     // | RSP	| -> BP
@@ -86,7 +68,7 @@ int createProcess(void * proc, int argc, char * argv[]){
 
 void * schedule(void * rsp){
     static int i;
-    if(i++>100)scheduler.processes[scheduler.procIndex++%scheduler.size].rsp=rsp;
+    if(i++>0)scheduler.processes[scheduler.procIndex++%scheduler.size].rsp=rsp;
 
     while(scheduler.processes[scheduler.procIndex%scheduler.size].state!=READY){
         scheduler.procIndex++;
