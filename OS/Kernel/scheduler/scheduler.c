@@ -29,7 +29,7 @@ int createProcess(void * proc, int argc, char * argv[]){
     unsigned long long * bp;
     //unsigned long long * stack = bp = 0x700000; 
     
-    unsigned long long * stack = bp = (unsigned long long *)m_alloc(10*PAGE_SIZE)+10*PAGE_SIZE;
+    unsigned long long * stack = bp = (unsigned long long *)m_alloc(PAGE_SIZE)+PAGE_SIZE;
     
     *stack = 0x0;
     stack --;
