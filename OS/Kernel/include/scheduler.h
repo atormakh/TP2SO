@@ -10,8 +10,10 @@ typedef enum STATE{READY,BLOCKED,KILLED} STATE;
 
 typedef struct  PCB {
     void * rsp;
+    void * rbp;
     unsigned long pid;
     STATE state;
+
 } PCB;
 
 typedef struct Scheduler{
@@ -25,5 +27,6 @@ void initialize_scheduler();
 void * schedule(void * rsp);
 void * fork();
 int createProcess(void * proc, int argc, char * argv[]);
+void exit(int ret);
 
 #endif

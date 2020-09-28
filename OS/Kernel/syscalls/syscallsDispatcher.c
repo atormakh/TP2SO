@@ -58,6 +58,9 @@ void syscallsDispatcher (uint64_t id, uint64_t * registers){
         case 13:            
             yield();
             break;
+        case 14:
+            exit(registers[0]);
+            break;
     }
 
 }

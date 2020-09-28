@@ -1,5 +1,6 @@
 #include <scheduler.h>
 #include <memorymanager.h>
+#include <syscalls.h>
 #include <video.h>
 
 /*
@@ -31,6 +32,8 @@ int createProcess(void * proc, int argc, char * argv[]){
     //unsigned long long * stack = bp = 0x700000; 
     
     unsigned long long * stack = bp = (unsigned long long *)m_alloc(PROC_MEM)+PROC_MEM;
+    pcb->rbp=bp;
+
     *stack = 0x0;
     stack --;
     *stack = (unsigned long long)bp;
@@ -79,6 +82,15 @@ void * schedule(void * rsp){
         scheduler.procIndex++;
     }
     return scheduler.processes[scheduler.procIndex%scheduler.size].rsp;
+}
+
+
+void exit(int ret){
+    PCB * proc = scheduler.processes + scheduler.procIndex%scheduler.size;
+    proc->state = KILLED;
+    m_free(proc->rbp);
+    yield();
+
 }
 
 void * fork(){

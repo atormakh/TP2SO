@@ -57,7 +57,8 @@ void drawPixMaps(){
 }
 
 void do_nothing(){
-	while(1) sys_yield();
+	sys_yield();
+	sys_exit(0);
 }
 
 int main() {
