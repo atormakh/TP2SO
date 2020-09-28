@@ -10,3 +10,5 @@ void sys_localtime(char * buffer);
 void sys_drawRect(void * rectangle);
 void sys_mapstdout(void * buffer,int size);
 void sys_write(void * buffer, int count);
+void sys_createProcess(void * func, int argc, char * args[]);
+void sys_yield();

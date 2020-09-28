@@ -4,6 +4,7 @@
 #define PROC_Q 200
 #define SAVED_REGISTERS 15
 #define RSI_POS 6
+#define PROC_MEM 5*PAGE_SIZE
 typedef enum STATE{READY,BLOCKED,KILLED} STATE;
 
 
@@ -17,6 +18,7 @@ typedef struct Scheduler{
     PCB processes[PROC_Q];
     unsigned long procIndex;
     unsigned long size;
+    unsigned char init;
 }Scheduler; 
 
 void initialize_scheduler();

@@ -51,6 +51,9 @@ void * initializeKernelBinary()
 	return getStackBase();
 }
 
+
+
+
 int main()
 {	
 	uint32_t memSize = *(uint32_t *)0x5020*1024*1024;

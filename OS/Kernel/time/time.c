@@ -9,6 +9,10 @@ void * timer_handler(void * rsp) {
 
 }
 
+void dec_tick(){
+	ticks--;
+}
+
 int ticks_elapsed() {
 	return ticks;
 }

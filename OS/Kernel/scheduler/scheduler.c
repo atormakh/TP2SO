@@ -16,6 +16,7 @@ Scheduler scheduler;
 void initialize_scheduler(){
     scheduler.procIndex=0;
     scheduler.size=0;
+    scheduler.init=0;
 }
 
 int createProcess(void * proc, int argc, char * argv[]){
@@ -29,8 +30,7 @@ int createProcess(void * proc, int argc, char * argv[]){
     unsigned long long * bp;
     //unsigned long long * stack = bp = 0x700000; 
     
-    unsigned long long * stack = bp = (unsigned long long *)m_alloc(PAGE_SIZE)+PAGE_SIZE;
-    
+    unsigned long long * stack = bp = (unsigned long long *)m_alloc(PROC_MEM)+PROC_MEM;
     *stack = 0x0;
     stack --;
     *stack = (unsigned long long)bp;
@@ -68,9 +68,13 @@ int createProcess(void * proc, int argc, char * argv[]){
 }
 
 void * schedule(void * rsp){
-    static int i;
-    if(i++>0)scheduler.processes[scheduler.procIndex++%scheduler.size].rsp=rsp;
-
+    
+    if(scheduler.init!=0){
+        scheduler.processes[scheduler.procIndex%scheduler.size].rsp=rsp;
+        scheduler.procIndex++;
+    }
+    else scheduler.init =1;
+   
     while(scheduler.processes[scheduler.procIndex%scheduler.size].state!=READY){
         scheduler.procIndex++;
     }

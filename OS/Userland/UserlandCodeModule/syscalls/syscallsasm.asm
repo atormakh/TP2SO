@@ -10,6 +10,8 @@ GLOBAL sys_localtime
 GLOBAL sys_drawRect
 GLOBAL sys_mapstdout
 GLOBAL sys_write
+GLOBAL sys_createProcess
+GLOBAL sys_yield
 
 sys_readKeyboard:  ;char* buffer, int count,int * amount
 	push rbp
@@ -116,6 +118,24 @@ sys_write:  ;void * buffer, int count
 	push rbp
 	mov rbp,rsp
 	mov rax, 11
+	int 80h
+	mov rsp, rbp
+	pop rbp
+	ret
+
+sys_createProcess:  ;void * func, int argc, char * args[]
+	push rbp
+	mov rbp,rsp
+	mov rax, 12
+	int 80h
+	mov rsp, rbp
+	pop rbp
+	ret
+
+sys_yield:  ;
+	push rbp
+	mov rbp,rsp
+	mov rax, 13
 	int 80h
 	mov rsp, rbp
 	pop rbp
