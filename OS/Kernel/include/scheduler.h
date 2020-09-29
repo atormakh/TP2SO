@@ -4,7 +4,7 @@
 #define PROC_Q 200
 #define SAVED_REGISTERS 15
 #define RSI_POS 6
-#define PROC_MEM 5*PAGE_SIZE
+#define PROC_MEM 10*PAGE_SIZE
 typedef enum STATE{READY,BLOCKED,KILLED} STATE;
 
 

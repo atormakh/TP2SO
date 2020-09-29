@@ -13,3 +13,4 @@ void sys_write(void * buffer, int count);
 void sys_createProcess(void * func, int argc, char * args[]);
 void sys_yield();
 void sys_exit(int status);
+void sys_ps(char * buffer);

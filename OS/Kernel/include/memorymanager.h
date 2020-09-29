@@ -1,5 +1,8 @@
 #ifndef MEMORY_MANAGER_H
 #define MEMORY_MANAGER_H
+
+#define NULL 0
+
 #define K 1024
 #define M 1048576
 #define G 1073741824
@@ -20,7 +23,7 @@ typedef struct MemoryManager{
 
 void initialize_mem_man( void * memory, size_t ps, size_t qty);
 void * m_alloc( size_t size );
-void * calc_ptr_from_idx(unsigned int block_idx);
-unsigned int calc_idx_from_ptr(void * ptr);
+void * calc_ptr_from_idx(unsigned long block_idx);
+unsigned long calc_idx_from_ptr(void * ptr);
 void m_free(void * ptr);
 #endif

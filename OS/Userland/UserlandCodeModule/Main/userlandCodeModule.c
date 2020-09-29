@@ -32,6 +32,12 @@ rect tab0_border;
 rect * tab_borders[]={&tab0_border};
 registerEnv env;
 
+//BORRAR
+void stdflush(){
+	flushstdout(tabs[0]);
+}
+
+
 void setupBorders(){
 	tab0_border.xi = tab0.currentScreen.xi-BORDER;
 	tab0_border.xf = tab0.currentScreen.xf+BORDER;
@@ -75,6 +81,7 @@ int main() {
 		initTabs();
 	}
 
+	
 	while(1){
 		while((c=getChar()) !='\n'){
 			if(c=='\t'){

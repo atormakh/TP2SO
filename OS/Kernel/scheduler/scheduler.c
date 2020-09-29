@@ -27,7 +27,6 @@ void initialize_scheduler(){
 
 int createProcess(void * proc, int argc, char * argv[]){
     
-
     // TODO recorrer para sobreescribir en el KILLED
     PCB * pcb = scheduler.processes + scheduler.size;
     
@@ -36,7 +35,11 @@ int createProcess(void * proc, int argc, char * argv[]){
     unsigned long long * bp;
     //unsigned long long * stack = bp = 0x700000; 
     
-    unsigned long long * stack = bp = (unsigned long long *)m_alloc(PROC_MEM)+PROC_MEM;
+   ;
+    char * tmp = m_alloc(PROC_MEM)+PROC_MEM-1; // TODO, BORRAR CUANDO ANDE
+
+    unsigned long long * stack = bp = (unsigned long long *) tmp;
+    
     pcb->rbp=bp;
 
     *stack = 0x0;

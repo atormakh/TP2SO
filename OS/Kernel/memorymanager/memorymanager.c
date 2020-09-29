@@ -1,9 +1,10 @@
 
-#include <stdlib.h>
+#include <lib.h>
 #include <memorymanager.h>
 #include <video.h>
 
-MemoryManager * mm;
+MemoryManager borrar;
+MemoryManager * mm=&borrar;
 
 
 void initialize_mem_man(void * memory, size_t ps, size_t qty){
@@ -12,7 +13,7 @@ void initialize_mem_man(void * memory, size_t ps, size_t qty){
     mm->base=memory;
     mm->page_size = ps;
     mm->pages_q = qty;
-    for(int i=0; i < qty ;i++) mm->bitmap[i]=0;
+    for(unsigned long i=0; i < qty ;i++) mm->bitmap[i]=0;
     
 
     
@@ -20,11 +21,19 @@ void initialize_mem_man(void * memory, size_t ps, size_t qty){
 
 void * m_alloc( size_t size ){
 
-   
-    unsigned int blocks_q = (size-1)/mm->page_size + 1;
+    static int tor;
+    char buffer[50];
+    char * number = 0x600000;
+    int n = intToString((unsigned long long)mm,buffer);
+    for(int index=0;index<n; index++) drawCharacter(100+index*30,300+30*tor,20,buffer[index]);
+    tor++;
+    //while(1);
     
-    unsigned int i = 0;
-    unsigned int cont = 0;
+   
+    unsigned long blocks_q = (size-1)/mm->page_size + 1;
+    
+    unsigned long i = 0;
+    unsigned long cont = 0;
     
     while( cont < blocks_q && i < mm->pages_q){
         if(mm->bitmap[i]>0) {
@@ -37,6 +46,13 @@ void * m_alloc( size_t size ){
         
         
     }
+
+    // static int tor;
+    // char buffer[50];
+	// int n = intToString(mm->bitmap[0],buffer);
+	// for(int index=0;index<n; index++) drawCharacter(100+index*30,300+30*tor,20,buffer[index]);
+    // tor++;
+	//while(1);
     
     if(cont == blocks_q){
         mm->bitmap[i-cont] = cont;
@@ -49,14 +65,14 @@ void * m_alloc( size_t size ){
 }
 
 void m_free( void * ptr){
-    unsigned int idx = calc_idx_from_ptr(ptr);
+    unsigned long idx = calc_idx_from_ptr(ptr);
     mm->bitmap[idx] = FREE;    
 }
 
-void * calc_ptr_from_idx(unsigned int block_idx){
+void * calc_ptr_from_idx(unsigned long block_idx){
     return mm->base+block_idx*mm->page_size;
 }
 
-unsigned int calc_idx_from_ptr(void * ptr){
-    return (unsigned int)(ptr-mm->base)/mm->page_size;
+unsigned long calc_idx_from_ptr(void * ptr){
+    return (unsigned long)(ptr-mm->base)/mm->page_size;
 }

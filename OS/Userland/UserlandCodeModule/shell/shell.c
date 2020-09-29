@@ -7,6 +7,9 @@
 #include "sysInfo.h"
 #include <syscalls.h>
 
+void stdflush();
+
+
 void yield();
 unsigned long long counter = 0;
 void do_nothing(){
@@ -17,6 +20,13 @@ void do_nothing(){
 }
 
 void dummy(){
+    // char hola[50];
+	// char * number = 0x600000;
+	// intToString(*number,hola);
+	// puts(hola);
+	// //flushstdout(tabs[0]);
+    // stdflush();
+	// //while(1);
     sys_createProcess(do_nothing,0,0);
     return;
 }
