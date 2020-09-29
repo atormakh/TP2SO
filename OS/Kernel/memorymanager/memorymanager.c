@@ -20,14 +20,6 @@ void initialize_mem_man(void * memory, size_t ps, size_t qty){
 }
 
 void * m_alloc( size_t size ){
-
-    static int tor;
-    char buffer[50];
-    char * number = 0x600000;
-    int n = intToString((unsigned long long)mm,buffer);
-    for(int index=0;index<n; index++) drawCharacter(100+index*30,300+30*tor,20,buffer[index]);
-    tor++;
-    //while(1);
     
    
     unsigned long blocks_q = (size-1)/mm->page_size + 1;
@@ -47,12 +39,6 @@ void * m_alloc( size_t size ){
         
     }
 
-    // static int tor;
-    // char buffer[50];
-	// int n = intToString(mm->bitmap[0],buffer);
-	// for(int index=0;index<n; index++) drawCharacter(100+index*30,300+30*tor,20,buffer[index]);
-    // tor++;
-	//while(1);
     
     if(cont == blocks_q){
         mm->bitmap[i-cont] = cont;

@@ -13,20 +13,11 @@ void stdflush();
 void yield();
 unsigned long long counter = 0;
 void do_nothing(){
-    while(counter++ < sizeof(counter)){
-	    sys_yield();
-    }
+    sys_sleep(5);
     sys_exit(0);
 }
 
 void dummy(){
-    // char hola[50];
-	// char * number = 0x600000;
-	// intToString(*number,hola);
-	// puts(hola);
-	// //flushstdout(tabs[0]);
-    // stdflush();
-	// //while(1);
     sys_createProcess(do_nothing,0,0);
     return;
 }

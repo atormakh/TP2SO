@@ -89,9 +89,20 @@ void * schedule(void * rsp){
     while(scheduler.processes[scheduler.procIndex%scheduler.size].state!=READY){
         scheduler.procIndex++;
     }
+    scheduler.procIndex = scheduler.procIndex%scheduler.size;
     return scheduler.processes[scheduler.procIndex%scheduler.size].rsp;
 }
 
+PCB * getCurrentProc(){
+    return scheduler.processes+scheduler.procIndex;
+}
+PCB * getProc(unsigned long pid){
+    for(int i = 0; i<scheduler.size;i++){
+        if(scheduler.processes[i].state!=KILLED && scheduler.processes[i].pid == pid)
+            return scheduler.processes+i;
+    }
+    return 0;
+}
 
 void exit(int ret){
     PCB * proc = scheduler.processes + scheduler.procIndex%scheduler.size;
@@ -121,6 +132,7 @@ void ps(char * buffer){
         
        
     }
+    *buffer++=0;
 }
 
 

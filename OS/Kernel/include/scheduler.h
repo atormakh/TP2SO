@@ -28,5 +28,7 @@ void * schedule(void * rsp);
 int createProcess(void * proc, int argc, char * argv[]);
 void exit(int ret);
 void ps(char * buffer);
+PCB * getCurrentProc();
+PCB * getProc(unsigned long pid);
 
 #endif

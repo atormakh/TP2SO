@@ -6,6 +6,7 @@
 #include<exceptions.h>
 #include<files.h>
 #include<scheduler.h>
+#include<time.h>
 //void syscallsDispatcher(uint64_t id, uint64_t rdi, uint64_t rsi, ... ):
 
 //void write(unsigned int fd, const char * buf, uint64_t count);
@@ -63,6 +64,10 @@ void syscallsDispatcher (uint64_t id, uint64_t * registers){
             break;
         case 15:
             ps((char *)registers[0]);
+            break;
+
+        case 16:
+            sleep(registers[0]);
             break;
     }
 
