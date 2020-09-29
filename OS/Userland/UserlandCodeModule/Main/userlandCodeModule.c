@@ -56,14 +56,10 @@ void drawPixMaps(){
 	sys_drawBitmap(600,0,shellLogo_xpm);
 }
 
-void do_nothing(){
-	sys_yield();
-	sys_exit(0);
-}
 
 int main() {
 
-	sys_createProcess(do_nothing,0,0);
+	
 
 	createstdout();
 	setupBorders();

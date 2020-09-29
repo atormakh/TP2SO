@@ -2,6 +2,7 @@
 #include <memorymanager.h>
 #include <syscalls.h>
 #include <video.h>
+#include <lib.h>
 
 /*
 .Crear y finalizar procesos.
@@ -12,6 +13,10 @@
 ● Cambiar el estado de un proceso.
 ● Renunciar al CPU
 */
+
+//pipe(pid1,fd_write, pid2, fd_read)
+//close(fd)
+
 Scheduler scheduler;
 
 void initialize_scheduler(){
@@ -93,9 +98,29 @@ void exit(int ret){
 
 }
 
-void * fork(){
-    return 0;
+void ps(char * buffer){
+    
+    for(int i = 0; i< scheduler.size;i++){
+        buffer+=intToString(scheduler.processes[i].pid,buffer);
+        *buffer++=' ';
+        switch (scheduler.processes[i].state){
+        case READY:
+            buffer += strcpy(buffer,"RUNNING ");
+            break;
+        case KILLED:
+            buffer += strcpy(buffer,"DEAD ");
+            break;
+        case BLOCKED:
+            buffer += strcpy(buffer,"BLOCKED ");
+            break;
+        }
+        *buffer++='\n';
+        
+       
+    }
 }
+
+
 
 
 

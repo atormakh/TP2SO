@@ -5,10 +5,32 @@
 #include "printmem.h"
 #include "inforeg.h"
 #include "sysInfo.h"
+#include <syscalls.h>
+
+void yield();
+unsigned long long counter = 0;
+void do_nothing(){
+    while(counter++ < sizeof(counter)){
+	    sys_yield();
+    }
+    sys_exit(0);
+}
+
+void dummy(){
+    sys_createProcess(do_nothing,0,0);
+    return;
+}
+
+void ps(){
+    char buffer[1024];
+    sys_ps(buffer);
+    puts(buffer);
+}
+
 
 char * messages[] = {"Command not found"};
-char * commands[] = {"help","inforeg","printmem","cputemp", "cpuid", "localtime", "divisionbyzero", "invalidopcode", 0};
-void  (* run[])(int,char * * ) = {help, inforeg, printmem, cputemp,cpuid, localtime, divisionbyzero, invalidopcode};
+char * commands[] = {"help","inforeg","printmem","cputemp", "cpuid", "localtime", "divisionbyzero", "invalidopcode", "ps", "dummy", 0};
+void  (* run[])(int,char * * ) = {help, inforeg, printmem, cputemp,cpuid, localtime, divisionbyzero, invalidopcode,ps, dummy};
 
 void shell(char * in){
     char * args[ARGS_LENGTH];

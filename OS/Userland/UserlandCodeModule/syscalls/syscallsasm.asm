@@ -13,6 +13,7 @@ GLOBAL sys_write
 GLOBAL sys_createProcess
 GLOBAL sys_yield
 GLOBAL sys_exit
+GLOBAL sys_ps
 
 sys_readKeyboard:  ;char* buffer, int count,int * amount
 	push rbp
@@ -150,4 +151,15 @@ sys_exit:  ; int status
 	mov rsp, rbp
 	pop rbp
 	ret
+
+sys_ps:  ;char * buffer
+	push rbp
+	mov rbp,rsp
+	mov rax, 15
+	int 80h
+	mov rsp, rbp
+	pop rbp
+	ret
+
+
 
