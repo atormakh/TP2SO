@@ -5,11 +5,9 @@
 #include <errors.h>
 #include <stdlib.h>
 #include "defs.h"
-#include <calculator.h>
 #include <shell.h>
 #include "itbaLogo.xpm"
 #include "shellLogo.xpm"
-#include "calcLogo.xpm"
 
 #define RADIUS 1
 unsigned char focus = 0;
@@ -23,17 +21,22 @@ void exGenericHandler(errorStruct * error);
 void initTabs();
 void initTab(tabStruct * tab);
 
-tabStruct tab0 = {"calc@covinux:>",evaluator,inControllerTab0,exGenericHandler,{0},0,10,{10,200,500,750},0,0};
-tabStruct tab1 = {"shell@covinux:>",shell,inControllerTab1,exGenericHandler,{0},0,10,{524,200,1014,750},0,0};
+tabStruct tab0 = {"shell@covinux:>",shell,inControllerTab0,exGenericHandler,{0},0,10,{10,120,1014,750},0,0};
 
-tabStruct * tabs[]={&tab0,&tab1};
+tabStruct * tabs[]={&tab0};
 
-colorStruct colorGrey={200,200,200},colorOrange={255,125,0},colorBlack={0,0,0};
+colorStruct colorGrey={200,200,200},colorOrange={0,0,255},colorBlack={0,0,0};
 rect tab0_border;
-rect tab1_border;
 
-rect * tab_borders[]={&tab0_border,&tab1_border};
+
+rect * tab_borders[]={&tab0_border};
 registerEnv env;
+
+//BORRAR
+void stdflush(){
+	flushstdout(tabs[0]);
+}
+
 
 void setupBorders(){
 	tab0_border.xi = tab0.currentScreen.xi-BORDER;
@@ -46,16 +49,7 @@ void setupBorders(){
 
 	
 
-	tab1_border.xi = tab1.currentScreen.xi-BORDER;
-	tab1_border.xf = tab1.currentScreen.xf+BORDER;
-	tab1_border.yi = tab1.currentScreen.yi-BORDER;
-	tab1_border.yf = tab1.currentScreen.yf+BORDER;
-	tab1_border.fill=0;
-	tab1_border.border=3;
-	tab1_border.c = colorGrey;
-
 	tab_borders[focus]->c = colorOrange;
-	sys_drawRect(&tab1_border);
 	sys_drawRect(&tab0_border);
 }
 
@@ -64,16 +58,19 @@ typedef struct moves{
 }moves;
 
 void drawPixMaps(){
-	sys_drawBitmap(0,0,itbaLogo_xpm);
-	sys_drawBitmap(700,76,shellLogo_xpm);
-	sys_drawBitmap(200,76,calcLogo_xpm);
+	sys_drawBitmap(400,15,itbaLogo_xpm);
+	sys_drawBitmap(600,0,shellLogo_xpm);
 }
 
+
 int main() {
+
+	
+
 	createstdout();
 	setupBorders();
 	drawPixMaps();
-			
+		
 	int c=0;
 	
 
@@ -84,6 +81,7 @@ int main() {
 		initTabs();
 	}
 
+	
 	while(1){
 		while((c=getChar()) !='\n'){
 			if(c=='\t'){
@@ -208,17 +206,12 @@ void genericInController(int c, tabStruct * tab){
 	}
 }
 
-void inControllerTab1(int c){
-	genericInController(c,&tab1);
-	
-}
-
 void inControllerTab0(int c){
-
-	if((c>='0' && c<='9') || c=='.' || c==',' || c=='+' || c=='-' || c=='/' || c=='*' || c=='(' || c==')'|| c==8 || c==128)
-		genericInController(c,&tab0);
+	genericInController(c,&tab0);
 	
 }
+
+
 
 
 void exGenericHandler(errorStruct * error){

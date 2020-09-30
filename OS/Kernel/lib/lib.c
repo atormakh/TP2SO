@@ -48,3 +48,44 @@ void * memcpy(void * destination, const void * source, uint64_t length)
 
 	return destination;
 }
+
+
+int intToBase(unsigned long long num, int base, char*buffer){
+    char stack[11];
+    int c = 0;
+    int i=0;
+    int remainder = 0;
+    if(num==0) stack[i++]='0';
+    while(num!=0){
+        remainder = num % base;
+        stack[i]=remainder>=10? remainder+'A'-10:remainder+'0';
+        num = num/base;
+        i++;
+    }
+    c=i;
+    i--;
+    while(i>=0){
+        *buffer=stack[i];
+        buffer++;
+        i--;
+    }
+    *buffer=0;
+    return c;
+}
+
+
+int intToString(unsigned long long num, char * buffer){
+    return intToBase(num,10,buffer);
+}
+
+int strcpy(char * dest, char * src){
+    unsigned char i =0;
+    while(src[i]!=0){
+        dest[i] = src[i];
+        i++;
+    }
+    dest[i]=0;
+    return i;
+
+}
+

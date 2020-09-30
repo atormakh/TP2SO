@@ -1,8 +1,11 @@
 #include <stdint.h>
-#include <string.h>
 #include <lib.h>
 #include <moduleLoader.h>
 #include <idtLoader.h>
+#include <memorymanager.h>
+#include <scheduler.h>
+#include <time.h>
+#include <video.h>
 
 extern uint8_t text;
 extern uint8_t rodata;
@@ -15,6 +18,7 @@ static const uint64_t PageSize = 0x1000;
 
 static void * const userlandCodeModuleAddress = (void*)0x400000;
 static void * const userlandDataModuleAddress = (void*)0x500000;
+static void * const baseAddress = (void*)0x600000;
 
 typedef int (*EntryPoint)();
 
@@ -47,10 +51,24 @@ void * initializeKernelBinary()
 	return getStackBase();
 }
 
+
+
+
 int main()
 {	
+	uint32_t memSize = *(uint32_t *)0x5020*1024*1024;
+
+
+	initialize_timer();
+
+	initialize_mem_man(baseAddress ,PAGE_SIZE, (memSize-(unsigned long long)baseAddress)/PAGE_SIZE); // el ultimo parametro se puede eliminar, se calculan en funcion de parametros anteriores
+
+	initialize_scheduler();
+
+	createProcess(userlandCodeModuleAddress,0,0);
+
 	load_idt();
-	((EntryPoint)userlandCodeModuleAddress)();
+	//schedule(0);
 	while(1);
 	return 0;
 }

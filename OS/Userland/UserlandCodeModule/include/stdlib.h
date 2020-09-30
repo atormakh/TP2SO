@@ -22,4 +22,5 @@ int doubleToString(double value, char * buffer);
 double stringToDouble(char *init, char *end);
 
 
+
 #endif
