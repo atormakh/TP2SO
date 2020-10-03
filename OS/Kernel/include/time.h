@@ -1,7 +1,7 @@
 #ifndef _TIME_H_
 #define _TIME_H_
 
-#include<scheduler.h>
+#include <scheduler.h>
 
 #define TIME_ELAPSED 55
 #define MS_TO_S 1000

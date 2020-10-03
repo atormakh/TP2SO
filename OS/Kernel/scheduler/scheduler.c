@@ -20,6 +20,7 @@
 Scheduler scheduler;
 
 void initialize_scheduler(){
+    scheduler.motives=newList(NULL);
     scheduler.procIndex=0;
     scheduler.size=0;
     scheduler.init=0;
@@ -135,6 +136,48 @@ void ps(char * buffer){
     *buffer++=0;
 }
 
+
+int setProcFD(unsigned long pid,unsigned int fd, Pipe * pipe, unsigned int permission){
+    PCB * proc = getProc(pid);
+    proc->fd[pid]=pipe;
+}
+
+
+int block(int motive,unsigned long pid){
+    
+   
+}
+
+
+
+
+int createMotive(void * id){
+    Motive * motive = m_alloc(sizeof(Motive));
+    if(motive == NULL){
+        //error
+        return -1;
+    }
+    motive->id=id;
+    motive->processes = newList(0);
+    push(scheduler.motives, motive);
+    return 0;
+}
+
+createMotive(&getProc(pid).fd[fd].writeIndex);
+
+awakeAll(&getProc(pid).fd[fd].writeIndex);
+
+
+int awake(int motive){
+    Motive * motive = blockedProcesses+motive;
+    motive->buffer[motive->size];
+    motive->size--;
+
+}
+
+int awakeAll(int motive){
+    
+}
 
 
 
