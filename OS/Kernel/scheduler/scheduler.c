@@ -24,7 +24,7 @@ long motive_cmp(void * motive1, void * motive2){
 }
 
 long proc_cmp(void * proc1, void * proc2){
-    return (long)(proc1-proc2);
+    return *(unsigned long *)proc1-*(unsigned long *)proc2;
 }
 
 void initialize_scheduler(){
@@ -155,9 +155,12 @@ int block(void * id,unsigned long pid){
     Motive searcher={id,NULL};    
     Motive * motive = get(scheduler.motives, &searcher);
     if(motive == NULL){
+        drawCharacter(500,500,20,'a');
         return 0;
     }
-    push(motive->processes,getProc(pid));
+    PCB * proc = getProc(pid);
+    push(motive->processes,proc);
+    proc->state=BLOCKED;
     return 1;
 }
 
@@ -179,7 +182,9 @@ int createMotive(void * id){
 void closeMotive(void * id){
     Motive searcher={id,NULL};    
     Motive * motive = get(scheduler.motives, &searcher);
-    freeList(scheduler.motives);
+    remove(scheduler.motives, &searcher);
+    
+    freeList(motive->processes);
     m_free(motive);
 }
 
@@ -202,7 +207,7 @@ int awake(void * id){
 int awakeAll(void * id){
     Motive searcher={id,NULL};    
     Motive * motive = get(scheduler.motives, &searcher);
-
+    drawCharacter(700,500,20,'A'+motive->processes->size);
     while(motive->processes->size>0){
         ((PCB *)pop(motive->processes))->state=READY;
     }

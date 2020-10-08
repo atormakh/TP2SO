@@ -1,64 +1,46 @@
-#include <time.h>
-
+#include<time.h>
 #include<video.h>
+#include<list.h>
+#include<scheduler.h>
 
 static unsigned long long ticks = 0;
 
 
-WaiterHeader waiterHeader;
+List * awakeTimes;
 
-Waiter waiters[PROC_Q];
+int cmp(void * el1, void * el2){
+	return *(unsigned long *)el1-*(unsigned long *)el2;
+}
 
 void initialize_timer(){
-	waiterHeader.start=0;
-	waiterHeader.size=0;
-	for(int i = 0; i< PROC_Q; i++) waiters[i].status = EMPTY;
+	awakeTimes=newList(cmp);
 }
 
 void * timer_handler(void * rsp) {
 	ticks++;
-
-	Waiter * prev = waiterHeader.start;
-	Waiter * next = waiterHeader.start;
-	while(next != 0){
-		if( (ticks-next->start) * TO_SECONDS>= next->time){
-			next->proc->state=READY;
-			next->status = EMPTY;
-			prev->next = next->next;
-			if(prev==next){
-				waiterHeader.start=next->next;
-				prev=waiterHeader.start;
-			}
-			else prev = next;
+	unsigned long * minTicks;
+	if(awakeTimes->start != NULL && *(minTicks=awakeTimes->start->elem)==ticks){
+		awakeAll(minTicks);		
+		closeMotive(minTicks);
+		remove(awakeTimes,minTicks);
+		m_free(minTicks);
 		
-		}
-		else prev = next;
-
-		next=next->next;
 	}
-
-	//fijarse si ya paso el tiempo
-
 	return schedule(rsp);
 
 }
 
-void sleep(unsigned int time){
+void sleep(unsigned int interval){
 	PCB * proc = getCurrentProc();
-	int i = 0;
-	while(i<PROC_Q && waiters[i].status==WAITING)i++;
-	if (i==PROC_Q) return; //TODO tiro error
-	
-	
-	waiters[i].next=waiterHeader.start;
-	waiterHeader.start = waiters+i;
-	
-	waiters[i].time=time;
-	waiters[i].status=WAITING;
-	waiters[i].proc=proc;
-	waiters[i].start=ticks;
-	
-	proc->state=BLOCKED;
+	unsigned long awakeTime = interval*18+ticks;
+	unsigned long * time = get(awakeTimes,&awakeTime);
+	if(time == NULL){
+		time = (unsigned long * ) m_alloc(sizeof(unsigned long));
+		*time = awakeTime;
+		createMotive(time);
+		add(awakeTimes,time);
+	}	
+	block(time,proc->pid);
 	yield();
 
 }

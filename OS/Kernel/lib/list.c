@@ -27,7 +27,8 @@ void add(List *list, void * val){
         prev = next;
         next = next->next;
     }
-    prev->next = newNode;
+    if(prev == next) list->start = newNode;
+    else prev->next = newNode;
     newNode->next=next;
     newNode->elem = val;
     list->size++;
@@ -42,40 +43,47 @@ void push(List *list, void *val){
 
     new_node->elem = val;
     new_node->next = head;
-    head = new_node;
+    list->start = new_node;
     list->size++;
 }
 
 void remove(List * list, void * val){
     Node * node = list->start;
     Node * prev = node;
-    while(node!=NULL || list->cmp(node->elem,val)==0){
+    while(node!=NULL && list->cmp(node->elem,val)!=0){
         prev=node;
         node=node->next;
     }
-    prev->next=node->next;
+    if(prev==node) list->start = node->next;
+    else prev->next=node->next;
     m_free(node);
 }
 
 void * get(List * list, void * val){
     Node * node = list->start;
-    while(node!=NULL || list->cmp(node->elem,val)==0)
+    while(node!=NULL && list->cmp(node->elem,val)!=0)
         node=node->next;
-    return node;
+
+    if(node==NULL){
+        return NULL;
+    }
+    return node->elem;
 }
 
 void *pop(List *list){
-    Node *header = list->start;
+    Node * header = list->start;
     list->start = header->next;
     list->size--;
-    return header;
+    void * elem = header->elem;
+    m_free(header);
+    return elem;
 }
 
 void *peek(List *list){
-    return list->start;
+    return list->start->elem;
 }
 
-void freeList(List *list){
+void freeList(List * list){
     if( list != NULL){
         Node * prev = list->start;
         Node * actual = list->start;
@@ -85,5 +93,11 @@ void freeList(List *list){
             actual = actual->next;
             m_free(prev);
         }
+    }
+}
+
+Node * first(List * list){
+    if(list != NULL){
+        return list->start->elem;
     }
 }
