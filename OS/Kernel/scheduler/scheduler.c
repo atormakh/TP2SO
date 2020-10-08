@@ -19,8 +19,16 @@
 
 Scheduler scheduler;
 
+long motive_cmp(void * motive1, void * motive2){
+    return (long)(((Motive *)motive1)->id - ((Motive *)motive2)->id);
+}
+
+long proc_cmp(void * proc1, void * proc2){
+    return (long)(proc1-proc2);
+}
+
 void initialize_scheduler(){
-    scheduler.motives=newList(NULL);
+    scheduler.motives=newList(motive_cmp);
     scheduler.procIndex=0;
     scheduler.size=0;
     scheduler.init=0;
@@ -143,9 +151,14 @@ int setProcFD(unsigned long pid,unsigned int fd, Pipe * pipe, unsigned int permi
 }
 
 
-int block(int motive,unsigned long pid){
-    
-   
+int block(void * id,unsigned long pid){
+    Motive searcher={id,NULL};    
+    Motive * motive = get(scheduler.motives, &searcher);
+    if(motive == NULL){
+        return 0;
+    }
+    push(motive->processes,getProc(pid));
+    return 1;
 }
 
 
@@ -158,25 +171,41 @@ int createMotive(void * id){
         return -1;
     }
     motive->id=id;
-    motive->processes = newList(0);
+    motive->processes = newList(proc_cmp);
     push(scheduler.motives, motive);
     return 0;
 }
 
-createMotive(&getProc(pid).fd[fd].writeIndex);
-
-awakeAll(&getProc(pid).fd[fd].writeIndex);
-
-
-int awake(int motive){
-    Motive * motive = blockedProcesses+motive;
-    motive->buffer[motive->size];
-    motive->size--;
-
+void closeMotive(void * id){
+    Motive searcher={id,NULL};    
+    Motive * motive = get(scheduler.motives, &searcher);
+    freeList(scheduler.motives);
+    m_free(motive);
 }
 
-int awakeAll(int motive){
+
+int awake(void * id){
+    Motive searcher={id,NULL};
     
+    Motive * motive = get(scheduler.motives, &searcher);
+    PCB * proc = pop(motive->processes);
+    proc->state=READY;
+    // unsigned long pid=*(unsigned long *)pop(motive->processes);
+    // getProc(pid)->state=READY;
+    // if(size(motive->processes)==0){
+    //     remove(scheduler.motives,motive);
+    //     free(motive);
+    // }
+    return proc->pid;
+}
+
+int awakeAll(void * id){
+    Motive searcher={id,NULL};    
+    Motive * motive = get(scheduler.motives, &searcher);
+
+    while(motive->processes->size>0){
+        ((PCB *)pop(motive->processes))->state=READY;
+    }
 }
 
 

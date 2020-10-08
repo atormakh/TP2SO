@@ -44,8 +44,10 @@ void ps(char * buffer);
 PCB * getCurrentProc();
 PCB * getProc(unsigned long pid);
 int setProcFD(unsigned long pid,unsigned int fd, Pipe * pipe, unsigned int permission);
-int block(int motive,unsigned long pid);
-int awake(int motive);
-int awakeAll(int motive);
+int block(void * id,unsigned long pid);
+int awake(void * motiveId);
+int awakeAll(void * motiveId);
 int createMotive(void * id);
-void freeMotive();
+void closeMotive(void * id);
+
+#endif

@@ -69,6 +69,9 @@ void syscallsDispatcher (uint64_t id, uint64_t * registers){
         case 16:
             sleep(registers[0]);
             break;
+        case 17:
+            pipe(registers[0],registers[1],registers[2],registers[3]);
+            break;
     }
 
 }

@@ -11,7 +11,6 @@ int pipe(unsigned long pidWriter, unsigned int fdWrite, unsigned long pidReader,
         //tirar error
         return -1;
     }
-  
     
     pipe->buffer = pipe+1;
     pipe->writeIndex=0;
@@ -20,11 +19,13 @@ int pipe(unsigned long pidWriter, unsigned int fdWrite, unsigned long pidReader,
     pipe->status=READ | WRITE;
     pipe->bufferSize=PAGE_SIZE - sizeof(Pipe);
 
-    // PCB * writer = getProc(pidWriter);
-    // PCB * reader = getProc(pidReader);
+    createMotive(&pipe->writeIndex);
+    createMotive(&pipe->readIndex);
 
 
     setProcFD(pidWriter,fdWrite,pipe, WRITE);
     setProcFD(pidReader,fdRead,pipe, READ);
     return 0;
 }
+
+

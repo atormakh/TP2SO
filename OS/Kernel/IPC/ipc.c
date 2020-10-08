@@ -9,8 +9,7 @@ void writePipe(int fd,char * buffer,int maxWrite){
 
     //verificar si se puede escribir en el pipe
     while(maxWrite>=fdWrite->buffer-fdWrite->counter){
-        //hay que despertarlo
-        proc->state = BLOCKED;
+       block(&fdWrite->writeIndex,proc->pid);
     }
 
     //escribimos lo que esta en el buffer en el fd
@@ -23,13 +22,19 @@ void writePipe(int fd,char * buffer,int maxWrite){
     //reseteo los valores del writeIndex del file descriptor asi no tenemos problemas con un eventual overflow
     fdWrite->writeIndex = fdWrite->writeIndex % fdWrite->bufferSize;
 
-    //despertar a los readers
+    awakeAll(fdWrite->readIndex);
 }
 
 void readPipe(int fd,char * buffer,int maxRead,int * qty){
     PCB * proc = getCurrentProc();
     Pipe * fdRead =proc->fd[fd];
-    //verificar si hay algo para leer    
+    
+    //verificar si se puede escribir en el pipe
+    while(fdRead->counter<=0){
+       block(&fdRead->readIndex,proc->pid);
+    }
+
+
     int i=0;
     for(i=0;i<qty && i<maxRead;i++){
         
@@ -43,4 +48,5 @@ void readPipe(int fd,char * buffer,int maxRead,int * qty){
     fdRead->readIndex = fdRead->readIndex % fdRead->bufferSize;
 
     //despertar a los writers
+    awakeAll(fdRead->writeIndex);
 }
