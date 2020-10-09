@@ -4,6 +4,7 @@
 #include <idtLoader.h>
 #include <memorymanager.h>
 #include <scheduler.h>
+#include <pipes.h>
 #include <time.h>
 #include <video.h>
 
@@ -58,17 +59,18 @@ int main()
 {	
 	uint32_t memSize = *(uint32_t *)0x5020*1024*1024;
 
-
-	
-
 	initialize_mem_man(baseAddress ,PAGE_SIZE, (memSize-(unsigned long long)baseAddress)/PAGE_SIZE); // el ultimo parametro se puede eliminar, se calculan en funcion de parametros anteriores
 
 	initialize_timer();
 	initialize_scheduler();
 
 	createProcess(userlandCodeModuleAddress,0,0);
-
+	m_alloc(PAGE_SIZE*5);
+	pipe(0,1,0,0);
+	writePipe(1,"hola\n",6);
+	drawCharacter(200,150,20,'X');
 	load_idt();
+	
 	//schedule(0);
 	while(1);
 	return 0;

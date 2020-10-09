@@ -72,6 +72,9 @@ void syscallsDispatcher (uint64_t id, uint64_t * registers){
         case 17:
             pipe(registers[0],registers[1],registers[2],registers[3]);
             break;
+        case 18:
+            readPipe(registers[0],registers[1],registers[2],registers[3]);
+            break;
     }
 
 }

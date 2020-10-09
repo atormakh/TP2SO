@@ -15,3 +15,5 @@ void sys_yield();
 void sys_exit(int status);
 void sys_ps(char * buffer);
 void sys_sleep(unsigned int seconds);
+void sys_pipe(unsigned long pidWriter, unsigned int fdWrite, unsigned long pidReader, unsigned int fdRead );
+void sys_readPipe(int fd,char * buffer, int n, int * qty);

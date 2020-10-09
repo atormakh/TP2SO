@@ -88,7 +88,6 @@ int createProcess(void * proc, int argc, char * argv[]){
 }
 
 void * schedule(void * rsp){
-    
     if(scheduler.init!=0){
         scheduler.processes[scheduler.procIndex%scheduler.size].rsp=rsp;
         scheduler.procIndex++;
@@ -99,11 +98,13 @@ void * schedule(void * rsp){
         scheduler.procIndex++;
     }
     scheduler.procIndex = scheduler.procIndex%scheduler.size;
+    drawCharacter(500,500,30,'G');
     return scheduler.processes[scheduler.procIndex%scheduler.size].rsp;
+   
 }
 
 PCB * getCurrentProc(){
-    return scheduler.processes+scheduler.procIndex;
+    return scheduler.processes + scheduler.procIndex%scheduler.size;
 }
 PCB * getProc(unsigned long pid){
     for(int i = 0; i<scheduler.size;i++){
@@ -147,7 +148,8 @@ void ps(char * buffer){
 
 int setProcFD(unsigned long pid,unsigned int fd, Pipe * pipe, unsigned int permission){
     PCB * proc = getProc(pid);
-    proc->fd[pid]=pipe;
+    proc->fd[fd]=pipe;
+    return 0;
 }
 
 
@@ -155,7 +157,6 @@ int block(void * id,unsigned long pid){
     Motive searcher={id,NULL};    
     Motive * motive = get(scheduler.motives, &searcher);
     if(motive == NULL){
-        drawCharacter(500,500,20,'a');
         return 0;
     }
     PCB * proc = getProc(pid);
@@ -207,7 +208,6 @@ int awake(void * id){
 int awakeAll(void * id){
     Motive searcher={id,NULL};    
     Motive * motive = get(scheduler.motives, &searcher);
-    drawCharacter(700,500,20,'A'+motive->processes->size);
     while(motive->processes->size>0){
         ((PCB *)pop(motive->processes))->state=READY;
     }

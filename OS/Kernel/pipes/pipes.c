@@ -5,26 +5,32 @@
 
 int pipe(unsigned long pidWriter, unsigned int fdWrite, unsigned long pidReader, unsigned int fdRead ){
     
-    Pipe * pipe = m_alloc(PAGE_SIZE);
-    
-    if(pipe == NULL){
-        //tirar error
-        return -1;
+    Pipe * pipe;
+    if(1 || (pipe=getProc(pidReader)->fd+fdRead) == NULL){
+        pipe = m_alloc(PAGE_SIZE);
+        
+        if(pipe == NULL){
+            //tirar error
+            return -1;
+        }   
+        //[.................................................]
+        //p         .
+        //          p+1=buffer
+        pipe->buffer = m_alloc(PAGE_SIZE);
+        pipe->writeIndex=0;
+        pipe->readIndex=0;
+        pipe->counter = 0;
+        pipe->status=READ | WRITE;
+        pipe->bufferSize=PAGE_SIZE;
+
+        createMotive(&pipe->writeIndex);
+        createMotive(&pipe->readIndex);
+
+        setProcFD(pidReader,fdRead,pipe, READ);
+
     }
-    
-    pipe->buffer = pipe+1;
-    pipe->writeIndex=0;
-    pipe->readIndex=0;
-    pipe->counter = 0;
-    pipe->status=READ | WRITE;
-    pipe->bufferSize=PAGE_SIZE - sizeof(Pipe);
-
-    createMotive(&pipe->writeIndex);
-    createMotive(&pipe->readIndex);
-
-
     setProcFD(pidWriter,fdWrite,pipe, WRITE);
-    setProcFD(pidReader,fdRead,pipe, READ);
+    
     return 0;
 }
 

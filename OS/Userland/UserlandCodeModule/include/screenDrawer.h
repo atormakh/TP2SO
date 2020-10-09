@@ -1,11 +1,14 @@
-#ifndef WINDOWS_H_
-#define WINDOWS_H_
+#ifndef SCREEN_DRAWER_H_
+#define SCREEN_DRAWER_H_
 #include <errors.h>
+#include "itbaLogo.xpm"
+#include "shellLogo.xpm"
 
 #define OUT_LENGTH 2000
 #define LINES_LENGTH 50
 #define IN_LENGTH 512
-
+#define BORDER 10
+#define NUM_TABS 1
 
 typedef struct colorStruct{
     uint8_t red;
@@ -41,8 +44,13 @@ typedef struct tabStruct{
 	int current;
 }tabStruct;
 
+void setupBorders();
+void drawPixMaps();
+void initTabs();
+int screenDrawer();
 void writeOnTab(tabStruct * );
 void eraseTab(tabStruct * );
-int strcpyTab(char * src, char * dest, tabStruct * tab);
+void initTab(tabStruct * tab);
+
 
 #endif
