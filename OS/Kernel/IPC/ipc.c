@@ -10,7 +10,6 @@ void writePipe(int fd,char * buffer,int maxWrite){
 
     //verificar si se puede escribir en el pipe
     while(maxWrite>=fdWrite->bufferSize-fdWrite->counter){
-        drawCharacter(200,150,20,'D');
         block(&fdWrite->writeIndex,proc->pid);
     }
   
@@ -18,12 +17,11 @@ void writePipe(int fd,char * buffer,int maxWrite){
     //escribimos lo que esta en el buffer en el fd
     for(int i=0;i<maxWrite;i++){
          fdWrite->buffer[fdWrite->writeIndex%fdWrite->bufferSize]=buffer[i];
-         drawCharacter(200+ i*30,150,20,'A'+ fdWrite->writeIndex);
          fdWrite->writeIndex++;
     }
     
    //fdWrite->buffer[fdWrite->writeIndex%fdWrite->bufferSize]=0;
-    //fdWrite->counter+=maxWrite;
+    fdWrite->counter+=maxWrite;
     
     //reseteo los valores del writeIndex del file descriptor asi no tenemos problemas con un eventual overflow
     fdWrite->writeIndex = fdWrite->writeIndex % fdWrite->bufferSize;

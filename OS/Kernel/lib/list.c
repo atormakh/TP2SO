@@ -5,6 +5,7 @@ List *newList(CMP cmp){
     list->size = 0;
     list->start = 0;
     list->cmp = cmp;
+    return list;
 }
 
 void add(List *list, void * val){

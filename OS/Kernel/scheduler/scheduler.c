@@ -44,13 +44,14 @@ int createProcess(void * proc, int argc, char * argv[]){
     unsigned long long * bp;
     //unsigned long long * stack = bp = 0x700000; 
     
-   ;
+   
     char * tmp = m_alloc(PROC_MEM)+PROC_MEM-1; // TODO, BORRAR CUANDO ANDE
 
     unsigned long long * stack = bp = (unsigned long long *) tmp;
     
     pcb->rbp=bp;
 
+    stack --;
     *stack = 0x0;
     stack --;
     *stack = (unsigned long long)bp;
@@ -88,6 +89,7 @@ int createProcess(void * proc, int argc, char * argv[]){
 }
 
 void * schedule(void * rsp){
+    writePipe(1,"hola\n",6);
     if(scheduler.init!=0){
         scheduler.processes[scheduler.procIndex%scheduler.size].rsp=rsp;
         scheduler.procIndex++;
@@ -98,7 +100,6 @@ void * schedule(void * rsp){
         scheduler.procIndex++;
     }
     scheduler.procIndex = scheduler.procIndex%scheduler.size;
-    drawCharacter(500,500,30,'G');
     return scheduler.processes[scheduler.procIndex%scheduler.size].rsp;
    
 }

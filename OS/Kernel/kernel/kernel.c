@@ -65,10 +65,7 @@ int main()
 	initialize_scheduler();
 
 	createProcess(userlandCodeModuleAddress,0,0);
-	m_alloc(PAGE_SIZE*5);
 	pipe(0,1,0,0);
-	writePipe(1,"hola\n",6);
-	drawCharacter(200,150,20,'X');
 	load_idt();
 	
 	//schedule(0);
