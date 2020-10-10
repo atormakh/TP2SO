@@ -17,6 +17,7 @@ GLOBAL sys_ps
 GLOBAL sys_sleep
 GLOBAL sys_pipe
 GLOBAL sys_readPipe
+GLOBAL sys_writePipe
 
 sys_readKeyboard:  ;char* buffer, int count,int * amount
 	push rbp
@@ -182,7 +183,15 @@ sys_pipe:  ;int pipe(unsigned long pidWriter, unsigned int fdWrite, unsigned lon
 	pop rbp
 	ret
 
-sys_readPipe:  ;sys_read(int fd,char * buffer, int n)
+sys_readPipe:  ;sys_read(int fd,char * buffer, int n, int * qty)
+	push rbp
+	mov rbp,rsp
+	mov rax, 18
+	int 80h
+	mov rsp, rbp
+	pop rbp
+	ret
+sys_writePipe:  ;sys_write(int fd,char * buffer, int n)
 	push rbp
 	mov rbp,rsp
 	mov rax, 18

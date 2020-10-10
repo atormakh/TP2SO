@@ -63,7 +63,6 @@ int main()
 
 	initialize_timer();
 	initialize_scheduler();
-
 	createProcess(userlandCodeModuleAddress,0,0);
 	pipe(0,1,0,0);
 	load_idt();

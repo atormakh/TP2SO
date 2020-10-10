@@ -34,7 +34,7 @@ void initialize_scheduler(){
     scheduler.init=0;
 }
 
-int createProcess(void * proc, int argc, char * argv[]){
+unsigned long long createProcess(void * proc, int argc, char * argv[]){
     
     // TODO recorrer para sobreescribir en el KILLED
     PCB * pcb = scheduler.processes + scheduler.size;
@@ -84,7 +84,7 @@ int createProcess(void * proc, int argc, char * argv[]){
     //create stack and complete with values
     pcb->rsp = (void *)stack;
     scheduler.size++;
-    return 1;
+    return pcb->pid;
 
 }
 
@@ -196,6 +196,7 @@ int awake(void * id){
     
     Motive * motive = get(scheduler.motives, &searcher);
     PCB * proc = pop(motive->processes);
+    if(proc==NULL) return -1;
     proc->state=READY;
     // unsigned long pid=*(unsigned long *)pop(motive->processes);
     // getProc(pid)->state=READY;

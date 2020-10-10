@@ -72,6 +72,7 @@ void * get(List * list, void * val){
 }
 
 void *pop(List *list){
+    if(list->size ==0)return NULL;
     Node * header = list->start;
     list->start = header->next;
     list->size--;

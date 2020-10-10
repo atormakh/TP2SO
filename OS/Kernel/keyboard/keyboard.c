@@ -2,6 +2,7 @@
 #include <video.h>
 #include <registersArgs.h>
 #include "asccodes.h"
+#include<scheduler.h>
 
 #define BUFFER_SIZE 32
  
@@ -14,6 +15,9 @@ char shiftLStatus=0;
 char shiftRStatus=0;
 char blockMayus=0;
 char (* layout)[2]=asccode;
+
+Motive * wait;
+unsigned char init=0;
 
 void keyboard_handler(registerArgs * regs){
     unsigned char key = getKey();
@@ -54,6 +58,11 @@ void keyboard_handler(registerArgs * regs){
 
 	}else if(key<58)buffer[(i++)%BUFFER_SIZE]= layout[key][( shiftRStatus | shiftLStatus | blockMayus) - ((shiftLStatus | shiftRStatus) & blockMayus)];
     
+	if(init == 0){
+			init = 1;
+			wait=createMotive(buffer);
+		}
+		awake(buffer);
 }
 
 void retrieveRegs(registerArgs * args, int * flag){
@@ -66,6 +75,15 @@ void retrieveRegs(registerArgs * args, int * flag){
 }
 
 void readKeyboard(char * buf, int count, int * amount){
+	//nos fijamos si hay algo escrito
+	if(i-base == 0){	//no hay nada escrito, asi que procedemos a bloquearlo
+		//nos fijamos si ya esta creado el motivo del keyboard (que esta linkeado con la direccion del buffer)
+		if(init == 0){
+			init = 1;
+			wait=createMotive(buffer);
+		}
+		block(buffer,getCurrentProc());
+	}
 	int index;
 	for(index = 0; index<(i-base) && index<count; index++){
 		buf[index] = buffer[(base++)%BUFFER_SIZE];

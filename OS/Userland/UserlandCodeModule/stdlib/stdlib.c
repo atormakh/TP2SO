@@ -47,11 +47,11 @@ void printf(char * fmt, ...){
 }
 
 void puts(char * buffer){
-    sys_write(buffer,strlen(buffer));
+    sys_writePipe(1,buffer,strlen(buffer));
 }
 
 void putchar(unsigned char c){
-    sys_write(&c,1);
+    sys_writePipe(1,&c,1);
 }
 
 int intToBase(unsigned long long num, int base, char*buffer);

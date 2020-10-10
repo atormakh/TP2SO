@@ -7,6 +7,7 @@
 #include<files.h>
 #include<scheduler.h>
 #include<time.h>
+#include<ipc.h>
 //void syscallsDispatcher(uint64_t id, uint64_t rdi, uint64_t rsi, ... ):
 
 //void write(unsigned int fd, const char * buf, uint64_t count);
@@ -54,7 +55,7 @@ void syscallsDispatcher (uint64_t id, uint64_t * registers){
             write((void *)registers[0],registers[1]);
             break;
         case 12:
-            createProcess((void *)registers[0], registers[1], (char **)registers[2]);
+            *((unsigned long long *)registers[3])=createProcess((void *)registers[0], registers[1], (char **)registers[2]);
             break;
         case 13:            
             yield();
@@ -74,6 +75,9 @@ void syscallsDispatcher (uint64_t id, uint64_t * registers){
             break;
         case 18:
             readPipe(registers[0],registers[1],registers[2],registers[3]);
+            break;
+        case 19:
+            writePipe(registers[0],registers[1],registers[2]);
             break;
     }
 

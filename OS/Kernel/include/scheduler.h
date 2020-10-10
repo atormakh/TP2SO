@@ -38,7 +38,7 @@ typedef struct Scheduler{
 
 void initialize_scheduler();
 void * schedule(void * rsp);
-int createProcess(void * proc, int argc, char * argv[]);
+unsigned long long createProcess(void * proc, int argc, char * argv[]);
 void exit(int ret);
 void ps(char * buffer);
 PCB * getCurrentProc();

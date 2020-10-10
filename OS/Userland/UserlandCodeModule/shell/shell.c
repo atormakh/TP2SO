@@ -18,7 +18,8 @@ void do_nothing(){
 }
 
 void dummy(){
-    sys_createProcess(do_nothing,0,0);
+    unsigned long long pid;
+    sys_createProcess(do_nothing,0,0,&pid);
     return;
 }
 
@@ -33,7 +34,58 @@ char * messages[] = {"Command not found"};
 char * commands[] = {"help","inforeg","printmem","cputemp", "cpuid", "localtime", "divisionbyzero", "invalidopcode", "ps", "dummy", 0};
 void  (* run[])(int,char * * ) = {help, inforeg, printmem, cputemp,cpuid, localtime, divisionbyzero, invalidopcode,ps, dummy};
 
-void shell(char * in){
+unsigned int inIndex=0;
+char in[MAX_INPUT];
+
+void inController(int c){
+	
+	if(c==128){
+		while(inIndex>0){
+			inController(8);
+		}
+	}
+	else{
+		if(c==8){
+			if(inIndex>0){
+				inIndex--;
+				in[inIndex]=0;
+			}
+		}
+		else{
+			in[inIndex++] = c;
+			in[inIndex]=0;
+		}
+
+	}
+}
+
+
+void shell(){
+    int c;
+    int read;
+    while(1){
+        puts("shell@convinux>");
+        sys_readKeyboard(&c,1,&read);
+		while(c !='\n'){
+            
+            inController(c);
+            sys_readKeyboard(&c,1,&read);
+		}
+        
+		exec(in);
+        puts("\n");
+        puts("shell@convinux>");
+        //BORRAR
+		//currentTab->offsetCurrent = currentTab->current+1;
+		
+        inIndex=0;
+		in[0]=0;
+	}
+
+}
+
+
+void exec(char * in){
     char * args[ARGS_LENGTH];
     int argc = processInput(in,args);
     // strcpy(out, args[1]);
