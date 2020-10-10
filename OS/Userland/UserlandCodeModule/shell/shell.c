@@ -49,32 +49,37 @@ void inController(int c){
 			if(inIndex>0){
 				inIndex--;
 				in[inIndex]=0;
+                putchar(c);
 			}
 		}
 		else{
 			in[inIndex++] = c;
 			in[inIndex]=0;
+            putchar(c);
 		}
+       
 
 	}
 }
 
 
 void shell(){
-    int c;
+    char c;
     int read;
+    sys_sleep(2);
     while(1){
         puts("shell@convinux>");
         sys_readKeyboard(&c,1,&read);
 		while(c !='\n'){
-            
+            sys_drawCharacter(200,200,30,c);
             inController(c);
             sys_readKeyboard(&c,1,&read);
 		}
-        
+
+        puts("\n");
 		exec(in);
         puts("\n");
-        puts("shell@convinux>");
+
         //BORRAR
 		//currentTab->offsetCurrent = currentTab->current+1;
 		

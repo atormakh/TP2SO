@@ -194,7 +194,7 @@ sys_readPipe:  ;sys_read(int fd,char * buffer, int n, int * qty)
 sys_writePipe:  ;sys_write(int fd,char * buffer, int n)
 	push rbp
 	mov rbp,rsp
-	mov rax, 18
+	mov rax, 19
 	int 80h
 	mov rsp, rbp
 	pop rbp

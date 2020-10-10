@@ -21,12 +21,14 @@ int screenDrawer(){
     drawPixMaps();
     setupBorders();
     initTabs();
+    sys_sleep(2);
     int n=0;
     sys_readPipe(0,out,SIZE,&n);
     while( n){
         index=0;
         writeOnTab(&tab0);
-        sys_readPipe(0,out,SIZE,&n);
+        sys_readPipe(0,out,SIZE-1,&n);
+        out[n]=0;
     }
 }
 

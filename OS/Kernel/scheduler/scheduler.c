@@ -89,7 +89,7 @@ unsigned long long createProcess(void * proc, int argc, char * argv[]){
 }
 
 void * schedule(void * rsp){
-    writePipe(1,"hola\n",6);
+    //writePipe(1,"hola\n",6);
     if(scheduler.init!=0){
         scheduler.processes[scheduler.procIndex%scheduler.size].rsp=rsp;
         scheduler.procIndex++;

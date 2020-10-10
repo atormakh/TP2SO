@@ -2,7 +2,7 @@
 #include<syscalls.h>
 #include<stdarg.h>
 #include<stdlib.h>
-#include<windows.h>
+
 
 int strlen(char * buffer){
     int i=0;
@@ -90,7 +90,6 @@ double stringToDouble(char *init, char *end){
     return res;
 }
 
-extern tabStruct tab0;
 int doubleToString(double value, char * buffer){
 	unsigned long long precision=10000;
     unsigned int c=0;

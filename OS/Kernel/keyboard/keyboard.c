@@ -76,13 +76,14 @@ void retrieveRegs(registerArgs * args, int * flag){
 
 void readKeyboard(char * buf, int count, int * amount){
 	//nos fijamos si hay algo escrito
-	if(i-base == 0){	//no hay nada escrito, asi que procedemos a bloquearlo
+	while(i-base == 0){	//no hay nada escrito, asi que procedemos a bloquearlo
 		//nos fijamos si ya esta creado el motivo del keyboard (que esta linkeado con la direccion del buffer)
 		if(init == 0){
 			init = 1;
 			wait=createMotive(buffer);
 		}
 		block(buffer,getCurrentProc());
+		yield();
 	}
 	int index;
 	for(index = 0; index<(i-base) && index<count; index++){
