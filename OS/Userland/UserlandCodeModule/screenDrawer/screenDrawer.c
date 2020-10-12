@@ -21,7 +21,6 @@ int screenDrawer(){
     drawPixMaps();
     setupBorders();
     initTabs();
-    sys_sleep(2);
     int n=0;
     sys_readPipe(0,out,SIZE,&n);
     while( n){

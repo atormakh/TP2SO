@@ -45,7 +45,7 @@ unsigned long long createProcess(void * proc, int argc, char * argv[]){
     //unsigned long long * stack = bp = 0x700000; 
     
    
-    char * tmp = m_alloc(PROC_MEM)+PROC_MEM-1; // TODO, BORRAR CUANDO ANDE
+    char * tmp = c_alloc(PROC_MEM)+PROC_MEM-1; // TODO, BORRAR CUANDO ANDE
 
     unsigned long long * stack = bp = (unsigned long long *) tmp;
     
@@ -184,6 +184,7 @@ int createMotive(void * id){
 void closeMotive(void * id){
     Motive searcher={id,NULL};    
     Motive * motive = get(scheduler.motives, &searcher);
+    if(motive==NULL) return;
     remove(scheduler.motives, &searcher);
     
     freeList(motive->processes);
@@ -210,6 +211,7 @@ int awake(void * id){
 int awakeAll(void * id){
     Motive searcher={id,NULL};    
     Motive * motive = get(scheduler.motives, &searcher);
+    if(motive == NULL) return 0;
     while(motive->processes->size>0){
         ((PCB *)pop(motive->processes))->state=READY;
     }

@@ -30,7 +30,13 @@ int pipe(unsigned long pidWriter, unsigned int fdWrite, unsigned long pidReader,
 
     }
     setProcFD(pidWriter,fdWrite,pipe, WRITE);
-    
+
+    PCB * procReader = getProc(pidReader);
+    PCB * procWriter = getProc(pidWriter);
+    awakeAll(procWriter);
+    closeMotive(procWriter);
+    awakeAll(procReader);
+    closeMotive(procReader);
     return 0;
 }
 

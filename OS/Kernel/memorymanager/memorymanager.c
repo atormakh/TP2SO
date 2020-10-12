@@ -1,4 +1,3 @@
-
 #include <lib.h>
 #include <memorymanager.h>
 #include <video.h>
@@ -48,6 +47,25 @@ void * m_alloc( size_t size ){
         //podemos imprimir un log
         return NULL;
     }
+}
+
+void * c_alloc(size_t size){
+    unsigned long long * toRet= m_alloc(size);
+    
+    if(toRet == NULL){
+        return NULL;
+    }
+    int aux=sizeof(long long);
+    int i=0;
+    for(i = 0; i<size/aux;i++){
+        *(toRet + i)=0;
+    }
+
+    for(int j = 0; j<size%aux;j++){
+        *((char *)toRet + i+j*aux)=0;
+    }
+
+    return toRet;
 }
 
 void m_free( void * ptr){

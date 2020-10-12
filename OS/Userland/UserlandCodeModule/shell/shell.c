@@ -1,4 +1,4 @@
-#include<shell.h>
+#include <shell.h>
 #include "help.h"
 #include "exceptionLauncher.h"
 #include <stdlib.h>
@@ -66,12 +66,10 @@ void inController(int c){
 void shell(){
     char c;
     int read;
-    sys_sleep(2);
     while(1){
         puts("shell@convinux>");
         sys_readKeyboard(&c,1,&read);
 		while(c !='\n'){
-            sys_drawCharacter(200,200,30,c);
             inController(c);
             sys_readKeyboard(&c,1,&read);
 		}

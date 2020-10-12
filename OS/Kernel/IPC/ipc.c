@@ -5,8 +5,13 @@
 
 void writePipe(int fd,char * buffer,int maxWrite){
     PCB * proc = getCurrentProc();
-    Pipe * fdWrite =proc->fd[fd];
+    Pipe * fdWrite;;
 
+    while((fdWrite =proc->fd[fd]) == NULL){
+        createMotive(proc);
+        block(proc,proc->pid);
+        yield();
+    }
 
     //verificar si se puede escribir en el pipe
     while(maxWrite>=fdWrite->bufferSize-fdWrite->counter){
@@ -33,8 +38,14 @@ void writePipe(int fd,char * buffer,int maxWrite){
 
 void readPipe(int fd,char * buffer,int maxRead,int * qty){
     PCB * proc = getCurrentProc();
-    Pipe * fdRead =proc->fd[fd];
+    Pipe * fdRead;
     
+    while((fdRead =proc->fd[fd]) == NULL){
+        createMotive(proc);
+        block(proc,proc->pid);
+        yield();
+    }
+
     //verificar si se puede escribir en el pipe
     while(fdRead->counter<=0){
        block(&fdRead->readIndex,proc->pid);
