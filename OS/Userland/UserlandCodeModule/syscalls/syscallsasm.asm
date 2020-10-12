@@ -18,6 +18,10 @@ GLOBAL sys_sleep
 GLOBAL sys_pipe
 GLOBAL sys_readPipe
 GLOBAL sys_writePipe
+GLOBAL sys_createSem
+GLOBAL sys_semPost
+GLOBAL sys_semWait
+GLOBAL sys_closeSem
 
 sys_readKeyboard:  ;char* buffer, int count,int * amount
 	push rbp
@@ -195,6 +199,42 @@ sys_writePipe:  ;sys_write(int fd,char * buffer, int n)
 	push rbp
 	mov rbp,rsp
 	mov rax, 19
+	int 80h
+	mov rsp, rbp
+	pop rbp
+	ret
+
+sys_createSem:  ;sys_createSem(int value, void ** sem)
+	push rbp
+	mov rbp,rsp
+	mov rax, 20
+	int 80h
+	mov rsp, rbp
+	pop rbp
+	ret
+
+sys_semPost:  ;sys_semPost(void * sem)
+	push rbp
+	mov rbp,rsp
+	mov rax, 21
+	int 80h
+	mov rsp, rbp
+	pop rbp
+	ret
+
+sys_semWait:  ;sys_semWait(void * sem)
+	push rbp
+	mov rbp,rsp
+	mov rax, 22
+	int 80h
+	mov rsp, rbp
+	pop rbp
+	ret
+
+sys_closeSem:  ;sys_closeSem(void * sem)
+	push rbp
+	mov rbp,rsp
+	mov rax, 23
 	int 80h
 	mov rsp, rbp
 	pop rbp

@@ -18,6 +18,10 @@ void sys_sleep(unsigned int seconds);
 void sys_pipe(unsigned long yter, unsigned int fdWrite, unsigned long pidReader, unsigned int fdRead );
 void sys_readPipe(int fd,char * buffer, int n, int * qty);
 void sys_writePipe(int fd,char * buffer, int n);
+void sys_createSem(int value, void ** sem);
+void sys_semPost(void * sem);
+void sys_semWait(void * sem);
+void sys_closeSem(void * sem);
 
 
 void sys_getPid(int * pid);
