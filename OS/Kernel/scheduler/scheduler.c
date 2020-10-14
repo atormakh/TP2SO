@@ -84,6 +84,12 @@ unsigned long long createProcess(void * proc, int argc, char * argv[]){
     //create stack and complete with values
     pcb->rsp = (void *)stack;
     scheduler.size++;
+
+
+    PCB * current = getCurrentProc();
+
+    for(int i=0;i<MAX_PIPES;i++) pcb->fd[i]=current->fd[i];
+
     return pcb->pid;
 
 }

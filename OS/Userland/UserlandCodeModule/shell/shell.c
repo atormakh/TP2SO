@@ -17,9 +17,12 @@ void do_nothing(){
     sys_exit(0);
 }
 
+void test_sync();
+void test_no_sync();
+
 void dummy(){
     unsigned long long pid;
-    sys_createProcess(do_nothing,0,0,&pid);
+    sys_createProcess(test_sync,0,0,&pid);
     return;
 }
 

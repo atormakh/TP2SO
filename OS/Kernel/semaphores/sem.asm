@@ -1,6 +1,6 @@
-GLOBAL xchg
+GLOBAL _xchg
 
-xchg:
-mov rax,rdi
-xchg [rsi],rax
-ret
+_xchg:
+    mov rax,rsi
+    xchg  [rdi], eax
+    ret

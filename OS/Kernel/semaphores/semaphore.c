@@ -1,7 +1,7 @@
 #include<semaphore.h>
 #include<scheduler.h>
 
-int xchg(int value, int * addr);
+int _xchg(int * addr,int value);
 
 Sem * createSem(int value){
     Sem * sem = c_alloc(sizeof(Sem));
@@ -10,23 +10,50 @@ Sem * createSem(int value){
     return sem;
 }
 void semPost(Sem * sem){
-   
-    xchg(sem->value+1, &sem->value);
-    awake(sem); 
+    acquire(&sem->lock);
+    sem->value++;
+    awakeAll(sem); 
+    release(&sem->lock);
+    
 
 
 }
 void semWait(Sem * sem){
-    _cli();
-    // if(sem->value>0) sem->value-- queremos que esto sea atomico
-    while(xchg(sem->value-1, &sem->value)<=0){
-        block(sem, getCurrentProc()->pid);
-        _sti();
-        yield();
-    }
+    
+    acquire(&sem->lock);
 
+    // if(sem->value>0){
+    //     sem->value--;
+    // }else{
+    //     release(&sem->lock);
+    //     block(sem, getCurrentProc()->pid);
+    //     yield();
+    //     acquire(&sem->lock);
+    //     sem->value--;
+    // }
+    // release(&sem->lock);
+
+    // if(sem->value>0) sem->value-- queremos que esto sea atomico
+    
+    while(sem->value<=0){
+        
+        release(&sem->lock);
+        block(sem, getCurrentProc()->pid);
+        yield();
+        acquire(&sem->lock);
+    }
+    sem->value--;
+    release(&sem->lock);
 }
 void closeSem(Sem * sem){
     closeMotive(sem);
     m_free(sem);
+}
+
+void acquire(int * lock){
+    while(_xchg(lock,1)!=0)yield(); //en monocore tiene sentido el yield
+}
+
+void release(int * lock){
+    _xchg(lock, 0);
 }

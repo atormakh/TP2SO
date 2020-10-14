@@ -3,11 +3,13 @@
 
 typedef struct Sem{
     unsigned int value;
-    unsigned int lock;       
+    int lock;       
 }Sem;
 
 Sem * createSem(int value);
 void semPost(Sem * sem);
 void semWait(Sem * sem);
 void closeSem(Sem * sem);
+void acquire(int * lock);
+void release(int * lock);
 #endif
