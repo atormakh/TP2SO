@@ -43,13 +43,12 @@ unsigned long long createProcess(void * proc, int argc, char * argv[]){
     
     pcb->state = READY;
     pcb->pid = scheduler.size;
+    pcb->priority = 1;
+    pcb->currentTicks = 1;
     unsigned long long * bp;
     //unsigned long long * stack = bp = 0x700000; 
     
-   
-    char * tmp = c_alloc(PROC_MEM)+PROC_MEM-1; // TODO, BORRAR CUANDO ANDE
-
-    unsigned long long * stack = bp = (unsigned long long *) tmp;
+    unsigned long long * stack = bp = (unsigned long long *) (c_alloc(PROC_MEM)+PROC_MEM-1);
     
     pcb->rbp=bp;
 
@@ -99,6 +98,13 @@ unsigned long long createProcess(void * proc, int argc, char * argv[]){
 void * schedule(void * rsp){
     //writePipe(1,"hola\n",6);
     if(scheduler.init!=0){
+
+        if(getCurrentProc()->currentTicks<getCurrentProc()->priority){
+            getCurrentProc()->currentTicks++;
+            return rsp;
+        }
+        getCurrentProc()->currentTicks=1;
+
         scheduler.processes[scheduler.procIndex%scheduler.size].rsp=rsp;
         scheduler.procIndex++;
     }
@@ -123,13 +129,39 @@ PCB * getProc(unsigned long pid){
     return 0;
 }
 
-void exit(int ret){
-    PCB * proc = scheduler.processes + scheduler.procIndex%scheduler.size;
+void kill(unsigned long long pid){
+    PCB * proc = getProc(pid);
     proc->state = KILLED;
+    closeMotive(proc);
     m_free(proc->rbp);
-    yield();
-
 }
+
+void unblock(unsigned long long pid){
+    awakeAll(getProc(pid));
+    closeMotive(getProc(pid));
+}
+
+void block(unsigned long long pid){
+    createMotive(getProc(pid));
+    blockMotive(getProc(pid),pid);
+}
+
+unsigned long long getPid(){
+    return getCurrentProc()->pid;
+}
+
+
+void nice(unsigned long long pid, unsigned int priority){
+    if(priority<MIN_TICKS || priority > MAX_TICKS) return;
+    getProc(pid)->priority=priority;
+}
+
+void exit(int ret){
+    kill(getCurrentProc()->pid);
+    getCurrentProc()->currentTicks=getCurrentProc()->priority;
+    yield();
+}
+
 
 void ps(char * buffer){
     
@@ -162,7 +194,7 @@ int setProcFD(unsigned long pid,unsigned int fd, Pipe * pipe, unsigned int permi
 }
 
 
-int block(void * id,unsigned long pid){
+int blockMotive(void * id,unsigned long pid){
     Motive searcher={id,NULL};    
     Motive * motive = get(scheduler.motives, &searcher);
     if(motive == NULL){
@@ -178,7 +210,12 @@ int block(void * id,unsigned long pid){
 
 
 int createMotive(void * id){
-    Motive * motive = m_alloc(sizeof(Motive));
+   
+    Motive searcher={id,NULL};    
+    Motive * motive = get(scheduler.motives, &searcher);
+    if(motive!=NULL) return;
+    
+    motive = m_alloc(sizeof(Motive));
     if(motive == NULL){
         //error
         return -1;
@@ -206,6 +243,7 @@ int awake(void * id){
     Motive * motive = get(scheduler.motives, &searcher);
     PCB * proc = pop(motive->processes);
     if(proc==NULL) return -1;
+    if(proc->state==KILLED) return -1;
     proc->state=READY;
     // unsigned long pid=*(unsigned long *)pop(motive->processes);
     // getProc(pid)->state=READY;

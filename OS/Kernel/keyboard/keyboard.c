@@ -82,7 +82,7 @@ void readKeyboard(char * buf, int count, int * amount){
 			init = 1;
 			wait=createMotive(buffer);
 		}
-		block(buffer,getCurrentProc());
+		blockMotive(buffer,getCurrentProc());
 		yield();
 	}
 	int index;

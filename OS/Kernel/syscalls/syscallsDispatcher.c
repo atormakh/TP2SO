@@ -91,6 +91,21 @@ void syscallsDispatcher (uint64_t id, uint64_t * registers){
         case 23:
             closeSem(registers[0]);
             break;
+        case 24:
+            nice(registers[0], registers[1]);
+            break;
+        case 25:
+            *(unsigned long long *)registers[0] = getPid();
+            break;
+        case 26:
+            kill(registers[0]);
+            break;
+        case 27:
+            block(registers[0]);
+            break;
+        case 28:
+            unblock(registers[0]);
+            break;
     }
 
 }

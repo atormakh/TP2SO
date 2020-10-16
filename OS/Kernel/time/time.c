@@ -40,7 +40,7 @@ void sleep(unsigned int interval){
 		createMotive(time);
 		add(awakeTimes,time);
 	}	
-	block(time,proc->pid);
+	blockMotive(time,proc->pid);
 	yield();
 
 }

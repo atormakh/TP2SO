@@ -38,7 +38,6 @@ void inc(int argc, char * args[]){
   //if (sem) sys_closeSem(SEM_ID);
   
   printf("Final value: %d\n", global);
-
   sys_exit(0);
 }
 

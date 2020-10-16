@@ -6,7 +6,7 @@
 int pipe(unsigned long pidWriter, unsigned int fdWrite, unsigned long pidReader, unsigned int fdRead ){
     
     Pipe * pipe;
-    if(1 || (pipe=getProc(pidReader)->fd+fdRead) == NULL){
+    if((pipe=getProc(pidReader)->fd[fdRead]) == NULL){
         pipe = m_alloc(PAGE_SIZE);
         
         if(pipe == NULL){

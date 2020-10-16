@@ -9,13 +9,13 @@ void writePipeProc(unsigned long long pid, int fd,char * buffer,int maxWrite){
 
     while((fdWrite =proc->fd[fd]) == NULL){
         createMotive(proc);
-        block(proc,proc->pid);
+        blockMotive(proc,proc->pid);
         yield();
     }
 
     //verificar si se puede escribir en el pipe
     while(maxWrite>=fdWrite->bufferSize-fdWrite->counter){
-        block(&fdWrite->writeIndex,proc->pid);
+        blockMotive(&fdWrite->writeIndex,proc->pid);
         yield();
     }
   
@@ -41,13 +41,13 @@ void writePipe(int fd,char * buffer,int maxWrite){
 
     while((fdWrite =proc->fd[fd]) == NULL){
         createMotive(proc);
-        block(proc,proc->pid);
+        blockMotive(proc,proc->pid);
         yield();
     }
 
     //verificar si se puede escribir en el pipe
     while(maxWrite>=fdWrite->bufferSize-fdWrite->counter){
-        block(&fdWrite->writeIndex,proc->pid);
+        blockMotive(&fdWrite->writeIndex,proc->pid);
         yield();
     }
   
@@ -74,13 +74,13 @@ void readPipe(int fd,char * buffer,int maxRead,int * qty){
     
     while((fdRead =proc->fd[fd]) == NULL){
         createMotive(proc);
-        block(proc,proc->pid);
+        blockMotive(proc,proc->pid);
         yield();
     }
 
     //verificar si se puede escribir en el pipe
     while(fdRead->counter<=0){
-       block(&fdRead->readIndex,proc->pid);
+       blockMotive(&fdRead->readIndex,proc->pid);
        yield();
     }
 

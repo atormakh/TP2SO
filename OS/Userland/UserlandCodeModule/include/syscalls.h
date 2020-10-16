@@ -22,6 +22,11 @@ void sys_openSem(char * sem_id,int value);
 void sys_semPost(char * semId);
 void sys_semWait(char * semId);
 void sys_closeSem(char * semId);
+void sys_nice(unsigned long long pid, unsigned int priority);
+void sys_getPid(unsigned long long pid);
+void sys_kill(int * pid);
+void sys_block(unsigned long long pid);
+void sys_unblock(unsigned long long pid);
 
 
-void sys_getPid(int * pid);
+

@@ -62,7 +62,7 @@ void semWait(char * semId){
     while(sem->value<=0){
         
         release(&sem->lock);
-        block(sem, getCurrentProc()->pid);
+        blockMotive(sem, getCurrentProc()->pid);
         yield();
         acquire(&sem->lock);
     }

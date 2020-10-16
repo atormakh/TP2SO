@@ -22,7 +22,11 @@ GLOBAL sys_openSem
 GLOBAL sys_semPost
 GLOBAL sys_semWait
 GLOBAL sys_closeSem
-
+GLOBAL sys_nice
+GLOBAL sys_getPid
+GLOBAL sys_kill
+GLOBAL sys_block
+GLOBAL sys_unblock
 sys_readKeyboard:  ;char* buffer, int count,int * amount
 	push rbp
 	mov rbp, rsp
@@ -235,6 +239,51 @@ sys_closeSem:  ;sys_closeSem(void * sem)
 	push rbp
 	mov rbp,rsp
 	mov rax, 23
+	int 80h
+	mov rsp, rbp
+	pop rbp
+	ret
+
+sys_nice: 		;sys_nice(unsigned long long pid, unsigned int priority)
+	push rbp
+	mov rbp,rsp
+	mov rax, 24
+	int 80h
+	mov rsp, rbp
+	pop rbp
+	ret
+
+sys_getPid: 		;sys_getPid(unsigned long long * pid)
+	push rbp
+	mov rbp,rsp
+	mov rax, 25
+	int 80h
+	mov rsp, rbp
+	pop rbp
+	ret
+
+sys_kill: 		;sys_kill(unsigned long long pid)
+	push rbp
+	mov rbp,rsp
+	mov rax, 26
+	int 80h
+	mov rsp, rbp
+	pop rbp
+	ret
+
+sys_block: 		;sys_block(unsigned long long pid,)
+	push rbp
+	mov rbp,rsp
+	mov rax, 27
+	int 80h
+	mov rsp, rbp
+	pop rbp
+	ret
+
+sys_unblock: 		;sys_unblock(unsigned long long pid)
+	push rbp
+	mov rbp,rsp
+	mov rax, 28
 	int 80h
 	mov rsp, rbp
 	pop rbp
