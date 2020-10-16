@@ -18,7 +18,7 @@ GLOBAL sys_sleep
 GLOBAL sys_pipe
 GLOBAL sys_readPipe
 GLOBAL sys_writePipe
-GLOBAL sys_createSem
+GLOBAL sys_openSem
 GLOBAL sys_semPost
 GLOBAL sys_semWait
 GLOBAL sys_closeSem
@@ -204,7 +204,7 @@ sys_writePipe:  ;sys_write(int fd,char * buffer, int n)
 	pop rbp
 	ret
 
-sys_createSem:  ;sys_createSem(int value, void ** sem)
+sys_openSem:  ;sys_createSem(int value, void ** sem)
 	push rbp
 	mov rbp,rsp
 	mov rax, 20

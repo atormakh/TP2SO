@@ -80,7 +80,7 @@ void syscallsDispatcher (uint64_t id, uint64_t * registers){
             writePipe(registers[0],registers[1],registers[2]);
             break;
         case 20:
-            *((void **)registers[1])=createSem(registers[0]);
+            openSem(registers[0], registers[1]);
             break;
         case 21:
             semPost(registers[0]);

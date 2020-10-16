@@ -8,6 +8,6 @@ void * memcpy(void * destination, const void * source, uint64_t length);
 int intToBase(unsigned long long num, int base, char*buffer);
 int intToString(unsigned long long num, char * buffer);
 int strcpy(char * dest, char * src);
+int strcmp(char * str1, char * str2);
 char *cpuVendor(char *result);
-
 #endif

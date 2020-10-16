@@ -11,4 +11,4 @@
 *.o
 
 #VS Code
-*.vscode/
+.vscode

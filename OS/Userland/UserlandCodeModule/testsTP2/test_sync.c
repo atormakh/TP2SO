@@ -23,31 +23,22 @@ void inc(int argc, char * args[]){
   uint64_t N = args[2];
   uint64_t i;
  
-  void * semaphore = args[3]; //borrar
   
-  /*if(sem)sys_createSem(1,&semaphore);
-  if (sem  && !semaphore ){
-    printf("ERROR OPENING SEM\n");
-    return;
-  }
-*/
+  if(sem)sys_openSem(SEM_ID,1);
+
   
   for (i = 0; i < N; i++){
 
-    if (sem) sys_semWait(semaphore);
+    if (sem) sys_semWait(SEM_ID);
     slowInc(&global, value); 
-    if (sem) sys_semPost(semaphore);
-    sys_yield();
-    sys_yield();
-    sys_yield();
-    sys_yield();
+    if (sem) sys_semPost(SEM_ID);
   }
 
   
-  //if (sem) sys_closeSem(semaphore);
+  //if (sem) sys_closeSem(SEM_ID);
   
   printf("Final value: %d\n", global);
-  sys_yield();
+
   sys_exit(0);
 }
 
@@ -60,18 +51,15 @@ void test_sync(){
   
   unsigned long long pid1;
   unsigned long long pid2;
-  void * semaphore; //bnorrar
-  sys_createSem(1,&semaphore); //borrar
 
-  char * args1[]={1, 1, TESTS_QTY,semaphore};
-  char * args2[]={1, -1, TESTS_QTY,semaphore};
+  char * args1[]={1, 1, TESTS_QTY};
+  char * args2[]={1, -1, TESTS_QTY};
 
   for(i = 0; i < TOTAL_PAIR_PROCESSES; i++){
     sys_createProcess(inc, 3, args1, &pid1);
     sys_createProcess(inc, 3, args2, &pid2);
   }
   sys_exit(0);
-  //while(1);
 }
 
 void test_no_sync(){
@@ -84,11 +72,9 @@ void test_no_sync(){
  
   unsigned long long pid1;
   unsigned long long pid2;
-  void * semaphore; //bnorrar
-  sys_createSem(1,&semaphore); //borrar
 
-  char * args1[]={0, 1, TESTS_QTY,semaphore};
-  char * args2[]={0, -1, TESTS_QTY,semaphore};
+  char * args1[]={0, 1, TESTS_QTY};
+  char * args2[]={0, -1, TESTS_QTY};
 
   for(i = 0; i < TOTAL_PAIR_PROCESSES; i++){
     sys_createProcess(inc, 3, args1, &pid1);

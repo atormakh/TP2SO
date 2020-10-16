@@ -3,6 +3,38 @@
 #include <pipes.h>
 #include <lib.h>
 
+void writePipeProc(unsigned long long pid, int fd,char * buffer,int maxWrite){
+    PCB * proc = getProc(pid);
+    Pipe * fdWrite;
+
+    while((fdWrite =proc->fd[fd]) == NULL){
+        createMotive(proc);
+        block(proc,proc->pid);
+        yield();
+    }
+
+    //verificar si se puede escribir en el pipe
+    while(maxWrite>=fdWrite->bufferSize-fdWrite->counter){
+        block(&fdWrite->writeIndex,proc->pid);
+        yield();
+    }
+  
+
+    //escribimos lo que esta en el buffer en el fd
+    for(int i=0;i<maxWrite;i++){
+         fdWrite->buffer[fdWrite->writeIndex%fdWrite->bufferSize]=buffer[i];
+         fdWrite->writeIndex++;
+    }
+    
+   //fdWrite->buffer[fdWrite->writeIndex%fdWrite->bufferSize]=0;
+    fdWrite->counter+=maxWrite;
+    
+    //reseteo los valores del writeIndex del file descriptor asi no tenemos problemas con un eventual overflow
+    fdWrite->writeIndex = fdWrite->writeIndex % fdWrite->bufferSize;
+
+    awakeAll(&fdWrite->readIndex);
+}
+
 void writePipe(int fd,char * buffer,int maxWrite){
     PCB * proc = getCurrentProc();
     Pipe * fdWrite;;

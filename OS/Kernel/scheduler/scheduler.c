@@ -3,6 +3,7 @@
 #include <syscalls.h>
 #include <video.h>
 #include <lib.h>
+#include <semaphore.h>
 
 /*
 .Crear y finalizar procesos.
@@ -32,6 +33,7 @@ void initialize_scheduler(){
     scheduler.procIndex=0;
     scheduler.size=0;
     scheduler.init=0;
+    initSemaphores();
 }
 
 unsigned long long createProcess(void * proc, int argc, char * argv[]){
