@@ -24,6 +24,7 @@ void test_prio();
 void dummy(){
     unsigned long long pid;
     sys_createProcess(test_prio,0,0,&pid);
+    sys_wait(pid);
     return;
 }
 

@@ -27,6 +27,8 @@ GLOBAL sys_getPid
 GLOBAL sys_kill
 GLOBAL sys_block
 GLOBAL sys_unblock
+GLOBAL sys_wait
+
 sys_readKeyboard:  ;char* buffer, int count,int * amount
 	push rbp
 	mov rbp, rsp
@@ -284,6 +286,15 @@ sys_unblock: 		;sys_unblock(unsigned long long pid)
 	push rbp
 	mov rbp,rsp
 	mov rax, 28
+	int 80h
+	mov rsp, rbp
+	pop rbp
+	ret
+
+sys_wait: 		;sys_wait(unsigned long long pid)
+	push rbp
+	mov rbp,rsp
+	mov rax, 29
 	int 80h
 	mov rsp, rbp
 	pop rbp

@@ -132,7 +132,9 @@ PCB * getProc(unsigned long pid){
 void kill(unsigned long long pid){
     PCB * proc = getProc(pid);
     proc->state = KILLED;
+    awakeAll(&proc->pid);
     closeMotive(proc);
+    closeMotive(&proc->pid);
     m_free(proc->rbp);
 }
 
@@ -162,6 +164,11 @@ void exit(int ret){
     yield();
 }
 
+void wait(unsigned  long long pid){
+    createMotive(&getProc(pid)->pid);
+    blockMotive(&getProc(pid)->pid,getCurrentProc()->pid);
+    yield();
+}
 
 void ps(char * buffer){
     

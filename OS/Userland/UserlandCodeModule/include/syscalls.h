@@ -27,6 +27,7 @@ void sys_getPid(unsigned long long pid);
 void sys_kill(int * pid);
 void sys_block(unsigned long long pid);
 void sys_unblock(unsigned long long pid);
+void sys_wait(unsigned long long pid);
 
 
 

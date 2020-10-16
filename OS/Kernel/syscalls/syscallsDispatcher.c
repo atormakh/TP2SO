@@ -106,6 +106,9 @@ void syscallsDispatcher (uint64_t id, uint64_t * registers){
         case 28:
             unblock(registers[0]);
             break;
+        case 29:
+            wait(registers[0]);
+            break;
     }
 
 }

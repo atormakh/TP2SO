@@ -16,7 +16,7 @@ char shiftRStatus=0;
 char blockMayus=0;
 char (* layout)[2]=asccode;
 
-Motive * wait;
+Motive * waitMotive;
 unsigned char init=0;
 
 void keyboard_handler(registerArgs * regs){
@@ -60,7 +60,7 @@ void keyboard_handler(registerArgs * regs){
     
 	if(init == 0){
 			init = 1;
-			wait=createMotive(buffer);
+			waitMotive=createMotive(buffer);
 		}
 		awake(buffer);
 }
@@ -80,7 +80,7 @@ void readKeyboard(char * buf, int count, int * amount){
 		//nos fijamos si ya esta creado el motivo del keyboard (que esta linkeado con la direccion del buffer)
 		if(init == 0){
 			init = 1;
-			wait=createMotive(buffer);
+			waitMotive=createMotive(buffer);
 		}
 		blockMotive(buffer,getCurrentProc());
 		yield();
