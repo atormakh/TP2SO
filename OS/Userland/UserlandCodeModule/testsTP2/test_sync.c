@@ -55,8 +55,8 @@ void test_sync(){
   char * args2[]={1, -1, TESTS_QTY};
 
   for(i = 0; i < TOTAL_PAIR_PROCESSES; i++){
-    sys_createProcess(inc, 3, args1, &pid1);
-    sys_createProcess(inc, 3, args2, &pid2);
+    pid1=sys_createProcess(inc, 3, args1);
+    pid2=sys_createProcess(inc, 3, args2);
   }
   sys_exit(0);
 }
@@ -76,8 +76,8 @@ void test_no_sync(){
   char * args2[]={0, -1, TESTS_QTY};
 
   for(i = 0; i < TOTAL_PAIR_PROCESSES; i++){
-    sys_createProcess(inc, 3, args1, &pid1);
-    sys_createProcess(inc, 3, args2, &pid2);
+    pid1=sys_createProcess(inc, 3, args1);
+    pid2=sys_createProcess(inc, 3, args2);
   }
 
   sys_exit(0);

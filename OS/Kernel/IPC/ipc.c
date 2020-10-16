@@ -68,7 +68,7 @@ void writePipe(int fd,char * buffer,int maxWrite){
     
 }
 
-void readPipe(int fd,char * buffer,int maxRead,int * qty){
+unsigned long long readPipe(int fd,char * buffer,int maxRead){
     PCB * proc = getCurrentProc();
     Pipe * fdRead;
     
@@ -85,14 +85,13 @@ void readPipe(int fd,char * buffer,int maxRead,int * qty){
     }
 
 
-    int i=0;
+    unsigned long long i=0;
     for(i=0; i<fdRead->counter && i<maxRead;i++){
         
         buffer[i]=fdRead->buffer[fdRead->readIndex%fdRead->bufferSize];
         fdRead->readIndex++;
     }
     //buffer[i++]=0;
-    *qty=i;
     
 
     fdRead->counter-=i;
@@ -101,4 +100,5 @@ void readPipe(int fd,char * buffer,int maxRead,int * qty){
 
     //despertar a los writers
     awakeAll(&fdRead->writeIndex);
+    return i;
 }

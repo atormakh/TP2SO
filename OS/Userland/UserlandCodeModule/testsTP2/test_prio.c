@@ -29,7 +29,7 @@ void test_prio(){
   uint64_t i;
 
   for(i = 0; i < TOTAL_PROCESSES; i++)
-    sys_createProcess(endless_loop,0,0,pids+i);
+    pids[i]=sys_createProcess(endless_loop,0,0);
 
    sys_yield();
   //bussy_wait(WAIT);

@@ -183,11 +183,13 @@ void deleteChar(char * str, char c){
 
 int getChar(){
     unsigned char character;
-    int count = 0;
-    while(count!=1){
-        sys_readKeyboard((char *)&character,1,&count);
+    unsigned long long count = 0;
+    while((count=sys_readKeyboard((char *)&character,1))!=1){
+        
         hlt();
     }
+    //printf("count %d \n", count);
+    while(1);
     return count<0?-1:(int)character;
 }
 

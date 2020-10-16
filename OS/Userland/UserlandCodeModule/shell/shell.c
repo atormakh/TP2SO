@@ -1,10 +1,6 @@
 #include <shell.h>
 #include "help.h"
-#include "exceptionLauncher.h"
 #include <stdlib.h>
-#include "printmem.h"
-#include "inforeg.h"
-#include "sysInfo.h"
 #include <syscalls.h>
 
 void stdflush();
@@ -23,7 +19,7 @@ void test_prio();
 
 void dummy(){
     unsigned long long pid;
-    sys_createProcess(test_prio,0,0,&pid);
+    pid=sys_createProcess(test_prio,0,0);
     sys_wait(pid);
     return;
 }
@@ -36,8 +32,8 @@ void ps(){
 
 
 char * messages[] = {"Command not found"};
-char * commands[] = {"help","inforeg","printmem","cputemp", "cpuid", "localtime", "divisionbyzero", "invalidopcode", "ps", "dummy", 0};
-void  (* run[])(int,char * * ) = {help, inforeg, printmem, cputemp,cpuid, localtime, divisionbyzero, invalidopcode,ps, dummy};
+char * commands[] = {"help", "ps", "dummy", 0};
+void  (* run[])(int,char * * ) = {help,ps, dummy};
 
 unsigned int inIndex=0;
 char in[MAX_INPUT];
@@ -73,10 +69,10 @@ void shell(){
     int read;
     while(1){
         puts("shell@convinux>");
-        sys_readKeyboard(&c,1,&read);
+        sys_readKeyboard(&c,1);
 		while(c !='\n'){
             inController(c);
-            sys_readKeyboard(&c,1,&read);
+            sys_readKeyboard(&c,1);
 		}
 
         puts("\n");

@@ -22,12 +22,12 @@ int screenDrawer(){
     setupBorders();
     initTabs();
     int n=0;
-    sys_readPipe(0,out,SIZE,&n);
-    while( n){
-        index=0;
-        writeOnTab(&tab0);
-        sys_readPipe(0,out,SIZE-1,&n);
+    index=0;
+    while( (n=sys_readPipe(0,out,SIZE-1))){
         out[n]=0;
+        writeOnTab(&tab0);
+        index=0;
+       
     }
 }
 

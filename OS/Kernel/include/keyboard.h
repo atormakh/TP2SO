@@ -12,7 +12,7 @@
 #define RELEASED 128
 
 void keyboard_handler(registerArgs * regs);
-void readKeyboard(char * buffer, int count,int * amount);
+unsigned long long readKeyboard(char * buffer, int count);
 char getKey();
 char hasKey();
 char getPort64();

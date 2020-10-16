@@ -3,6 +3,8 @@
 #include <registersArgs.h>
 #include "asccodes.h"
 #include<scheduler.h>
+#include <ipc.h>
+#include<lib.h>
 
 #define BUFFER_SIZE 32
  
@@ -26,36 +28,12 @@ void keyboard_handler(registerArgs * regs){
 	else if (key==SHIFT_R+RELEASED)shiftRStatus=0;
 	else if(key==SHIFT_L+RELEASED) shiftLStatus=0;
 	else if(key==BLOCK_MAYUS) blockMayus=1-blockMayus;
-	else if(key==ALT_L || key == CTRL_L){
-		saveReg=1;
-		cpyRegs(&registers,regs); // con ctrl izq
-	}else if(key == 59){ //F1
+	else if(key == 59){ //F1
 		buffer[(i++)%BUFFER_SIZE]=208;
 	}else if(key == 60){ //F2
 		layout=asccode;
 	}else if(key == 61){ //F3
 		layout=spanish_asccode;
-	}else if(key==224){
-		key=getKey();
-		switch (key){
-			case 80: // abajo
-				key=201;
-				buffer[(i++)%BUFFER_SIZE]=shiftLStatus? key+4 : key;
-				break;
-			case 75: // izq
-				key=202;
-				buffer[(i++)%BUFFER_SIZE]=shiftLStatus? key+4 : key;
-				break;
-			case 72: // arriba
-				key=200;
-				buffer[(i++)%BUFFER_SIZE]=shiftLStatus? key+4 : key;
-				break;
-			case 77: //derecha
-				key=203;
-				buffer[(i++)%BUFFER_SIZE]=shiftLStatus? key+4 : key;
-				break;
-		}
-
 	}else if(key<58)buffer[(i++)%BUFFER_SIZE]= layout[key][( shiftRStatus | shiftLStatus | blockMayus) - ((shiftLStatus | shiftRStatus) & blockMayus)];
     
 	if(init == 0){
@@ -65,16 +43,8 @@ void keyboard_handler(registerArgs * regs){
 		awake(buffer);
 }
 
-void retrieveRegs(registerArgs * args, int * flag){
-	if(!saveReg){
-		*flag = 0;
-		return;
-	}
-	*flag=1;
-	cpyRegs(args,&registers);
-}
 
-void readKeyboard(char * buf, int count, int * amount){
+unsigned long long readKeyboard(char * buf, int count){
 	//nos fijamos si hay algo escrito
 	while(i-base == 0){	//no hay nada escrito, asi que procedemos a bloquearlo
 		//nos fijamos si ya esta creado el motivo del keyboard (que esta linkeado con la direccion del buffer)
@@ -82,13 +52,12 @@ void readKeyboard(char * buf, int count, int * amount){
 			init = 1;
 			waitMotive=createMotive(buffer);
 		}
-		blockMotive(buffer,getCurrentProc());
+		blockMotive(buffer,getCurrentProc()->pid);
 		yield();
 	}
 	int index;
 	for(index = 0; index<(i-base) && index<count; index++){
 		buf[index] = buffer[(base++)%BUFFER_SIZE];
 	}
-
-	*amount = index;
+	return index;
 }

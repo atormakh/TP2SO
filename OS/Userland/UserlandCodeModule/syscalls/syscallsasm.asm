@@ -1,15 +1,8 @@
-GLOBAL sys_drawCharacter
-GLOBAL sys_readErrors
-GLOBAL sys_drawBitmap
 GLOBAL sys_readKeyboard
-GLOBAL sys_setExceptionHandler
+GLOBAL sys_drawCharacter
+GLOBAL sys_drawBitmap
 GLOBAL sys_scroll
-GLOBAL sys_retrieveReg
-GLOBAL sys_cputemp
-GLOBAL sys_localtime
 GLOBAL sys_drawRect
-GLOBAL sys_mapstdout
-GLOBAL sys_write
 GLOBAL sys_createProcess
 GLOBAL sys_yield
 GLOBAL sys_exit
@@ -29,7 +22,7 @@ GLOBAL sys_block
 GLOBAL sys_unblock
 GLOBAL sys_wait
 
-sys_readKeyboard:  ;char* buffer, int count,int * amount
+sys_readKeyboard:  ;char* buffer, int count
 	push rbp
 	mov rbp, rsp
 	mov rax, 0
@@ -58,8 +51,7 @@ sys_drawBitmap:  ;int x, int y, char * bitmap
 	pop rbp
 	ret	
 
-
-sys_cputemp:  ;double * temp
+sys_scroll: ; int xi, int yi, int xf, int yf, int px
 	push rbp
 	mov rbp, rsp
 	mov rax, 3
@@ -68,72 +60,10 @@ sys_cputemp:  ;double * temp
 	pop rbp
 	ret
 
-sys_readErrors:  ;char* buffer
-	push rbp
-	mov rbp, rsp
-	mov rax, 4
-	int 80h
-	mov rsp, rbp
-	pop rbp
-	ret
-
-sys_setExceptionHandler: ; int exception, void * func
-	push rbp
-	mov rbp, rsp
-	mov rax, 5
-	int 80h
-	mov rsp, rbp
-	pop rbp
-	ret
-
-sys_scroll: ; int xi, int yi, int xf, int yf, int px
-	push rbp
-	mov rbp, rsp
-	mov rax, 6
-	int 80h
-	mov rsp, rbp
-	pop rbp
-	ret
-
-sys_retrieveReg:  ;registerArgs* reg
-	push rbp
-	mov rbp,rsp
-	mov rax, 7
-	int 80h
-	mov rsp, rbp
-	pop rbp
-	ret
-
-sys_localtime:  ;char * reg
-	push rbp
-	mov rbp,rsp
-	mov rax, 8
-	int 80h
-	mov rsp, rbp
-	pop rbp
-	ret
-
 sys_drawRect:  ;rect * rectangle
 	push rbp
 	mov rbp,rsp
-	mov rax, 9
-	int 80h
-	mov rsp, rbp
-	pop rbp
-	ret
-
-sys_mapstdout:  ;void * buffer
-	push rbp
-	mov rbp,rsp
-	mov rax, 10
-	int 80h
-	mov rsp, rbp
-	pop rbp
-	ret
-sys_write:  ;void * buffer, int count
-	push rbp
-	mov rbp,rsp
-	mov rax, 11
+	mov rax, 4
 	int 80h
 	mov rsp, rbp
 	pop rbp
@@ -142,7 +72,7 @@ sys_write:  ;void * buffer, int count
 sys_createProcess:  ;void * func, int argc, char * args[]
 	push rbp
 	mov rbp,rsp
-	mov rax, 12
+	mov rax, 5
 	int 80h
 	mov rsp, rbp
 	pop rbp
@@ -151,7 +81,7 @@ sys_createProcess:  ;void * func, int argc, char * args[]
 sys_yield:  ;
 	push rbp
 	mov rbp,rsp
-	mov rax, 13
+	mov rax, 6
 	int 80h
 	mov rsp, rbp
 	pop rbp
@@ -160,7 +90,7 @@ sys_yield:  ;
 sys_exit:  ; int status
 	push rbp
 	mov rbp,rsp
-	mov rax, 14
+	mov rax, 7
 	int 80h
 	mov rsp, rbp
 	pop rbp
@@ -169,7 +99,7 @@ sys_exit:  ; int status
 sys_ps:  ;char * buffer
 	push rbp
 	mov rbp,rsp
-	mov rax, 15
+	mov rax, 8
 	int 80h
 	mov rsp, rbp
 	pop rbp
@@ -178,7 +108,7 @@ sys_ps:  ;char * buffer
 sys_sleep:  ;unsigned int seconds
 	push rbp
 	mov rbp,rsp
-	mov rax, 16
+	mov rax, 9
 	int 80h
 	mov rsp, rbp
 	pop rbp
@@ -187,16 +117,16 @@ sys_sleep:  ;unsigned int seconds
 sys_pipe:  ;int pipe(unsigned long pidWriter, unsigned int fdWrite, unsigned long pidReader, unsigned int fdRead )sys_pipe(int pid1,, int n)
 	push rbp
 	mov rbp,rsp
-	mov rax, 17
+	mov rax, 10
 	int 80h
 	mov rsp, rbp
 	pop rbp
 	ret
 
-sys_readPipe:  ;sys_read(int fd,char * buffer, int n, int * qty)
+sys_readPipe:  ;sys_read(int fd,char * buffer, int n)
 	push rbp
 	mov rbp,rsp
-	mov rax, 18
+	mov rax, 11
 	int 80h
 	mov rsp, rbp
 	pop rbp
@@ -204,7 +134,7 @@ sys_readPipe:  ;sys_read(int fd,char * buffer, int n, int * qty)
 sys_writePipe:  ;sys_write(int fd,char * buffer, int n)
 	push rbp
 	mov rbp,rsp
-	mov rax, 19
+	mov rax, 12
 	int 80h
 	mov rsp, rbp
 	pop rbp
@@ -213,7 +143,7 @@ sys_writePipe:  ;sys_write(int fd,char * buffer, int n)
 sys_openSem:  ;sys_createSem(int value, void ** sem)
 	push rbp
 	mov rbp,rsp
-	mov rax, 20
+	mov rax, 13
 	int 80h
 	mov rsp, rbp
 	pop rbp
@@ -222,7 +152,7 @@ sys_openSem:  ;sys_createSem(int value, void ** sem)
 sys_semPost:  ;sys_semPost(void * sem)
 	push rbp
 	mov rbp,rsp
-	mov rax, 21
+	mov rax, 14
 	int 80h
 	mov rsp, rbp
 	pop rbp
@@ -231,7 +161,7 @@ sys_semPost:  ;sys_semPost(void * sem)
 sys_semWait:  ;sys_semWait(void * sem)
 	push rbp
 	mov rbp,rsp
-	mov rax, 22
+	mov rax, 15
 	int 80h
 	mov rsp, rbp
 	pop rbp
@@ -240,7 +170,7 @@ sys_semWait:  ;sys_semWait(void * sem)
 sys_closeSem:  ;sys_closeSem(void * sem)
 	push rbp
 	mov rbp,rsp
-	mov rax, 23
+	mov rax, 16
 	int 80h
 	mov rsp, rbp
 	pop rbp
@@ -249,7 +179,7 @@ sys_closeSem:  ;sys_closeSem(void * sem)
 sys_nice: 		;sys_nice(unsigned long long pid, unsigned int priority)
 	push rbp
 	mov rbp,rsp
-	mov rax, 24
+	mov rax, 17
 	int 80h
 	mov rsp, rbp
 	pop rbp
@@ -258,7 +188,7 @@ sys_nice: 		;sys_nice(unsigned long long pid, unsigned int priority)
 sys_getPid: 		;sys_getPid(unsigned long long * pid)
 	push rbp
 	mov rbp,rsp
-	mov rax, 25
+	mov rax, 18
 	int 80h
 	mov rsp, rbp
 	pop rbp
@@ -267,7 +197,7 @@ sys_getPid: 		;sys_getPid(unsigned long long * pid)
 sys_kill: 		;sys_kill(unsigned long long pid)
 	push rbp
 	mov rbp,rsp
-	mov rax, 26
+	mov rax, 19
 	int 80h
 	mov rsp, rbp
 	pop rbp
@@ -276,7 +206,7 @@ sys_kill: 		;sys_kill(unsigned long long pid)
 sys_block: 		;sys_block(unsigned long long pid,)
 	push rbp
 	mov rbp,rsp
-	mov rax, 27
+	mov rax, 20
 	int 80h
 	mov rsp, rbp
 	pop rbp
@@ -285,7 +215,7 @@ sys_block: 		;sys_block(unsigned long long pid,)
 sys_unblock: 		;sys_unblock(unsigned long long pid)
 	push rbp
 	mov rbp,rsp
-	mov rax, 28
+	mov rax, 21
 	int 80h
 	mov rsp, rbp
 	pop rbp
@@ -294,7 +224,7 @@ sys_unblock: 		;sys_unblock(unsigned long long pid)
 sys_wait: 		;sys_wait(unsigned long long pid)
 	push rbp
 	mov rbp,rsp
-	mov rax, 29
+	mov rax, 22
 	int 80h
 	mov rsp, rbp
 	pop rbp

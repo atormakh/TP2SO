@@ -164,9 +164,10 @@ _syscallsHandler:;rax id,
 	mov rdi,rax
 	mov rsi, rsp
 	call syscallsDispatcher
+	mov [returnValue],rax
 	mov rsp,rbp
 	popState
-
+	mov rax,[returnValue]
 	add rsp,8
 
 	iretq
@@ -188,3 +189,4 @@ haltcpu:
 
 SECTION .bss
 	aux resq 1
+	returnValue resb 8

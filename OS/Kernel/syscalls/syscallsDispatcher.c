@@ -8,18 +8,12 @@
 #include<scheduler.h>
 #include<time.h>
 #include<ipc.h>
-//void syscallsDispatcher(uint64_t id, uint64_t rdi, uint64_t rsi, ... ):
-
-//void write(unsigned int fd, const char * buf, uint64_t count);
-//void drawScreen(int x,int y, int figure, int scale);
-
-//drawString(int x);
 
 
-void syscallsDispatcher (uint64_t id, uint64_t * registers){
+unsigned long long syscallsDispatcher (uint64_t id, uint64_t * registers){
     switch (id){
         case 0:
-            readKeyboard((char *)registers[0], registers[1],(int *)registers[2]);
+            return readKeyboard((char *)registers[0], registers[1]);
             break;
         case 1:
             drawCharacter(registers[0],registers[1],registers[2],registers[3]);
@@ -28,85 +22,64 @@ void syscallsDispatcher (uint64_t id, uint64_t * registers){
             drawBitmap(registers[0], registers[1],(void *) registers[2]);
             break;
         case 3:
-            cpuTemp((int *)registers[0]);
-            break;
-        case 4:
-            readErrors((errorStruct *)registers[0]);
-            break;
-        case 5:
-            setExceptionHandler(registers[0], (void *)registers[1]);
-            break;
-        case 6:
             scroll(registers[0],registers[1],registers[2],registers[3],registers[4]);
             break;
-        case 7:
-            retrieveRegs((void *)registers[0],(void *)registers[1]);
-            break;
-        case 8:
-            localtime((void *)registers[0]);
-            break;
-        case 9:
+        case 4:
             drawRect((void *)registers[0]);
             break;
-        case 10:
-            mapstdout((void *)registers[0],registers[1]);
+        case 5:
+            return createProcess((void *)registers[0], registers[1], (char **)registers[2]);
             break;
-        case 11:
-            write((void *)registers[0],registers[1]);
-            break;
-        case 12:
-            *((unsigned long long *)registers[3])=createProcess((void *)registers[0], registers[1], (char **)registers[2]);
-            break;
-        case 13:            
+        case 6:            
             yield();
             break;
-        case 14:
+        case 7:
             exit(registers[0]);
             break;
-        case 15:
+        case 8:
             ps((char *)registers[0]);
             break;
 
-        case 16:
+        case 9:
             sleep(registers[0]);
             break;
-        case 17:
+        case 10:
             pipe(registers[0],registers[1],registers[2],registers[3]);
             break;
-        case 18:
-            readPipe(registers[0],registers[1],registers[2],registers[3]);
+        case 11:
+            return readPipe(registers[0],registers[1],registers[2]);
             break;
-        case 19:
+        case 12:
             writePipe(registers[0],registers[1],registers[2]);
             break;
-        case 20:
+        case 13:
             openSem(registers[0], registers[1]);
             break;
-        case 21:
+        case 14:
             semPost(registers[0]);
             break;
-        case 22:
+        case 15:
             semWait(registers[0]);
             break;
-        case 23:
+        case 16:
             closeSem(registers[0]);
             break;
-        case 24:
+        case 17:
             nice(registers[0], registers[1]);
             break;
-        case 25:
+        case 18:
             *(unsigned long long *)registers[0] = getPid();
             break;
-        case 26:
+        case 19:
             kill(registers[0]);
             break;
-        case 27:
+        case 20:
             block(registers[0]);
             break;
-        case 28:
+        case 21:
             unblock(registers[0]);
             break;
-        case 29:
+        case 22:
             wait(registers[0]);
             break;
     }
