@@ -10,4 +10,14 @@ int intToString(unsigned long long num, char * buffer);
 int strcpy(char * dest, char * src);
 int strcmp(char * str1, char * str2);
 char *cpuVendor(char *result);
+
+
+void setBit(unsigned char * byte, int bitNumber);
+void clearBit(unsigned char * byte, int bitNumber);
+char getBit(unsigned char * byte, int bitNumber);
+unsigned int Log2n(unsigned int n);
+unsigned long long pow(unsigned int base, unsigned int exp);
+
+
+
 #endif

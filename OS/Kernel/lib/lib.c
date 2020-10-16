@@ -101,3 +101,30 @@ int strcpy(char * dest, char * src){
 
 }
 
+
+void setBit(unsigned char * byte, int bitNumber){
+    unsigned char mask = 1;
+    mask=mask << bitNumber;
+    *byte=*byte | mask;
+}
+void clearBit(unsigned char * byte, int bitNumber){
+    char mask = 0;
+    mask=mask << bitNumber;
+    *byte=*byte & mask;
+}
+char getBit(unsigned char * byte, int bitNumber){
+    unsigned char ret = *byte;
+    ret=ret>>bitNumber;
+    return ret%2;
+}
+
+unsigned int Log2n(unsigned int n) { 
+    return (n > 1) ? 1 + Log2n(n >> 1) : 0; 
+}
+
+unsigned long long pow(unsigned int base, unsigned int exp){
+    unsigned long long ret=1;
+    for(int i=0;i<exp;i++) ret*=base;
+    return ret;
+}
+
