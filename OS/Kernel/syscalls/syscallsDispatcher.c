@@ -2,9 +2,6 @@
 #include<stdint.h>
 #include<video.h>
 #include<keyboard.h>
-#include<systemInfo.h>
-#include<exceptions.h>
-#include<files.h>
 #include<scheduler.h>
 #include<time.h>
 #include<ipc.h>

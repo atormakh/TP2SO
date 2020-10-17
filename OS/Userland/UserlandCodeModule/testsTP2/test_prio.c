@@ -24,6 +24,7 @@ void endless_loop(){
 #define TOTAL_PROCESSES 3
 
 void test_prio(){
+
   uint64_t pids[TOTAL_PROCESSES];
   uint64_t i;
 

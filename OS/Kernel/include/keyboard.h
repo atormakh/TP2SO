@@ -1,7 +1,6 @@
 #ifndef KEYBOARD_H
 #define KEYBOARD_H
 
-#include <registersArgs.h>
 #include <stdint.h>
 
 #define ALT_L 56
@@ -11,11 +10,11 @@
 #define CTRL_L 29
 #define RELEASED 128
 
-void keyboard_handler(registerArgs * regs);
+void keyboard_handler();
 unsigned long long readKeyboard(char * buffer, int count);
 char getKey();
 char hasKey();
 char getPort64();
-void retrieveRegs(registerArgs * args, int * flag);
+
 
 #endif

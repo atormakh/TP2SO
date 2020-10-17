@@ -1,6 +1,5 @@
 #include<keyboard.h>
 #include <video.h>
-#include <registersArgs.h>
 #include "asccodes.h"
 #include<scheduler.h>
 #include <ipc.h>
@@ -18,7 +17,7 @@ char (* layout)[2]=asccode;
 
 unsigned char init=0;
 
-void keyboard_handler(registerArgs * regs){
+void keyboard_handler(){
     unsigned char key = getKey();
 	if(key==SHIFT_L) shiftLStatus=1;
 	else if(key==SHIFT_R) shiftRStatus=1;

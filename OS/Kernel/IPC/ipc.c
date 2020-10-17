@@ -3,6 +3,10 @@
 #include <pipes.h>
 #include <lib.h>
 
+void kernelWrite(char * buffer, int n){
+    writePipeProc(2,1,buffer,n);
+}
+
 void writePipeProc(unsigned long long pid, int fd,char * buffer,int maxWrite){
     PCB * proc = getProc(pid);
     Pipe * fdWrite;
