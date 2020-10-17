@@ -9,16 +9,13 @@
 #define BUFFER_SIZE 32
  
 static char buffer[BUFFER_SIZE];
-static registerArgs registers;
 static int i=0;
-static int saveReg=0;
 static int base=0;
 char shiftLStatus=0;
 char shiftRStatus=0;
 char blockMayus=0;
 char (* layout)[2]=asccode;
 
-Motive * waitMotive;
 unsigned char init=0;
 
 void keyboard_handler(registerArgs * regs){
@@ -38,7 +35,7 @@ void keyboard_handler(registerArgs * regs){
     
 	if(init == 0){
 			init = 1;
-			waitMotive=createMotive(buffer);
+			createMotive(buffer);
 		}
 		awake(buffer);
 }
@@ -50,7 +47,7 @@ unsigned long long readKeyboard(char * buf, int count){
 		//nos fijamos si ya esta creado el motivo del keyboard (que esta linkeado con la direccion del buffer)
 		if(init == 0){
 			init = 1;
-			waitMotive=createMotive(buffer);
+			createMotive(buffer);
 		}
 		blockMotive(buffer,getCurrentProc()->pid);
 		yield();

@@ -220,7 +220,7 @@ int createMotive(void * id){
    
     Motive searcher={id,NULL};    
     Motive * motive = get(scheduler.motives, &searcher);
-    if(motive!=NULL) return;
+    if(motive!=NULL) return -1;
     
     motive = m_alloc(sizeof(Motive));
     if(motive == NULL){
@@ -268,6 +268,7 @@ int awakeAll(void * id){
     while(motive->processes->size>0){
         ((PCB *)pop(motive->processes))->state=READY;
     }
+    return 1;
 }
 
 

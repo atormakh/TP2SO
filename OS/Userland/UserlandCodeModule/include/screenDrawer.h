@@ -1,8 +1,6 @@
 #ifndef SCREEN_DRAWER_H_
 #define SCREEN_DRAWER_H_
 #include <errors.h>
-#include "itbaLogo.xpm"
-#include "shellLogo.xpm"
 
 #define OUT_LENGTH 2000
 #define LINES_LENGTH 50
@@ -47,7 +45,7 @@ typedef struct tabStruct{
 void setupBorders();
 void drawPixMaps();
 void initTabs();
-int screenDrawer();
+void screenDrawer();
 void writeOnTab(tabStruct * );
 void eraseTab(tabStruct * );
 void initTab(tabStruct * tab);

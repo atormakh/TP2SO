@@ -6,7 +6,7 @@
 
 void printNum(uint64_t num);
 void hlt();
-void putchar(unsigned char);
+void putchar(char);
 int strlen(char * string);
 void printf(char * fmt, ...);
 void puts(char * buffer);

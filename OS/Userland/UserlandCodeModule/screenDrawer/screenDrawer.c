@@ -1,6 +1,8 @@
 #include <screenDrawer.h>
 #include <stdlib.h>
 #include <syscalls.h>
+#include "itbaLogo.xpm"
+#include "shellLogo.xpm"
 #define SIZE 2048
 
 char out[SIZE];
@@ -17,7 +19,7 @@ rect tab0_border;
 rect * tab_borders[]={&tab0_border};
 int focus=0;
 
-int screenDrawer(){
+void screenDrawer(){
     drawPixMaps();
     setupBorders();
     initTabs();
@@ -29,6 +31,7 @@ int screenDrawer(){
         index=0;
        
     }
+    sys_exit(0);
 }
 
 void eraseTab(tabStruct * tab){

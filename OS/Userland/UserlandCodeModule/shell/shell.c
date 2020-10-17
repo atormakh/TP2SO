@@ -66,7 +66,6 @@ void inController(int c){
 
 void shell(){
     char c;
-    int read;
     while(1){
         puts("shell@convinux>");
         sys_readKeyboard(&c,1);

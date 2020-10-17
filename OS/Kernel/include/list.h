@@ -3,7 +3,7 @@
 
 #include<memorymanager.h>
 
-typedef int (*CMP)(void * elem1, void * elem2);
+typedef long int (*CMP)(void * elem1, void * elem2);
 typedef struct Node{
     struct Node * next;
     void * elem;

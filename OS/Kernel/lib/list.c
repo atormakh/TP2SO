@@ -102,4 +102,5 @@ Node * first(List * list){
     if(list != NULL){
         return list->start->elem;
     }
+    return NULL;
 }

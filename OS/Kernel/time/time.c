@@ -8,7 +8,7 @@ static unsigned long long ticks = 0;
 
 List * awakeTimes;
 
-int cmp(void * el1, void * el2){
+long cmp(void * el1, void * el2){
 	return *(unsigned long *)el1-*(unsigned long *)el2;
 }
 

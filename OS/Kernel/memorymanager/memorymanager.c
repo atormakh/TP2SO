@@ -1,5 +1,6 @@
-#include <lib.h>
 #include <memorymanager.h>
+#ifndef BUDDY
+#include <lib.h>
 #include <video.h>
 
 MemoryManager borrar;
@@ -80,3 +81,4 @@ void * calc_ptr_from_idx(unsigned long block_idx){
 unsigned long calc_idx_from_ptr(void * ptr){
     return (unsigned long)(ptr-mm->base)/mm->page_size;
 }
+#endif

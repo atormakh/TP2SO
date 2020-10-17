@@ -12,8 +12,7 @@ void bussy_wait(uint64_t n){
 }
 
 void endless_loop(){
-  uint64_t pid;
-  sys_getPid(&pid);
+  uint64_t pid = sys_getPid();
 
   while(1){
     printf("%d ",pid);

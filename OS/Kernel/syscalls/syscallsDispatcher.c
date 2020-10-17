@@ -8,6 +8,7 @@
 #include<scheduler.h>
 #include<time.h>
 #include<ipc.h>
+#include<semaphore.h>
 
 
 unsigned long long syscallsDispatcher (uint64_t id, uint64_t * registers){
@@ -47,28 +48,28 @@ unsigned long long syscallsDispatcher (uint64_t id, uint64_t * registers){
             pipe(registers[0],registers[1],registers[2],registers[3]);
             break;
         case 11:
-            return readPipe(registers[0],registers[1],registers[2]);
+            return readPipe(registers[0],(void *)registers[1],registers[2]);
             break;
         case 12:
-            writePipe(registers[0],registers[1],registers[2]);
+            writePipe(registers[0],(void *)registers[1],registers[2]);
             break;
         case 13:
-            openSem(registers[0], registers[1]);
+            openSem((void *)registers[0], registers[1]);
             break;
         case 14:
-            semPost(registers[0]);
+            semPost((void *)registers[0]);
             break;
         case 15:
-            semWait(registers[0]);
+            semWait((void *)registers[0]);
             break;
         case 16:
-            closeSem(registers[0]);
+            closeSem((void *)registers[0]);
             break;
         case 17:
             nice(registers[0], registers[1]);
             break;
         case 18:
-            *(unsigned long long *)registers[0] = getPid();
+            return getPid();
             break;
         case 19:
             kill(registers[0]);
@@ -83,5 +84,6 @@ unsigned long long syscallsDispatcher (uint64_t id, uint64_t * registers){
             wait(registers[0]);
             break;
     }
+    return id;
 
 }

@@ -107,11 +107,13 @@ void setBit(unsigned char * byte, int bitNumber){
     mask=mask << bitNumber;
     *byte=*byte | mask;
 }
+
 void clearBit(unsigned char * byte, int bitNumber){
     char mask = 0;
     mask=mask << bitNumber;
     *byte=*byte & mask;
 }
+
 char getBit(unsigned char * byte, int bitNumber){
     unsigned char ret = *byte;
     ret=ret>>bitNumber;

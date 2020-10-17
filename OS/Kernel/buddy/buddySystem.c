@@ -1,4 +1,5 @@
 #include <buddySystem.h>
+#ifdef BUDDY
 #include <lib.h>
 BuddySystem buddy;
 
@@ -50,9 +51,9 @@ unsigned int getLevel(unsigned long long size){
 }
 
 unsigned long long computeVirtualSize(unsigned long long memSize){
-     unsigned long long virtualSize = mypow(2, Log2n(memSize));
+     unsigned long long virtualSize = pow(2, Log2n(memSize));
     if(virtualSize < memSize){
-        virtualSize = mypow(2, Log2n(memSize)+1);
+        virtualSize = pow(2, Log2n(memSize)+1);
     }
     return virtualSize;
 }
@@ -100,3 +101,4 @@ void allocateRecursivelyDown(unsigned int level, unsigned int offset){
     return;
 
 }
+#endif

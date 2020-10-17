@@ -9,7 +9,7 @@ int _xchg(int * addr,int value);
 List * semaphores;
 int lock = 0;
 
-int cmpSems(void * elem1, void * elem2){
+long cmpSems(void * elem1, void * elem2){
 
     return strcmp(((Sem *)elem1 )->id,((Sem *)elem2)->id);
 

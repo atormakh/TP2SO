@@ -18,9 +18,9 @@ void slowInc(int64_t *p, int64_t inc){
 void inc(int argc, char * args[]){
   
 
-  uint64_t sem = args[0];
-  int value = args[1]; 
-  uint64_t N = args[2];
+  uint64_t sem = (uint64_t)args[0];
+  int value = (unsigned long long)args[1]; 
+  uint64_t N = (uint64_t)args[2];
   uint64_t i;
  
   
@@ -47,16 +47,13 @@ void test_sync(){
   global = 100;
 
   printf("CREATING PROCESSES...(WITH SEM)\n");
-  
-  unsigned long long pid1;
-  unsigned long long pid2;
 
-  char * args1[]={1, 1, TESTS_QTY};
-  char * args2[]={1, -1, TESTS_QTY};
+  char * args1[]={(char *)1, (char *)1, (char *)TESTS_QTY};
+  char * args2[]={(char *)1,(char *) -1, (char *)TESTS_QTY};
 
   for(i = 0; i < TOTAL_PAIR_PROCESSES; i++){
-    pid1=sys_createProcess(inc, 3, args1);
-    pid2=sys_createProcess(inc, 3, args2);
+    sys_createProcess(inc, 3, args1);
+    sys_createProcess(inc, 3, args2);
   }
   sys_exit(0);
 }
@@ -69,15 +66,12 @@ void test_no_sync(){
 
   printf("CREATING PROCESSES...(WITHOUT SEM)\n");
  
-  unsigned long long pid1;
-  unsigned long long pid2;
-
-  char * args1[]={0, 1, TESTS_QTY};
-  char * args2[]={0, -1, TESTS_QTY};
+  char * args1[]={(char *)0,(char *) 1, (char *)TESTS_QTY};
+  char * args2[]={(char *)0,(char *) -1, (char *)TESTS_QTY};
 
   for(i = 0; i < TOTAL_PAIR_PROCESSES; i++){
-    pid1=sys_createProcess(inc, 3, args1);
-    pid2=sys_createProcess(inc, 3, args2);
+    sys_createProcess(inc, 3, args1);
+    sys_createProcess(inc, 3, args2);
   }
 
   sys_exit(0);

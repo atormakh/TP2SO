@@ -1,3 +1,6 @@
+
+#include <memoryDefs.h>
+#ifdef BUDDY
 #ifndef BUDDY_SYSTEM_H
 #define BUDDY_SYSTEM_H
 
@@ -22,3 +25,4 @@ void m_free(void * dir);
 
 #endif
 
+#endif

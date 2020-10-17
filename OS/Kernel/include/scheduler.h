@@ -59,5 +59,6 @@ void kill(unsigned  long long pid);
 void block(unsigned  long long pid);
 void unblock(unsigned  long long pid);
 void wait(unsigned  long long pid);
+void yield();
 
 #endif

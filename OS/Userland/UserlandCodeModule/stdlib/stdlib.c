@@ -50,7 +50,7 @@ void puts(char * buffer){
     sys_writePipe(1,buffer,strlen(buffer));
 }
 
-void putchar(unsigned char c){
+void putchar(char c){
     sys_writePipe(1,&c,1);
 }
 

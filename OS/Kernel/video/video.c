@@ -42,7 +42,7 @@ struct vbe_mode_info_structure{
 } __attribute__((packed));
 
 void setPixel(int x, int y, colorStruct c);
-char getBit(unsigned char index,int x, int y);
+char getBitFromBitmap(unsigned char index,int x, int y);
 
 struct vbe_mode_info_structure * screen_info = (struct vbe_mode_info_structure * )0x5C00;
 
@@ -78,7 +78,7 @@ void drawCharacter(int x, int y, int px, char letter){
     double scale=1.0f*px/letter_width;
     for(int j = 0; j < letter_height*scale;j++){
         for(int i = 0; i < letter_width*scale;i++){
-            setPixel(i+x,j+y,getBit(letter,i/scale,j/scale)?green:black);
+            setPixel(i+x,j+y,getBitFromBitmap(letter,i/scale,j/scale)?green:black);
         }
 	}   
 }
@@ -108,7 +108,7 @@ void setPixel(int x, int y, colorStruct c){
     
 }
 
-char getBit(unsigned char index,int x, int y){
+char getBitFromBitmap(unsigned char index,int x, int y){
   	int absolute = x + y * letter_bytes*8;
   	int pos = absolute/8;
   	int bit = absolute%8;

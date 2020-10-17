@@ -1,5 +1,6 @@
 #include <screenDrawer.h>
 #include <shell.h>
+#include<syscalls.h>
 
 
 int main() {
