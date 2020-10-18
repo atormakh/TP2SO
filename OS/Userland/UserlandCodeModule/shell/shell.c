@@ -200,9 +200,18 @@ void shellInputHandler(){
     int inIndex = 0;
     while(1){
         sys_readKeyboard(&c,1);
+
         while(c !='\n'){
-            inIndex=inController(c,in,inIndex);
-            sys_readKeyboard(&c,1);
+            if(c==0){
+                 sys_readKeyboard(&c,1);
+                 if(c=='d'){
+                     sys_exit(0);
+                 }
+            }else{
+                inIndex=inController(c,in,inIndex);
+                sys_readKeyboard(&c,1);
+            }
+            
         }
         putchar('\n');
         in[inIndex++]='\n';
