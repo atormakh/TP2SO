@@ -34,8 +34,6 @@ int pipe(unsigned long pidWriter, unsigned int fdWrite, unsigned long pidReader,
     setProcFD(pidWriter,fdWrite,pipe, WRITE);
     pipe->writerRefs++;
     pipe->readerRefs++;
-    PCB * procReader = getProc(pidReader);
-    PCB * procWriter = getProc(pidWriter);
 
     return 0;
 }

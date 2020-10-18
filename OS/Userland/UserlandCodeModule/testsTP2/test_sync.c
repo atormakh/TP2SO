@@ -50,11 +50,14 @@ void test_sync(){
 
   char * args1[]={(char *)1, (char *)1, (char *)TESTS_QTY};
   char * args2[]={(char *)1,(char *) -1, (char *)TESTS_QTY};
-
+  unsigned long long pids[TOTAL_PAIR_PROCESSES*2];
   for(i = 0; i < TOTAL_PAIR_PROCESSES; i++){
-    sys_createProcess(inc, 3, args1);
-    sys_createProcess(inc, 3, args2);
+    pids[2*i]=sys_createProcess(inc, 3, args1);
+    pids[2*i+1]=sys_createProcess(inc, 3, args2);
+    sys_unblock(pids[2*i]);
+    sys_unblock(pids[2*i+1]);
   }
+  for(i = 0; i < 2*TOTAL_PAIR_PROCESSES; i++) sys_wait(pids[i]);
   sys_exit(0);
 }
 
@@ -69,11 +72,15 @@ void test_no_sync(){
   char * args1[]={(char *)0,(char *) 1, (char *)TESTS_QTY};
   char * args2[]={(char *)0,(char *) -1, (char *)TESTS_QTY};
 
+  unsigned long long pids[TOTAL_PAIR_PROCESSES*2];
   for(i = 0; i < TOTAL_PAIR_PROCESSES; i++){
-    sys_createProcess(inc, 3, args1);
-    sys_createProcess(inc, 3, args2);
+    pids[2*i]=sys_createProcess(inc, 3, args1);
+    pids[2*i+1]=sys_createProcess(inc, 3, args2);
+    sys_unblock(pids[2*i]);
+    sys_unblock(pids[2*i+1]);
   }
-
+  for(i = 0; i < 2*TOTAL_PAIR_PROCESSES; i++) sys_wait(pids[i]);
+  sys_exit(0);
   sys_exit(0);
 }
 

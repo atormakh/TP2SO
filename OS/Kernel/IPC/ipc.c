@@ -12,7 +12,7 @@ void writePipeProc(unsigned long long pid, int fd,char * buffer,int maxWrite){
     Pipe * fdWrite;
 
     if((fdWrite =proc->fd[fd]) == NULL){
-        return 0;
+        return;
     }
 
     //verificar si se puede escribir en el pipe
@@ -42,7 +42,7 @@ void writePipe(int fd,char * buffer,int maxWrite){
     Pipe * fdWrite;;
 
     if((fdWrite =proc->fd[fd]) == NULL){
-        return 0;
+        return ;
     }
 
     //verificar si se puede escribir en el pipe
