@@ -4,10 +4,10 @@
 #include <syscalls.h>
 
 void stdflush();
-
-
 void yield();
+
 unsigned long long counter = 0;
+
 void do_nothing(){
     sys_sleep(5);
     sys_exit(0);

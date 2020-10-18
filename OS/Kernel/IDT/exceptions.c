@@ -7,6 +7,10 @@ char buffer[64];
 int n;
 char * regs[]={"r15","r14","r13","r12","r11","r10","r9 ","r8 ","rsi","rdi","rbp","rdx","rcx","rbx","rax"};
 void exceptionDispatcher(int exception, uint64_t * registers) {
+	kernelWrite("PROCESS ",8);
+	n=intToString(getCurrentProc()->pid,buffer);
+	kernelWrite(buffer,n);
+	kernelWrite("\n",1);
 	kernelWrite("EXCEPTION ",10);
 	n=intToString(exception,buffer);
 	kernelWrite(buffer,n);
