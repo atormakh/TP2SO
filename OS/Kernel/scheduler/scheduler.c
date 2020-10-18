@@ -130,7 +130,7 @@ PCB * getCurrentProc(){
 }
 PCB * getProc(unsigned long pid){
     for(int i = 0; i<scheduler.size;i++){
-        if(scheduler.processes[i].state!=KILLED && scheduler.processes[i].pid == pid)
+        if(scheduler.processes[i].pid == pid)
             return scheduler.processes+i;
     }
     return 0;
@@ -140,24 +140,25 @@ void kill(unsigned long long pid){
     PCB * proc = getProc(pid);
     proc->state = KILLED;
     awakeAll(&proc->pid);
+    awakeAll(proc);
     closeMotive(proc);
     closeMotive(&proc->pid);
-    // for(int i = 0; i<MAX_PIPES;i++){
-    //     awakeAll(proc->fd[i]);
-    //     //closePipeProc(i,pid);
+    for(int i = 0; i<MAX_PIPES;i++){
+        awakeAll(proc->fd[i]);
+        closePipeProc(i,pid);
         
-    // } 
+    }
     m_free(proc->rbp);
-    m_free(proc);
 }
 
 void unblock(unsigned long long pid){
-    getProc(pid)->state=READY;
+    
+    if(getProc(pid)->state != KILLED)getProc(pid)->state=READY;
 
 }
 
 void block(unsigned long long pid){
-     getProc(pid)->state=BLOCKED;
+     if(getProc(pid)->state != KILLED)getProc(pid)->state=BLOCKED;
 }
 
 unsigned long long getPid(){
@@ -181,6 +182,7 @@ void wait(unsigned  long long pid){
     if(proc->state==KILLED) return;
     createMotive(&proc->pid);
     blockMotive(&proc->pid,getCurrentProc()->pid);
+    
     yield();
 }
 
@@ -217,6 +219,7 @@ int setProcFD(unsigned long pid,unsigned int fd, Pipe * pipe, unsigned int permi
 
 
 int blockMotive(void * id,unsigned long pid){
+    if(getProc(pid)->state == KILLED) return;
     Motive searcher={id,NULL};    
     Motive * motive = get(scheduler.motives, &searcher);
     if(motive == NULL){
@@ -281,7 +284,9 @@ int awakeAll(void * id){
     Motive * motive = get(scheduler.motives, &searcher);
     if(motive == NULL) return 0;
     while(motive->processes->size>0){
-        ((PCB *)pop(motive->processes))->state=READY;
+        PCB * proc = ((PCB *)pop(motive->processes));
+        if(proc->state!=KILLED)
+            proc->state=READY;
     }
     return 1;
 }

@@ -77,14 +77,12 @@ void test_prio(){
 
   for(i = 0; i < TOTAL_PROCESSES; i++)
     sys_unblock(pids[i]);
-
-  //sys_yield();
   bussy_wait(WAIT);
   printf("\nKILLING...\n");
-
+  sys_yield();
   for(i = 0; i < TOTAL_PROCESSES; i++)
     sys_kill(pids[i]);
-
+  sys_yield();
   sys_exit(0);
 }
 

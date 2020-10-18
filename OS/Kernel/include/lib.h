@@ -5,11 +5,22 @@
 
 void * memset(void * destination, int32_t character, uint64_t length);
 void * memcpy(void * destination, const void * source, uint64_t length);
+void hlt();
+void putchar(char);
+int strlen(char * string);
+void printf(char * fmt, ...);
+void puts(char * buffer);
+void deleteChar(char * str, char c);
+int intToHex(unsigned long long num, char * buffer);
 int intToBase(unsigned long long num, int base, char*buffer);
 int intToString(unsigned long long num, char * buffer);
-int strcpy(char * dest, char * src);
+int strcpy(char * dest, char * source);
 int strcmp(char * str1, char * str2);
-int strlen(char * buffer);
+int doubleToString(double value, char * buffer);
+double stringToDouble(char *init, char *end);
+int stringToInt(char * buffer);
+
+
 
 
 void setBit(unsigned char * byte, int bitNumber);

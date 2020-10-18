@@ -84,7 +84,7 @@ unsigned long long readPipe(int fd,char * buffer,int maxRead){
 
     //verificar si se puede escribir en el pipe
     while(fdRead->counter<=0){
-        //if(fdRead->writerRefs<=0) return 0;
+        if(fdRead->writerRefs<=0) return 0;
        blockMotive(&fdRead->readIndex,proc->pid);
        yield();
     }

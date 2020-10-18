@@ -49,11 +49,11 @@ void closePipe(int fd){
 }
 
 void closePipeProc(int fd, unsigned long long pid){
-//     Pipe * pipe = getProc(pid)->fd[fd];
-//     if(pipe == NULL) return;
-//     int permission = getProc(pid)->role[fd];
-//     if(permission == WRITE) pipe->writerRefs--;
-//     else pipe->readerRefs--;
-//     if(pipe->readerRefs <=0 && pipe->writerRefs<=0) m_free(pipe);
+    Pipe * pipe = getProc(pid)->fd[fd];
+    if(pipe == NULL) return;
+    int permission = getProc(pid)->role[fd];
+    if(permission == WRITE) pipe->writerRefs--;
+    //else pipe->readerRefs--;
+    //if(pipe->readerRefs <=0 && pipe->writerRefs<=0) m_free(pipe);
 }
 
