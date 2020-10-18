@@ -1,40 +1,18 @@
 #include <shell.h>
-#include "help.h"
+#include "builtin.h"
 #include <stdlib.h>
 #include <syscalls.h>
+#include<applications.h>
 
-void stdflush();
-void yield();
 
 unsigned long long counter = 0;
 
-void do_nothing(){
-    sys_sleep(5);
-    sys_exit(0);
-}
 
-void test_sync();
-void test_no_sync();
-void test_prio();
-
-void dummy(){
-    unsigned long long pid;
-    pid=sys_createProcess(test_prio,0,0);
-    sys_unblock(pid);
-    sys_wait(pid);
-    return;
-}
-
-void ps(){
-    char buffer[1024];
-    sys_ps(buffer);
-    puts(buffer);
-}
-
-
-char * messages[] = {"Command not found"};
-char * commands[] = {"help", "ps", "dummy", 0};
-void  (* run[])(int,char * * ) = {help,ps, dummy};
+char * messages[] = {"Command not found", "Wrong number of arguments"};
+char * builtin_commands[] = {"help", "ps", 0};
+char * application_commands[] = {"testSync", "testNoSync","testPrio", 0};
+void  (* builtin_run[])(int,char * * ) = {help,ps}; //faltan { mem,kill,nice,block,sem,pipe}
+void * applications[]={test_sync, test_no_sync,test_prio};     //faltan {cat,wc,filter,phylo, test_m}
 
 unsigned int inIndex=0;
 char in[MAX_INPUT];
@@ -79,8 +57,6 @@ void shell(){
 		exec(in);
         puts("\n");
 
-        //BORRAR
-		//currentTab->offsetCurrent = currentTab->current+1;
 		
         inIndex=0;
 		in[0]=0;
@@ -88,43 +64,122 @@ void shell(){
 
 }
 
-
 void exec(char * in){
-    char * args[ARGS_LENGTH];
-    int argc = processInput(in,args);
-    // strcpy(out, args[1]);
-    // return;
-    int command = checkCommand(args[0]);
-    if(command == -1){
-        puts(messages[0]);
-    }
-    else
-        run[command](argc-1,args+1);
-}
+    ARGS cmds [MAX_PIPED_PROCS];
+    int procs = processInput(in,cmds);
+    int validCommand=0;
 
-int processInput(char * in, char ** args){
-    int processingWord=0;
-    int count=0;
-    while(*in){
-        if(processingWord && *in==' '){
-            processingWord=0;
-            *in= 0;
-        }else if(!processingWord && *in != ' '){
-            *args++=in;
-            count++;
-            processingWord=1;
+    //hola a b | algo
+    //nos fijamos si el primer comando  es builtin,
+    //en tal caso verificamos que no este intentando pipearlo ni correrlo en background
+    if((validCommand=checkBuiltInCommand(cmds[0][COMMAND]))>=0){
+        if(procs > 1 || (unsigned long long)cmds[0][((unsigned long long)cmds[0][ARG_C]+1)]=='&'){
+            //se esta intentando pipear comando builtin
+            
+            puts(messages[E_PARAMETROS]);
+            return;
         }
-        in++;
-        
+        builtin_run[validCommand]((unsigned long long)cmds[0][ARG_C], cmds[0]+ARG_V);
+        return;
     }
-    return count;
+    //verificamos que todos los comandos sean validos(ya sabiendo que no son builtin)
+    for(int i=0;i<procs;i++){        
+       validCommand=checkNoBuiltInCommand(cmds[i][COMMAND]);
+        if(validCommand == -1){
+            puts(messages[E_PARAMETROS]);
+            return;
+        }
+        cmds[i][COMMAND]=(char *)(unsigned long long)validCommand;
+    }
+    
+    int prevPid;
+    int currentPid;
+    int waitingPids[procs];
+    int j = 0;
+    int needsWaiting=0;
+    
+    for(int i=0 ;i<procs;i++){
+        needsWaiting=0;
+        if((unsigned long long)cmds[i][(unsigned long long)(cmds[i][ARG_C])+1]!='&'){
+            // hay que hacerle un wait
+            needsWaiting=1;
+        }else{
+            cmds[i][ARG_C]--;
+        }
+        char ** procArgs=cmds[0]+ARG_V;
+        currentPid = sys_createProcess(applications[(unsigned long long)cmds[i][COMMAND]],(unsigned long long)cmds[0][ARG_C],procArgs);
+        
+        if(needsWaiting){
+            waitingPids[j]=currentPid;
+            j++;
+        }
+        if(i >= 1){
+            //crear pipe
+            sys_pipe(prevPid, WRITE, currentPid, READ);
+            //desbloquear proceso anterior
+            sys_unblock(prevPid);
+        }
+        prevPid = currentPid;
+    }
+    sys_unblock(currentPid);
+    for(int i = 0; i<j;i++) sys_wait(waitingPids[i]);
+        
 }
 
-int checkCommand(char * command){
+// a b &| c | d e
+
+//  a   2   b   &
+//  c   0
+//  d   1   e
+
+int processInput(char * in, ARGS * procs){
+    int processingWord;
+    int count;
+    int index = 0;
+    int procIndex=0;
+    int argIndex;
+
+    while(in[index]){
+        processingWord=0;
+        count=0;
+        argIndex=1;
+        while(in[index] && in[index]!='|'){
+            if(processingWord && in[index]==' '){
+                processingWord=0;
+                in[index]= 0;
+            }else if(!processingWord && in[index] != ' '){
+                procs[procIndex][argIndex]=in+index;
+                argIndex++;
+                count++;
+                processingWord=1;
+            }
+            index++;
+        }        
+        procs[procIndex][0]=(char*)(unsigned long long)(count-1);
+        if(in[index]=='|')index++;
+        procIndex++;
+
+    }
+    return procIndex;
+}
+
+
+int checkBuiltInCommand(char * command){
     int cmp=1;
     int cmd = 0;
-    while(commands[cmd] && cmp){
-        cmp = strcmp(commands[cmd++],command);
+    while(builtin_commands[cmd] && cmp){
+        cmp = strcmp(builtin_commands[cmd++],command);
+    }
+
+    return (cmp==0)?cmd-1:-1;
+
+}
+
+int checkNoBuiltInCommand(char * command){
+    int cmp=1;
+    int cmd = 0;
+    while(application_commands[cmd] && cmp){
+        cmp = strcmp(application_commands[cmd++],command);
     }
 
     return (cmp==0)?cmd-1:-1;

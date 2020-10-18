@@ -3,9 +3,20 @@
 
 #define ARGS_LENGTH 5
 #define MAX_INPUT 1024
+#define MAX_PIPED_PROCS 10
+#define COMMAND 1
+#define ARG_C 0
+#define ARG_V 2
+#define WRITE 1
+#define READ 0
+#define E_PARAMETROS 1
 
-int processInput(char * in, char ** args);
-int checkCommand(char * command);
+
+typedef char * ARGS[ARGS_LENGTH];
+
+int processInput(char * in, ARGS comands[]);
+int checkBuiltInCommand(char * command);
+int checkNoBuiltInCommand(char * command);
 void exec(char * in);
 void shell();
 
