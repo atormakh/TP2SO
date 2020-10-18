@@ -2,11 +2,12 @@
 #include <syscalls.h>
 
 int loop(int argc, char * args[]){
-    if(argc != 2){
+    if(argc != 1){
         printf("error cantidad de parametros");
+        sys_exit(0);
         return 0;
     }
-    int seconds = stringToInt(args[1]);
+    int seconds = stringToInt(args[0]);
     unsigned long long pid = sys_getPid();
     while(1){
         sys_sleep(seconds);

@@ -2,6 +2,7 @@
 #include<video.h>
 #include<list.h>
 #include<scheduler.h>
+#include<ipc.h>
 
 static unsigned long long ticks = 0;
 
@@ -15,12 +16,12 @@ void initialize_timer(){
 
 void * timer_handler(void * rsp) {
 	ticks++;
-	unsigned long * minTicks;
-	if(awakeTimes->start != NULL && *(minTicks=awakeTimes->start->elem)==ticks){
-		awakeAll(minTicks);		
-		closeMotive(minTicks);
-		remove(awakeTimes,*minTicks);
-		m_free(minTicks);
+	Node * minTicks=awakeTimes->start;
+	if(minTicks != NULL && minTicks->hash==ticks){
+		awakeAll(minTicks->elem);		
+		closeMotive(minTicks->elem);
+		remove(awakeTimes,minTicks->hash);
+		m_free(minTicks->elem);
 		
 	}
 	return schedule(rsp);
@@ -30,7 +31,7 @@ void * timer_handler(void * rsp) {
 void sleep(unsigned int interval){
 	PCB * proc = getCurrentProc();
 	unsigned long awakeTime = interval*18+ticks;
-	unsigned long * time = get(awakeTimes,(unsigned long long)&awakeTime);
+	unsigned long * time = get(awakeTimes,awakeTime);
 	if(time == NULL){
 		time = (unsigned long * ) m_alloc(sizeof(unsigned long));
 		*time = awakeTime;

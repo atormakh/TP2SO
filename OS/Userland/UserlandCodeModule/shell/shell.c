@@ -10,9 +10,9 @@ unsigned long long counter = 0;
 
 char * messages[] = {"Command not found", "Wrong number of arguments"};
 char * builtin_commands[] = {"help", "ps", 0};
-char * application_commands[] = {"testSync", "testNoSync","testPrio", 0};
+char * application_commands[] = {"cat","filter","wc","loop","testSync", "testNoSync","testPrio", 0};
 void  (* builtin_run[])(int,char * * ) = {help,ps}; //faltan { mem,kill,nice,block,sem,pipe}
-void * applications[]={test_sync, test_no_sync,test_prio};     //faltan {cat,wc,filter,phylo, test_m}
+void * applications[]={cat,filter,wc,loop,test_sync, test_no_sync,test_prio};     //faltan {cat,wc,filter,phylo, test_m}
 
 unsigned int inIndex=0;
 char in[MAX_INPUT];

@@ -1,4 +1,5 @@
 #include <list.h>
+#include<ipc.h>
 
 List *newList(){
     List *list = m_alloc(PAGE_SIZE);
@@ -8,7 +9,6 @@ List *newList(){
 }
 
 void add(List *list, void * val, unsigned long long hash){
-
     Node * next = list->start;
     Node * prev = next;
     Node * newNode = (Node *)m_alloc(sizeof(Node));
@@ -17,6 +17,7 @@ void add(List *list, void * val, unsigned long long hash){
         list->start = newNode;
         newNode->next = NULL;
         newNode->elem = val;
+        newNode->hash=hash;
         return;
     }
 
