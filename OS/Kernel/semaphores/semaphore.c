@@ -9,27 +9,30 @@ int _xchg(int * addr,int value);
 List * semaphores;
 int lock = 0;
 
-long cmpSems(void * elem1, void * elem2){
 
-    return strcmp(((Sem *)elem1 )->id,((Sem *)elem2)->id);
+unsigned long str_hash(char *str){
+    unsigned long hash = 5381;
+    int c;
 
+    while ((c = *str++))
+        hash = ((hash << 5) + hash) + c; /* hash * 33 + c */
+
+    return hash;
 }
 
-
 void initSemaphores(){
-    semaphores = newList(cmpSems);
+    semaphores = newList();
 }
 
 void openSem(char * semId, int value){
     acquire(&lock);
-    Sem * sem, * semSearcher;
-    sem = semSearcher =(Sem *) c_alloc(sizeof(Sem));
-    strcpy(sem->id, semId);
-    sem =(Sem *) get(semaphores, semSearcher);
+    Sem * sem;
+    sem =(Sem *) get(semaphores, str_hash(semId));
     if(sem == NULL){
-        sem = semSearcher;
+        sem = (Sem *) c_alloc(sizeof(Sem));
+        strcpy(sem->id, semId);
         createMotive(sem);
-        push(semaphores, sem);
+        push(semaphores, sem,str_hash(semId));
         sem->value=value;      
     }
     sem->refs++;
@@ -37,10 +40,7 @@ void openSem(char * semId, int value){
 }
 
 void semPost(char * semId){
-    Sem * semID;
-    semID = (Sem *) c_alloc(sizeof(Sem));
-    strcpy(semID->id, semId);
-    Sem * sem = (Sem *)get(semaphores, semID);
+    Sem * sem = (Sem *)get(semaphores, str_hash(semId));
     if(sem == NULL){
         return;
     }
@@ -51,10 +51,7 @@ void semPost(char * semId){
 }
 
 void semWait(char * semId){
-    Sem * semID;
-    semID = (Sem *) c_alloc(sizeof(Sem));
-    strcpy(semID->id, semId);
-    Sem * sem = (Sem *)get(semaphores, semID);
+    Sem * sem = (Sem *)get(semaphores, str_hash(semId));
     if(sem == NULL){
         return;
     }
@@ -70,11 +67,8 @@ void semWait(char * semId){
     release(&sem->lock);
 }
 void closeSem(char * semId){
-    acquire(&lock);
-    Sem * semID;
-    semID = (Sem *) c_alloc(sizeof(Sem));
-    strcpy(semID->id, semId);
-    Sem * sem = (Sem *)get(semaphores, semID);
+    acquire(&lock);;
+    Sem * sem = (Sem *)get(semaphores, str_hash(semId));
 
     if(sem == NULL){
         release(&lock);

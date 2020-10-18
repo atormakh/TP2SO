@@ -3,24 +3,23 @@
 
 #include<memorymanager.h>
 
-typedef long int (*CMP)(void * elem1, void * elem2);
 typedef struct Node{
     struct Node * next;
     void * elem;
+    unsigned long long hash;
 }Node;
 
 typedef struct List{
     Node * start;
     unsigned long long size;
-    CMP cmp;
 }List;
 
-List *newList(CMP cmp);
-void add(List *list, void * val);
-void push(List * list, void * val);
-void remove(List * list, void * val);
+List *newList();
+void add(List *list, void * val, unsigned long long hash);
+void push(List * list, void * val, unsigned long long hash);
+void remove(List * list,  unsigned long long hash);
 void * pop(List * list);
-void * get(List * list, void * val);
+void * get(List * list,  unsigned long long hash);
 void *peek(List *list);
 void freeList(List * list);
 

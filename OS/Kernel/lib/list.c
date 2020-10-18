@@ -1,18 +1,14 @@
 #include <list.h>
 
-List *newList(CMP cmp){
+List *newList(){
     List *list = m_alloc(PAGE_SIZE);
     list->size = 0;
     list->start = 0;
-    list->cmp = cmp;
     return list;
 }
 
-void add(List *list, void * val){
-    if (list->cmp == NULL){
-        push(list, val);
-        return;
-    }
+void add(List *list, void * val, unsigned long long hash){
+
     Node * next = list->start;
     Node * prev = next;
     Node * newNode = (Node *)m_alloc(sizeof(Node));
@@ -24,7 +20,7 @@ void add(List *list, void * val){
         return;
     }
 
-    while ( next!=NULL && list->cmp(val, next->elem) > 0){
+    while ( next!=NULL && hash-next->hash > 0){
         prev = next;
         next = next->next;
     }
@@ -32,26 +28,28 @@ void add(List *list, void * val){
     else prev->next = newNode;
     newNode->next=next;
     newNode->elem = val;
+    newNode->hash=hash;
     list->size++;
 
 }
 
-void push(List *list, void *val){
+void push(List *list, void *val, unsigned long long hash){
 
     Node *head = list->start;
     Node *new_node;
     new_node = (Node *)m_alloc(sizeof(Node));
 
     new_node->elem = val;
+    new_node->hash = hash;
     new_node->next = head;
     list->start = new_node;
     list->size++;
 }
 
-void remove(List * list, void * val){
+void remove(List * list,  unsigned long long hash){
     Node * node = list->start;
     Node * prev = node;
-    while(node!=NULL && list->cmp(node->elem,val)!=0){
+    while(node!=NULL && node->hash - hash!=0){
         prev=node;
         node=node->next;
     }
@@ -60,9 +58,9 @@ void remove(List * list, void * val){
     m_free(node);
 }
 
-void * get(List * list, void * val){
+void * get(List * list,  unsigned long long hash){
     Node * node = list->start;
-    while(node!=NULL && list->cmp(node->elem,val)!=0)
+    while(node!=NULL && node->hash -hash !=0)
         node=node->next;
 
     if(node==NULL){

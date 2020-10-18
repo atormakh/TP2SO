@@ -20,16 +20,8 @@
 
 Scheduler scheduler;
 
-long motive_cmp(void * motive1, void * motive2){
-    return (long)(((Motive *)motive1)->id - ((Motive *)motive2)->id);
-}
-
-long proc_cmp(void * proc1, void * proc2){
-    return *(unsigned long *)proc1-*(unsigned long *)proc2;
-}
-
 void initialize_scheduler(){
-    scheduler.motives=newList(motive_cmp);
+    scheduler.motives=newList();
     scheduler.procIndex=0;
     scheduler.size=0;
     scheduler.init=0;
@@ -219,14 +211,13 @@ int setProcFD(unsigned long pid,unsigned int fd, Pipe * pipe, unsigned int permi
 
 
 int blockMotive(void * id,unsigned long pid){
-    if(getProc(pid)->state == KILLED) return;
-    Motive searcher={id,NULL};    
-    Motive * motive = get(scheduler.motives, &searcher);
+    if(getProc(pid)->state == KILLED) return 0; 
+    Motive * motive = get(scheduler.motives, (unsigned long long) id);
     if(motive == NULL){
         return 0;
     }
     PCB * proc = getProc(pid);
-    push(motive->processes,proc);
+    push(motive->processes,proc,proc->pid);
     proc->state=BLOCKED;
     return 1;
 }
@@ -235,9 +226,8 @@ int blockMotive(void * id,unsigned long pid){
 
 
 int createMotive(void * id){
-   
-    Motive searcher={id,NULL};    
-    Motive * motive = get(scheduler.motives, &searcher);
+    
+    Motive * motive = get(scheduler.motives,(unsigned long long)id);
     if(motive!=NULL) return -1;
     
     motive = m_alloc(sizeof(Motive));
@@ -246,16 +236,15 @@ int createMotive(void * id){
         return -1;
     }
     motive->id=id;
-    motive->processes = newList(proc_cmp);
-    push(scheduler.motives, motive);
+    motive->processes = newList();
+    push(scheduler.motives, motive,(unsigned long long)id);
     return 0;
 }
 
 void closeMotive(void * id){
-    Motive searcher={id,NULL};    
-    Motive * motive = get(scheduler.motives, &searcher);
+    Motive * motive = get(scheduler.motives, (unsigned long long) id);
     if(motive==NULL) return;
-    remove(scheduler.motives, &searcher);
+    remove(scheduler.motives, (unsigned long long) id);
     
     freeList(motive->processes);
     m_free(motive);
@@ -263,9 +252,8 @@ void closeMotive(void * id){
 
 
 int awake(void * id){
-    Motive searcher={id,NULL};
-    
-    Motive * motive = get(scheduler.motives, &searcher);
+
+    Motive * motive = get(scheduler.motives, (unsigned long long) id);
     PCB * proc = pop(motive->processes);
     if(proc==NULL) return -1;
     if(proc->state==KILLED) return -1;
@@ -279,9 +267,8 @@ int awake(void * id){
     return proc->pid;
 }
 
-int awakeAll(void * id){
-    Motive searcher={id,NULL};    
-    Motive * motive = get(scheduler.motives, &searcher);
+int awakeAll(void * id){  
+    Motive * motive = get(scheduler.motives, (unsigned long long) id);
     if(motive == NULL) return 0;
     while(motive->processes->size>0){
         PCB * proc = ((PCB *)pop(motive->processes));

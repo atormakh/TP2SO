@@ -8,12 +8,9 @@ static unsigned long long ticks = 0;
 
 List * awakeTimes;
 
-long cmp(void * el1, void * el2){
-	return *(unsigned long *)el1-*(unsigned long *)el2;
-}
 
 void initialize_timer(){
-	awakeTimes=newList(cmp);
+	awakeTimes=newList();
 }
 
 void * timer_handler(void * rsp) {
@@ -22,7 +19,7 @@ void * timer_handler(void * rsp) {
 	if(awakeTimes->start != NULL && *(minTicks=awakeTimes->start->elem)==ticks){
 		awakeAll(minTicks);		
 		closeMotive(minTicks);
-		remove(awakeTimes,minTicks);
+		remove(awakeTimes,*minTicks);
 		m_free(minTicks);
 		
 	}
@@ -33,12 +30,12 @@ void * timer_handler(void * rsp) {
 void sleep(unsigned int interval){
 	PCB * proc = getCurrentProc();
 	unsigned long awakeTime = interval*18+ticks;
-	unsigned long * time = get(awakeTimes,&awakeTime);
+	unsigned long * time = get(awakeTimes,(unsigned long long)&awakeTime);
 	if(time == NULL){
 		time = (unsigned long * ) m_alloc(sizeof(unsigned long));
 		*time = awakeTime;
 		createMotive(time);
-		add(awakeTimes,time);
+		add(awakeTimes,time,*time);
 	}	
 	blockMotive(time,proc->pid);
 	yield();
