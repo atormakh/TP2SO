@@ -38,8 +38,7 @@ unsigned long long createProcess(void * proc, int argc, char * argv[]){
     pcb->priority = 1;
     pcb->currentTicks = 1;
     unsigned long long * bp;
-    //unsigned long long * stack = bp = 0x700000; 
-    
+
     unsigned long long * stack = bp = (unsigned long long *) (c_alloc(PROC_MEM)+PROC_MEM-1);
     
     pcb->rbp=bp;
@@ -95,7 +94,6 @@ unsigned long long createProcess(void * proc, int argc, char * argv[]){
 }
 
 void * schedule(void * rsp){
-    //writePipe(1,"hola\n",6);
     if(scheduler.init!=0){
 
         if(getCurrentProc()->currentTicks<getCurrentProc()->priority){
@@ -132,8 +130,6 @@ void kill(unsigned long long pid){
     PCB * proc = getProc(pid);
     proc->state = KILLED;
     awakeAll(&proc->pid);
-    awakeAll(proc);
-    closeMotive(proc);
     closeMotive(&proc->pid);
     for(int i = 0; i<MAX_PIPES;i++){
         awakeAll(proc->fd[i]);
@@ -258,12 +254,6 @@ int awake(void * id){
     if(proc==NULL) return -1;
     if(proc->state==KILLED) return -1;
     proc->state=READY;
-    // unsigned long pid=*(unsigned long *)pop(motive->processes);
-    // getProc(pid)->state=READY;
-    // if(size(motive->processes)==0){
-    //     remove(scheduler.motives,motive);
-    //     free(motive);
-    // }
     return proc->pid;
 }
 

@@ -1,6 +1,8 @@
 #include <stdint.h>
 #include<lib.h>
 #include<ipc.h>
+#include<stdarg.h>
+
 void * memset(void * destination, int32_t c, uint64_t length)
 {
 	uint8_t chr = (uint8_t)c;
@@ -79,11 +81,6 @@ unsigned long long pow(unsigned int base, unsigned int exp){
     for(int i=0;i<exp;i++) ret*=base;
     return ret;
 }
-
-#include<stdint.h>
-#include<stdarg.h>
-
-
 
 int strlen(char * buffer){
     int i=0;

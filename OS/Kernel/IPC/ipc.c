@@ -11,10 +11,8 @@ void writePipeProc(unsigned long long pid, int fd,char * buffer,int maxWrite){
     PCB * proc = getProc(pid);
     Pipe * fdWrite;
 
-    while((fdWrite =proc->fd[fd]) == NULL){
-        createMotive(proc);
-        blockMotive(proc,proc->pid);
-        yield();
+    if((fdWrite =proc->fd[fd]) == NULL){
+        return 0;
     }
 
     //verificar si se puede escribir en el pipe
@@ -43,10 +41,8 @@ void writePipe(int fd,char * buffer,int maxWrite){
     PCB * proc = getCurrentProc();
     Pipe * fdWrite;;
 
-    while((fdWrite =proc->fd[fd]) == NULL){
-        createMotive(proc);
-        blockMotive(proc,proc->pid);
-        yield();
+    if((fdWrite =proc->fd[fd]) == NULL){
+        return 0;
     }
 
     //verificar si se puede escribir en el pipe
@@ -76,10 +72,8 @@ unsigned long long readPipe(int fd,char * buffer,int maxRead){
     PCB * proc = getCurrentProc();
     Pipe * fdRead;
     
-    while((fdRead =proc->fd[fd]) == NULL){
-        createMotive(proc);
-        blockMotive(proc,proc->pid);
-        yield();
+    if((fdRead =proc->fd[fd]) == NULL){
+        return 0;
     }
 
     //verificar si se puede escribir en el pipe

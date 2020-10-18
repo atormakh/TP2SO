@@ -4,7 +4,7 @@
 #include <scheduler.h>
 
 int pipe(unsigned long pidWriter, unsigned int fdWrite, unsigned long pidReader, unsigned int fdRead ){
-    //closePipeProc(fdWrite,pidWriter);
+    closePipeProc(fdWrite,pidWriter);
     Pipe * pipe;
     if((pipe=getProc(pidReader)->fd[fdRead]) == NULL){
         pipe = m_alloc(PAGE_SIZE);
@@ -37,10 +37,6 @@ int pipe(unsigned long pidWriter, unsigned int fdWrite, unsigned long pidReader,
     PCB * procReader = getProc(pidReader);
     PCB * procWriter = getProc(pidWriter);
 
-    awakeAll(procWriter);
-    closeMotive(procWriter);
-    awakeAll(procReader);
-    closeMotive(procReader);
     return 0;
 }
 
@@ -53,7 +49,7 @@ void closePipeProc(int fd, unsigned long long pid){
     if(pipe == NULL) return;
     int permission = getProc(pid)->role[fd];
     if(permission == WRITE) pipe->writerRefs--;
-    //else pipe->readerRefs--;
-    //if(pipe->readerRefs <=0 && pipe->writerRefs<=0) m_free(pipe);
+    else pipe->readerRefs--;
+    if(pipe->readerRefs <=0 && pipe->writerRefs<=0) m_free(pipe);
 }
 
