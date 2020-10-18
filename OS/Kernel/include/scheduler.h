@@ -12,7 +12,7 @@
 #define BLOCKING_MOTIVES 5
 #define MIN_TICKS 1
 #define MAX_TICKS 10
-
+#define ARGS_LENGTH 20
 typedef enum STATE{READY,BLOCKED,KILLED} STATE;
 
 typedef struct  PCB {
@@ -22,6 +22,7 @@ typedef struct  PCB {
     unsigned long pid;    
     STATE state;
     int currentTicks;
+    char ** argv;
     Pipe * fd[MAX_PIPES];
     int role[MAX_PIPES];
    

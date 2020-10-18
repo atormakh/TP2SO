@@ -70,6 +70,7 @@ void * c_alloc(size_t size){
 }
 
 void m_free( void * ptr){
+    if(ptr == NULL) return;
     unsigned long idx = calc_idx_from_ptr(ptr);
     mm.bitmap[idx] = FREE;    
 }

@@ -97,16 +97,19 @@ void exec(char * in){
     int waitingPids[procs];
     int j = 0;
     int needsWaiting=0;
+    //2 loop 1 &
     
+ 
+
     for(int i=0 ;i<procs;i++){
         needsWaiting=0;
-        if((unsigned long long)cmds[i][(unsigned long long)(cmds[i][ARG_C])+1]!='&'){
+        if((unsigned long long)cmds[i][(unsigned long long)(cmds[i][ARG_C])+1][0] != '&'){
             // hay que hacerle un wait
             needsWaiting=1;
         }else{
             cmds[i][ARG_C]--;
         }
-        char ** procArgs=cmds[0]+ARG_V;
+        char ** procArgs=(char **)(cmds+i)+ARG_V;
         currentPid = sys_createProcess(applications[(unsigned long long)cmds[i][COMMAND]],(unsigned long long)cmds[0][ARG_C],procArgs);
         
         if(needsWaiting){

@@ -41,6 +41,22 @@ unsigned long long createProcess(void * proc, int argc, char * argv[]){
 
     unsigned long long * stack = bp = (unsigned long long *) (c_alloc(PROC_MEM)+PROC_MEM-1);
     
+    int qty;
+
+    char ** argvCopy = c_alloc(argc*sizeof(char *));
+    char * args = c_alloc(argc*ARGS_LENGTH);
+    char * index = args;
+    argvCopy[0]=args;
+
+    //copias todo y argv
+    for(int i=0; i <argc;i++){
+        qty=strcpy(index,argv[i]);
+        argvCopy[i]=index;
+        index+=qty+1;
+    }
+    argv=argvCopy;
+    pcb->argv=argv;
+
     pcb->rbp=bp;
 
     stack --;
@@ -128,6 +144,7 @@ PCB * getProc(unsigned long pid){
 
 void kill(unsigned long long pid){
     PCB * proc = getProc(pid);
+    if(proc->state == KILLED) return;
     proc->state = KILLED;
     awakeAll(&proc->pid);
     closeMotive(&proc->pid);
@@ -136,7 +153,10 @@ void kill(unsigned long long pid){
         closePipeProc(i,pid);
         
     }
+    
     m_free(proc->rbp);
+    m_free(proc->argv[0]);
+    m_free(proc->argv);
 }
 
 void unblock(unsigned long long pid){

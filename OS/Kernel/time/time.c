@@ -17,11 +17,12 @@ void initialize_timer(){
 void * timer_handler(void * rsp) {
 	ticks++;
 	Node * minTicks=awakeTimes->start;
-	if(minTicks != NULL && minTicks->hash==ticks){
+	while(minTicks != NULL && minTicks->hash <= ticks){
 		awakeAll(minTicks->elem);		
 		closeMotive(minTicks->elem);
 		remove(awakeTimes,minTicks->hash);
 		m_free(minTicks->elem);
+		minTicks = awakeTimes->start;
 		
 	}
 	return schedule(rsp);
@@ -37,7 +38,7 @@ void sleep(unsigned int interval){
 		*time = awakeTime;
 		createMotive(time);
 		add(awakeTimes,time,*time);
-	}	
+	}
 	blockMotive(time,proc->pid);
 	yield();
 
