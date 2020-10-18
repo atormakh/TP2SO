@@ -18,6 +18,7 @@ int processInput(char * in, ARGS comands[]);
 int checkBuiltInCommand(char * command);
 int checkNoBuiltInCommand(char * command);
 void exec(char * in);
+void shellInputHandler();
 void shell();
 
 #endif

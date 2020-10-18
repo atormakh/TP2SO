@@ -14,14 +14,12 @@ char * application_commands[] = {"cat","filter","wc","loop","testSync", "testNoS
 void  (* builtin_run[])(int,char * * ) = {help,ps}; //faltan { mem,kill,nice,block,sem,pipe}
 void * applications[]={cat,filter,wc,loop,test_sync, test_no_sync,test_prio};     //faltan {cat,wc,filter,phylo, test_m}
 
-unsigned int inIndex=0;
-char in[MAX_INPUT];
 
-void inController(int c){
+int inController(int c, char * in, int inIndex){
 	
 	if(c==128){
 		while(inIndex>0){
-			inController(8);
+			inIndex=inController(8,in,inIndex);
 		}
 	}
 	else{
@@ -40,16 +38,19 @@ void inController(int c){
        
 
 	}
+    return inIndex;
 }
 
 
 void shell(){
+    unsigned int inIndex=0;
+    char in[MAX_INPUT];
     char c;
     while(1){
         puts("shell@convinux>");
         sys_readKeyboard(&c,1);
 		while(c !='\n'){
-            inController(c);
+            inIndex=inController(c,in,inIndex);
             sys_readKeyboard(&c,1);
 		}
 
@@ -63,6 +64,8 @@ void shell(){
 	}
 
 }
+
+
 
 void exec(char * in){
     ARGS cmds [MAX_PIPED_PROCS];
@@ -82,6 +85,7 @@ void exec(char * in){
         builtin_run[validCommand]((unsigned long long)cmds[0][ARG_C], cmds[0]+ARG_V);
         return;
     }
+    
     //verificamos que todos los comandos sean validos(ya sabiendo que no son builtin)
     for(int i=0;i<procs;i++){        
        validCommand=checkNoBuiltInCommand(cmds[i][COMMAND]);
@@ -99,8 +103,7 @@ void exec(char * in){
     int needsWaiting=0;
     //2 loop 1 &
     
- 
-
+    prevPid=sys_createProcess(shellInputHandler,0,0);
     for(int i=0 ;i<procs;i++){
         needsWaiting=0;
         if((unsigned long long)cmds[i][(unsigned long long)(cmds[i][ARG_C])+1][0] != '&'){
@@ -116,12 +119,14 @@ void exec(char * in){
             waitingPids[j]=currentPid;
             j++;
         }
-        if(i >= 1){
-            //crear pipe
+        
+        if(i==0)
+            sys_pipe(prevPid, WRITE+1, currentPid, READ);
+        else //crear pipe
             sys_pipe(prevPid, WRITE, currentPid, READ);
-            //desbloquear proceso anterior
-            sys_unblock(prevPid);
-        }
+        
+        //desbloquear proceso anterior
+        sys_unblock(prevPid);
         prevPid = currentPid;
     }
     sys_unblock(currentPid);
@@ -187,4 +192,21 @@ int checkNoBuiltInCommand(char * command){
 
     return (cmp==0)?cmd-1:-1;
 
+}
+
+void shellInputHandler(){
+    char c;
+    char in[MAX_INPUT];
+    int inIndex = 0;
+    while(1){
+        sys_readKeyboard(&c,1);
+        while(c !='\n'){
+            inIndex=inController(c,in,inIndex);
+            sys_readKeyboard(&c,1);
+        }
+        putchar('\n');
+        in[inIndex++]='\n';
+        sys_writePipe(WRITE+1,in,inIndex);
+        inIndex=0;
+    }
 }
