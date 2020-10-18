@@ -20,6 +20,7 @@ void test_prio();
 void dummy(){
     unsigned long long pid;
     pid=sys_createProcess(test_prio,0,0);
+    sys_unblock(pid);
     sys_wait(pid);
     return;
 }

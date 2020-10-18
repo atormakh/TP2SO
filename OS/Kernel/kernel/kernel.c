@@ -64,8 +64,8 @@ int main()
 	initialize_scheduler();
 	createProcess(userlandCodeModuleAddress,0,0);
 	//pipe(0,1,0,0);
+	unblock(0);
 	load_idt();
-	
 	//schedule(0);
 	while(1);
 	return 0;

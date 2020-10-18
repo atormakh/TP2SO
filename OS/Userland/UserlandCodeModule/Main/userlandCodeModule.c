@@ -9,7 +9,8 @@ int main() {
 	pid1=sys_createProcess(screenDrawer, 0, 0);
 	pid2=sys_createProcess(shell, 0, 0);
 	sys_pipe(pid2,1,pid1,0);
-
+	sys_unblock(pid1);
+	sys_unblock(pid2);
 	while(1)
 		sys_yield();
 	

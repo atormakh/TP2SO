@@ -16,8 +16,8 @@ void endless_loop(){
 
   while(1){
     printf("%d ",pid);
-    sys_yield();
-    //bussy_wait(MINOR_WAIT);
+    //sys_yield();
+    bussy_wait(MINOR_WAIT);
   }
 }
 
@@ -28,11 +28,13 @@ void test_prio(){
   uint64_t pids[TOTAL_PROCESSES];
   uint64_t i;
 
-  for(i = 0; i < TOTAL_PROCESSES; i++)
+  for(i = 0; i < TOTAL_PROCESSES; i++){
     pids[i]=sys_createProcess(endless_loop,0,0);
+    sys_unblock(pids[i]);
+  }
 
-   sys_yield();
-  //bussy_wait(WAIT);
+   //sys_yield();
+  bussy_wait(WAIT);
   printf("\nCHANGING PRIORITIES...\n");
 
   for(i = 0; i < TOTAL_PROCESSES; i++){
@@ -48,8 +50,8 @@ void test_prio(){
         break;
     }
   }
-   sys_yield();
-  //bussy_wait(WAIT);
+  // sys_yield();
+  bussy_wait(WAIT);
   printf("\nBLOCKING...\n");
 
   for(i = 0; i < TOTAL_PROCESSES; i++)
@@ -75,8 +77,8 @@ void test_prio(){
   for(i = 0; i < TOTAL_PROCESSES; i++)
     sys_unblock(pids[i]);
 
-  sys_yield();
-  //bussy_wait(WAIT);
+  //sys_yield();
+  bussy_wait(WAIT);
   printf("\nKILLING...\n");
 
   for(i = 0; i < TOTAL_PROCESSES; i++)

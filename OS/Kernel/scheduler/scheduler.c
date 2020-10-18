@@ -41,7 +41,7 @@ unsigned long long createProcess(void * proc, int argc, char * argv[]){
     // TODO recorrer para sobreescribir en el KILLED
     PCB * pcb = scheduler.processes + scheduler.size;
     
-    pcb->state = READY;
+    pcb->state = BLOCKED;
     pcb->pid = scheduler.size;
     pcb->priority = 1;
     pcb->currentTicks = 1;
@@ -139,13 +139,12 @@ void kill(unsigned long long pid){
 }
 
 void unblock(unsigned long long pid){
-    awakeAll(getProc(pid));
-    closeMotive(getProc(pid));
+    getProc(pid)->state=READY;
+
 }
 
 void block(unsigned long long pid){
-    createMotive(getProc(pid));
-    blockMotive(getProc(pid),pid);
+     getProc(pid)->state=BLOCKED;
 }
 
 unsigned long long getPid(){
