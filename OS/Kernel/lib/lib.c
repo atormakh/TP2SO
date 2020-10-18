@@ -130,3 +130,11 @@ unsigned long long pow(unsigned int base, unsigned int exp){
     return ret;
 }
 
+int strlen(char * buffer){
+    int i=0;
+    while(*buffer!=0){
+        buffer++;
+        i++;
+    }   
+    return i;
+}

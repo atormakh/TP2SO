@@ -4,7 +4,7 @@
 #include <scheduler.h>
 
 int pipe(unsigned long pidWriter, unsigned int fdWrite, unsigned long pidReader, unsigned int fdRead ){
-    
+    //closePipeProc(fdWrite,pidWriter);
     Pipe * pipe;
     if((pipe=getProc(pidReader)->fd[fdRead]) == NULL){
         pipe = m_alloc(PAGE_SIZE);
@@ -20,6 +20,8 @@ int pipe(unsigned long pidWriter, unsigned int fdWrite, unsigned long pidReader,
         pipe->writeIndex=0;
         pipe->readIndex=0;
         pipe->counter = 0;
+        pipe->writerRefs = 0;
+        pipe->readerRefs = 0;
         pipe->status=READ | WRITE;
         pipe->bufferSize=PAGE_SIZE;
 
@@ -30,9 +32,11 @@ int pipe(unsigned long pidWriter, unsigned int fdWrite, unsigned long pidReader,
 
     }
     setProcFD(pidWriter,fdWrite,pipe, WRITE);
-
+    pipe->writerRefs++;
+    pipe->readerRefs++;
     PCB * procReader = getProc(pidReader);
     PCB * procWriter = getProc(pidWriter);
+
     awakeAll(procWriter);
     closeMotive(procWriter);
     awakeAll(procReader);
@@ -40,4 +44,16 @@ int pipe(unsigned long pidWriter, unsigned int fdWrite, unsigned long pidReader,
     return 0;
 }
 
+void closePipe(int fd){
+    closePipeProc(fd,getCurrentProc()->pid);
+}
+
+void closePipeProc(int fd, unsigned long long pid){
+//     Pipe * pipe = getProc(pid)->fd[fd];
+//     if(pipe == NULL) return;
+//     int permission = getProc(pid)->role[fd];
+//     if(permission == WRITE) pipe->writerRefs--;
+//     else pipe->readerRefs--;
+//     if(pipe->readerRefs <=0 && pipe->writerRefs<=0) m_free(pipe);
+}
 

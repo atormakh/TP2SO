@@ -89,7 +89,14 @@ unsigned long long createProcess(void * proc, int argc, char * argv[]){
 
     PCB * current = getCurrentProc();
 
-    for(int i=0;i<MAX_PIPES;i++) pcb->fd[i]=current->fd[i];
+    for(int i=0;i<MAX_PIPES;i++){ 
+        pcb->fd[i]=current->fd[i];
+        pcb->role[i]=current->role[i];
+        if(pcb->fd[i] != NULL){
+            if(pcb->role[i] == WRITE) pcb->fd[i]->writerRefs++;
+            else  pcb->fd[i]->readerRefs++;
+        }
+    }
 
     return pcb->pid;
 
@@ -135,7 +142,13 @@ void kill(unsigned long long pid){
     awakeAll(&proc->pid);
     closeMotive(proc);
     closeMotive(&proc->pid);
+    // for(int i = 0; i<MAX_PIPES;i++){
+    //     awakeAll(proc->fd[i]);
+    //     //closePipeProc(i,pid);
+        
+    // } 
     m_free(proc->rbp);
+    m_free(proc);
 }
 
 void unblock(unsigned long long pid){
@@ -164,8 +177,10 @@ void exit(int ret){
 }
 
 void wait(unsigned  long long pid){
-    createMotive(&getProc(pid)->pid);
-    blockMotive(&getProc(pid)->pid,getCurrentProc()->pid);
+    PCB * proc = getProc(pid);
+    if(proc->state==KILLED) return;
+    createMotive(&proc->pid);
+    blockMotive(&proc->pid,getCurrentProc()->pid);
     yield();
 }
 
@@ -196,6 +211,7 @@ void ps(char * buffer){
 int setProcFD(unsigned long pid,unsigned int fd, Pipe * pipe, unsigned int permission){
     PCB * proc = getProc(pid);
     proc->fd[fd]=pipe;
+    proc->role[fd]=permission;
     return 0;
 }
 

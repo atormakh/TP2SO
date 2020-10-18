@@ -23,6 +23,7 @@ typedef struct  PCB {
     STATE state;
     int currentTicks;
     Pipe * fd[MAX_PIPES];
+    int role[MAX_PIPES];
    
 
 } PCB;

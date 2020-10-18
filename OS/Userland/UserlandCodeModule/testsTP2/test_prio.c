@@ -19,6 +19,7 @@ void endless_loop(){
     //sys_yield();
     bussy_wait(MINOR_WAIT);
   }
+  
 }
 
 #define TOTAL_PROCESSES 3
