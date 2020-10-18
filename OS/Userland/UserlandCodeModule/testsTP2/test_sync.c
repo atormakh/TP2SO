@@ -51,8 +51,8 @@ void test_sync(){
   char * args2[]={"1","-1", TESTS_QTY};
   unsigned long long pids[TOTAL_PAIR_PROCESSES*2];
   for(i = 0; i < TOTAL_PAIR_PROCESSES; i++){
-    pids[2*i]=sys_createProcess(inc, 3, args1);
-    pids[2*i+1]=sys_createProcess(inc, 3, args2);
+    pids[2*i]=sys_createProcess(inc,"inc", 3, args1);
+    pids[2*i+1]=sys_createProcess(inc,"inc", 3, args2);
     sys_unblock(pids[2*i]);
     sys_unblock(pids[2*i+1]);
   }
@@ -73,8 +73,8 @@ void test_no_sync(){
 
   unsigned long long pids[TOTAL_PAIR_PROCESSES*2];
   for(i = 0; i < TOTAL_PAIR_PROCESSES; i++){
-    pids[2*i]=sys_createProcess(inc, 3, args1);
-    pids[2*i+1]=sys_createProcess(inc, 3, args2);
+    pids[2*i]=sys_createProcess(inc,"inc", 3, args1);
+    pids[2*i+1]=sys_createProcess(inc,"inc", 3, args2);
     sys_unblock(pids[2*i]);
     sys_unblock(pids[2*i+1]);
   }

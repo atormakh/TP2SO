@@ -21,6 +21,9 @@ GLOBAL sys_kill
 GLOBAL sys_block
 GLOBAL sys_unblock
 GLOBAL sys_wait
+GLOBAL sys_m_alloc
+GLOBAL sys_m_free
+GLOBAL sys_c_alloc
 
 sys_readKeyboard:  ;char* buffer, int count
 	push rbp
@@ -69,7 +72,7 @@ sys_drawRect:  ;rect * rectangle
 	pop rbp
 	ret
 
-sys_createProcess:  ;void * func, int argc, char * args[]
+sys_createProcess:  ;void * func, char * name, int argc, char * args[]
 	push rbp
 	mov rbp,rsp
 	mov rax, 5
@@ -225,6 +228,33 @@ sys_wait: 		;sys_wait(unsigned long long pid)
 	push rbp
 	mov rbp,rsp
 	mov rax, 22
+	int 80h
+	mov rsp, rbp
+	pop rbp
+	ret
+
+sys_m_alloc:
+	push rbp
+	mov rbp,rsp
+	mov rax, 23
+	int 80h
+	mov rsp, rbp
+	pop rbp
+	ret
+
+sys_m_free:
+	push rbp
+	mov rbp,rsp
+	mov rax, 24
+	int 80h
+	mov rsp, rbp
+	pop rbp
+	ret
+
+sys_c_alloc:
+	push rbp
+	mov rbp,rsp
+	mov rax, 25
 	int 80h
 	mov rsp, rbp
 	pop rbp

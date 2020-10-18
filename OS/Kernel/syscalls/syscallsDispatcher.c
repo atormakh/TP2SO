@@ -26,7 +26,7 @@ unsigned long long syscallsDispatcher (uint64_t id, uint64_t * registers){
             drawRect((void *)registers[0]);
             break;
         case 5:
-            return createProcess((void *)registers[0], registers[1], (char **)registers[2]);
+            return createProcess((void *)registers[0], (char *)registers[1] ,registers[2], (char **)registers[3]);
             break;
         case 6:            
             yield();
@@ -79,6 +79,15 @@ unsigned long long syscallsDispatcher (uint64_t id, uint64_t * registers){
             break;
         case 22:
             wait(registers[0]);
+            break;
+        case 23:
+            m_alloc(registers[0]);
+            break;
+        case 24:
+            m_free(registers[0]);
+            break;
+        case 25:
+            c_alloc(registers[0]);
             break;
     }
     return id;

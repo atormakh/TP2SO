@@ -9,11 +9,11 @@ unsigned long long counter = 0;
 
 
 char * messages[] = {"Command not found", "Wrong number of arguments"};
-char * builtin_commands[] = {"help", "ps", 0};
+char * builtin_commands[] = {"help", "ps", "kill",  "block", "unblock", "nice", 0};
 char * application_commands[] = {"cat","filter","wc","loop","testSync", "testNoSync","testPrio", 0};
-void  (* builtin_run[])(int,char * * ) = {help,ps}; //faltan { mem,kill,nice,block,sem,pipe}
-void * applications[]={cat,filter,wc,loop,test_sync, test_no_sync,test_prio};     //faltan {cat,wc,filter,phylo, test_m}
-
+void  (* builtin_run[])(int,char * * ) = {help,ps, kill, block, unblock, nice}; //faltan { mem,kill,nice,block,sem,pipe}
+void * applications[]={cat,filter,wc,loop,test_sync, test_no_sync,test_prio};     //faltan {phylo, test_m}
+int waitingPids[MAX_PIPED_PROCS];
 
 int inController(int c, char * in, int inIndex){
 	
@@ -98,12 +98,12 @@ void exec(char * in){
     
     int prevPid;
     int currentPid;
-    int waitingPids[procs];
+    int inputHandlerPid; 
     int j = 0;
     int needsWaiting=0;
     //2 loop 1 &
     
-    prevPid=sys_createProcess(shellInputHandler,0,0);
+    prevPid=inputHandlerPid=sys_createProcess(shellInputHandler,"sh_input_handler",0,0);
     for(int i=0 ;i<procs;i++){
         needsWaiting=0;
         if((unsigned long long)cmds[i][(unsigned long long)(cmds[i][ARG_C])+1][0] != '&'){
@@ -113,7 +113,10 @@ void exec(char * in){
             cmds[i][ARG_C]--;
         }
         char ** procArgs=(char **)(cmds+i)+ARG_V;
-        currentPid = sys_createProcess(applications[(unsigned long long)cmds[i][COMMAND]],(unsigned long long)cmds[0][ARG_C],procArgs);
+        currentPid = sys_createProcess(applications[(unsigned long long)cmds[i][COMMAND]],
+                                    application_commands[(unsigned long long)cmds[i][COMMAND]],
+                                    (unsigned long long)cmds[0][ARG_C],
+                                    procArgs);
         
         if(needsWaiting){
             waitingPids[j]=currentPid;
@@ -130,7 +133,9 @@ void exec(char * in){
         prevPid = currentPid;
     }
     sys_unblock(currentPid);
+    waitingPids[j]=-1;
     for(int i = 0; i<j;i++) sys_wait(waitingPids[i]);
+    sys_kill(inputHandlerPid);
         
 }
 
@@ -206,6 +211,9 @@ void shellInputHandler(){
                  sys_readKeyboard(&c,1);
                  if(c=='d'){
                      sys_exit(0);
+                 }else if(c=='c'){
+                     int i=0;
+                     while(waitingPids[i]!=-1) sys_kill(waitingPids[i++]);
                  }
             }else{
                 inIndex=inController(c,in,inIndex);

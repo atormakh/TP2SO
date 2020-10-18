@@ -30,7 +30,7 @@ void test_prio(){
   uint64_t i;
 
   for(i = 0; i < TOTAL_PROCESSES; i++){
-    pids[i]=sys_createProcess(endless_loop,0,0);
+    pids[i]=sys_createProcess(endless_loop,"endless_loop",0,0);
     sys_unblock(pids[i]);
   }
 

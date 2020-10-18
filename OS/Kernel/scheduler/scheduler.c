@@ -28,7 +28,7 @@ void initialize_scheduler(){
     initSemaphores();
 }
 
-unsigned long long createProcess(void * proc, int argc, char * argv[]){
+unsigned long long createProcess(void * proc, char * name, int argc, char * argv[]){
     
     // TODO recorrer para sobreescribir en el KILLED
     PCB * pcb = scheduler.processes + scheduler.size;
@@ -104,7 +104,8 @@ unsigned long long createProcess(void * proc, int argc, char * argv[]){
             else  pcb->fd[i]->readerRefs++;
         }
     }
-
+    pcb->blockingRefs=1;
+    pcb->name=name;
     return pcb->pid;
 
 }
@@ -161,12 +162,20 @@ void kill(unsigned long long pid){
 
 void unblock(unsigned long long pid){
     
-    if(getProc(pid)->state != KILLED)getProc(pid)->state=READY;
+    if(getProc(pid)->state != KILLED){
+        getProc(pid)->state=READY;
+        getProc(pid)->blockingRefs--;
+    }
+
+
 
 }
 
 void block(unsigned long long pid){
-     if(getProc(pid)->state != KILLED)getProc(pid)->state=BLOCKED;
+     if(getProc(pid)->state != KILLED){
+        getProc(pid)->state=BLOCKED;
+        getProc(pid)->blockingRefs++;
+     }
 }
 
 unsigned long long getPid(){
@@ -194,22 +203,33 @@ void wait(unsigned  long long pid){
     yield();
 }
 
-void ps(char * buffer){
-    
+void ps(char * buffer){   
+    buffer+=strcpy(buffer, "PID | prio |   rbp   |   rsp   |  status  | name \n");
+    PCB  proc;
     for(int i = 0; i< scheduler.size;i++){
-        buffer+=intToString(scheduler.processes[i].pid,buffer);
-        *buffer++=' ';
-        switch (scheduler.processes[i].state){
+        proc = scheduler.processes[i];
+        buffer+=intToString(proc.pid,buffer);
+        buffer += strcpy(buffer, "    ");
+        
+        buffer += intToString( proc.priority,buffer);
+        buffer += strcpy(buffer, "    ");
+        buffer += intToString(proc.rbp, buffer);
+        buffer += strcpy(buffer, "    ");
+        buffer += intToString(proc.rsp, buffer);
+        buffer += strcpy(buffer, "    ");
+        switch (proc.state){
         case READY:
             buffer += strcpy(buffer,"RUNNING ");
             break;
         case KILLED:
-            buffer += strcpy(buffer,"DEAD ");
+            buffer += strcpy(buffer,"DEAD    ");
             break;
         case BLOCKED:
             buffer += strcpy(buffer,"BLOCKED ");
             break;
         }
+        buffer += strcpy(buffer, "    ");
+        buffer += strcpy(buffer, proc.name);        
         *buffer++='\n';
         
        
@@ -235,6 +255,7 @@ int blockMotive(void * id,unsigned long pid){
     PCB * proc = getProc(pid);
     push(motive->processes,proc,proc->pid);
     proc->state=BLOCKED;
+    proc->blockingRefs++;
     return 1;
 }
 
@@ -273,7 +294,9 @@ int awake(void * id){
     PCB * proc = pop(motive->processes);
     if(proc==NULL) return -1;
     if(proc->state==KILLED) return -1;
-    proc->state=READY;
+    proc->blockingRefs--;
+    if(proc->blockingRefs <=0) proc->blockingRefs=0;
+    if(proc->blockingRefs==0)proc->state=READY;
     return proc->pid;
 }
 
@@ -282,8 +305,11 @@ int awakeAll(void * id){
     if(motive == NULL) return 0;
     while(motive->processes->size>0){
         PCB * proc = ((PCB *)pop(motive->processes));
-        if(proc->state!=KILLED)
-            proc->state=READY;
+        if(proc->state!=KILLED){
+            proc->blockingRefs--;
+            if(proc->blockingRefs <=0) proc->blockingRefs=0;
+            if(proc->blockingRefs==0)proc->state=READY;
+        }
     }
     return 1;
 }

@@ -15,3 +15,24 @@ void ps(){
     sys_ps(buffer);
     puts(buffer);
 }
+
+void kill(int argc, char * args[]){
+    unsigned long long pid = stringToInt(args[0]);
+    sys_kill(pid);
+}
+
+void block(int argc, char * args[]){
+    unsigned long long pid = stringToInt(args[0]);
+    sys_block(pid);
+}
+
+void unblock(int argc, char * args[]){
+    unsigned long long pid = stringToInt(args[0]);
+    sys_unblock(pid);
+}
+
+void nice(int argc, char * args[]){
+    unsigned long long pid = stringToInt(args[0]);
+    unsigned long long prio = stringToInt(args[1]);
+    sys_nice(pid,prio);
+}
