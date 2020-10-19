@@ -2,7 +2,7 @@
 #include <syscalls.h>
 #include "test_util.h"
 
-#define MAX_BLOCKS 1024*400
+#define MAX_BLOCKS 400*1024
 #define MAX_MEMORY 1024*1024*400 //Should be around 80% of memory managed by the MM
 
 typedef struct MM_rq{
@@ -23,8 +23,6 @@ void test_mm(){
     // Request as many blocks as we can
     while(rq < MAX_BLOCKS && total < MAX_MEMORY){
       mm_rqs[rq].size = GetUniform(MAX_MEMORY - total - 1) + 1;
-      printf(" %d ",mm_rqs[rq].size );
-      while(1);
       mm_rqs[rq].address = sys_m_alloc(mm_rqs[rq].size); // TODO: Port this call as required
             
 //TODO: check if NULL
@@ -38,11 +36,13 @@ void test_mm(){
       if (mm_rqs[i].address != NULL)
         memSet(mm_rqs[i].address, i, mm_rqs[i].size); // TODO: Port this call as required
 
+
     // Check
     for (i = 0; i < rq; i++)
       if (mm_rqs[i].address != NULL)
         if(!memcheck(mm_rqs[i].address, i, mm_rqs[i].size))
           printf("ERROR!\n"); // TODO: Port this call as required
+
 
     // m_free
     for (i = 0; i < rq; i++)

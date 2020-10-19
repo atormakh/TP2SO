@@ -34,7 +34,6 @@ unsigned int getLevel(unsigned long long size);
 unsigned long long computeVirtualSize(unsigned long long memSize);
 int getValue(unsigned int level, unsigned int offset);
 void allocateBranch(unsigned int level, unsigned int offset);
-void setRecursivelyDown(unsigned int level, unsigned int offset,int flag);
 void * getPtr(unsigned int level, unsigned int offset);
 void freeBranch(unsigned int level, unsigned int offset);
 

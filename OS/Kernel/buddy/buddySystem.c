@@ -43,7 +43,7 @@ void initialize_mem_man(void * memBase, size_t memSize, size_t minPageSize){
 
 unsigned long long computeBuddySize(unsigned long long memSize, unsigned long long minPageSize){
     int levels = Log2n(memSize / minPageSize)+1;
-    return 2*(pow(2, levels)) / 8;
+    return (pow(2, levels)) / 8;
 }
 
 unsigned int getLevel(unsigned long long size){
@@ -62,7 +62,21 @@ unsigned long long computeVirtualSize(unsigned long long memSize){
 
 int getValue(unsigned int level, unsigned int offset){
     int baseLevel = pow(2, level)-1;
-    return getBit(buddy.base + 2*(baseLevel+offset)/8,2*(baseLevel+offset)%8);
+    return getBit(buddy.base + (baseLevel+offset)/8,(baseLevel+offset)%8);
+}
+
+int checkUpwards(unsigned int level, unsigned int offset){
+    int buddyIndex = offset%2? offset-1:offset+1;  
+    
+    while(level>0 && getValue(level,buddyIndex)==0){        
+        offset/=2;
+        level--;
+        buddyIndex = offset%2? offset-1:offset+1;
+        if(getValue(level,offset)==1)return 0; 
+       
+
+    }
+    return 1; 
 }
 
 void * m_alloc(size_t size){
@@ -70,10 +84,15 @@ void * m_alloc(size_t size){
     int i;
     for( i = 0 ; i < pow(2, level) ; i++){
         if(getValue(level, i)==0){
-            allocateBranch(level, i);
-            return getPtr(level,i); 
+            if(checkUpwards(level,i)){
+                allocateBranch(level, i);
+                buddy.reserved+=buddy.virtualSize/pow(2,level);
+                return getPtr(level,i); 
+            }
         }
     }
+    return NULL;
+    
 }
 
 void * c_alloc(size_t size){
@@ -98,35 +117,32 @@ void * c_alloc(size_t size){
 
 void m_free(void * dir){
     
-
+    
     int offset=((char *)dir-buddy.base)/buddy.minPage;
-    int owner=0;
+    int active=0;
     int baseLevel;
     int level = buddy.levels-1;
-    while(!owner){
+    while(!active){
         baseLevel = pow(2, level)-1;
-        owner=getBit(buddy.base + 2*(baseLevel+offset)/8,2*(baseLevel+offset)%8+1);
-        if(!owner){
+       active=getBit(buddy.base + (baseLevel+offset)/8,(baseLevel+offset)%8);
+        if(!active){
             offset=offset/2;
             level--;
         }
     }
     freeBranch(level,offset);
-
+    buddy.reserved-=buddy.virtualSize/pow(2,level);
     return;
 }
 
 void freeBranch(unsigned int level, unsigned int offset){
 
-    setRecursivelyDown(level, offset, CLEAR);
-
-     int bit =  pow(2, level)-1+offset;
-    clearBit(buddy.base+2*bit/8,2*bit%8+1);
+     int bit;
     
     int buddyIndex = offset%2? offset+1:offset-1;   
     while(level>0 && getValue(level,buddyIndex)==0){
          
-         clearBit(buddy.base+2*bit/8,2*bit%8);
+         clearBit(buddy.base+bit/8,bit%8);
          offset/=2;
          level--;
          buddyIndex = offset%2? offset+1:offset-1;
@@ -140,36 +156,17 @@ void freeBranch(unsigned int level, unsigned int offset){
 
 void allocateBranch(unsigned int level, unsigned int offset){
     int bit;
-    unsigned int tmpOffset = offset;
-    bit =  pow(2, level)-1+offset;
-    setBit(buddy.base+2*bit/8,2*bit%8+1);
+
     for(int i = level ; i >= 0 ; i--){
         bit =  pow(2, i)-1+offset;
-        setBit(buddy.base+2*bit/8,2*bit%8);
+        setBit(buddy.base+bit/8,bit%8);
         offset=offset >> 1;
-    }
-    
-    offset=tmpOffset;
-
-    setRecursivelyDown(level, offset,SET);
-
-}
-
-void setRecursivelyDown(unsigned int level, unsigned int offset, int flag){
-    if(level>buddy.levels) return;
-    int bit =  pow(2, level)-1+offset;
-    if(flag==SET){
-        setBit(buddy.base+2*bit/8,2*bit%8);
-    }else{
-        clearBit(buddy.base+2*bit/8,2*bit%8);
+       
     }
     
 
-    setRecursivelyDown(level+1,offset*2,flag);
-    setRecursivelyDown(level+1,offset*2+1,flag);
-    return;
-
 }
+
 
 
 void * getPtr(unsigned int level, unsigned  int offset){
@@ -187,22 +184,24 @@ void memInfo(char * buffer){
     buffer+=intToString(buddy.memSize/M,buffer);
     buffer+=strcpy(buffer, " MB");
     *buffer++='\n';
-    buffer+=strcpy(buffer, "Overhead: bastante o ");
-    buffer+=intToString(buddy.size,buffer);
+    buffer+=strcpy(buffer, "Overhead: ");
+    buffer+=intToString(buddy.size/K,buffer);
     buffer+=strcpy(buffer, " KB");
     *buffer++='\n';
     buffer+=strcpy(buffer, "Page size: ");
-    buffer+=intToString(buddy.minPage,buffer);
-    //buffer+=strcpy(buffer, " KB");
+    buffer+=intToString(buddy.minPage/K,buffer);
+    buffer+=strcpy(buffer, " KB");
     *buffer++='\n';
     buffer+=strcpy(buffer, "Page quantity: ");
-   // buffer+=intToString(buddy.,buffer);
+    buffer+=intToString(pow(2,buddy.levels-1),buffer);
     *buffer++='\n';
-    buffer+=strcpy(buffer, "Reserved Pages: ");
-    buffer+=intToString(buddy.reserved,buffer);
+    buffer+=strcpy(buffer, "Reserved memory: ");
+    buffer+=intToString(buddy.reserved/K,buffer);
+    buffer+=strcpy(buffer, " KB");
     *buffer++='\n';
-    buffer+=strcpy(buffer, "Free Pages: ");
-    buffer+=intToString(buddy.reserved,buffer);
+    buffer+=strcpy(buffer, "Free memory: ");
+    buffer+=intToString((buddy.memSize-buddy.reserved)/K,buffer);
+    buffer+=strcpy(buffer, " KB");
     *buffer++='\n';
      *buffer++=0;
 }
