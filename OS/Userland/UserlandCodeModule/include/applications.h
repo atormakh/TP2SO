@@ -9,5 +9,7 @@ int cat();
 int filter();
 int loop(int argc, char * args[]);
 int wc();
+int phylo();
+
 
 #endif

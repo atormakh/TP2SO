@@ -22,6 +22,7 @@ int strcmp(char * str1, char * str2);
 int doubleToString(double value, char * buffer);
 double stringToDouble(char *init, char *end);
 int stringToInt(char * buffer);
+void * stringToPtr(char * buffer);
 
 
 

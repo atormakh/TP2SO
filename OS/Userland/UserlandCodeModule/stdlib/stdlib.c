@@ -216,6 +216,16 @@ void printNum(uint64_t num){
     
 }
 
+
+void * stringToPtr(char * buffer){
+    unsigned long long res = 0; 
+
+    for (int i=0; buffer[i] != '\0'; ++i) 
+        res = res * 10 + buffer[i] - '0'; 
+  
+    return res; 
+} 
+
 int stringToInt(char * buffer){
     int res = 0; 
     int sign = 1; 
