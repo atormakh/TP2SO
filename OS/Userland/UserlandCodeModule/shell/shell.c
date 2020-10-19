@@ -39,7 +39,7 @@ int inController(int c, char * in, int inIndex){
                 putchar(c);
 			}
 		}
-		else{
+		else if((c>'a' && c<'z') || (c>'A' && c<'Z') || (c>'0' && c<'9') || c=='|' || c=='&' || c==' ' ){
 			in[inIndex++] = c;
 			in[inIndex]=0;
             putchar(c);
@@ -54,6 +54,8 @@ int inController(int c, char * in, int inIndex){
 void shell(){
     unsigned int inIndex=0;
     char in[MAX_INPUT];
+    strcpy(in,"hola cami");
+    in[0]=0;
     char c;
     while(1){
         puts("shell@convinux>");
@@ -62,8 +64,9 @@ void shell(){
             inIndex=inController(c,in,inIndex);
             sys_readKeyboard(&c,1);
 		}
-
+       
         puts("\n");
+        puts(in);
 		exec(in);
         puts("\n");
 
