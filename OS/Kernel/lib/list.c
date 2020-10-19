@@ -2,7 +2,7 @@
 #include<ipc.h>
 
 List *newList(){
-    List *list = m_alloc(PAGE_SIZE);
+    List *list = c_alloc(PAGE_SIZE);
     list->size = 0;
     list->start = 0;
     return list;
@@ -38,7 +38,7 @@ void push(List *list, void *val, unsigned long long hash){
 
     Node *head = list->start;
     Node *new_node;
-    new_node = (Node *)m_alloc(sizeof(Node));
+    new_node = (Node *)c_alloc(sizeof(Node));
 
     new_node->elem = val;
     new_node->hash = hash;
@@ -102,4 +102,18 @@ Node * first(List * list){
         return list->start->elem;
     }
     return NULL;
+}
+
+void iterator(List * list){
+    list->iterator = list->start;
+}
+
+int hasNext(List * list){
+    return list->iterator!=NULL;
+}
+
+void * next(List * list){
+    void * aux = list->iterator->elem;
+    list->iterator = list->iterator->next;
+    return aux;
 }

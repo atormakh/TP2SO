@@ -8,7 +8,7 @@ void sys_yield();
 void sys_exit(int status);
 void sys_ps(char * buffer);
 void sys_sleep(unsigned int seconds);
-void sys_pipe(unsigned long pidWriter, unsigned int fdWrite, unsigned long pidReader, unsigned int fdRead );
+void sys_pipe(char * pipeId, unsigned long pidWriter, unsigned int fdWrite, unsigned long pidReader, unsigned int fdRead );
 unsigned long long sys_readPipe(int fd,char * buffer, int n);
 void sys_writePipe(int fd,char * buffer, int n);
 void sys_openSem(char * sem_id,int value);
@@ -24,6 +24,8 @@ void sys_wait(unsigned long long pid);
 void sys_m_alloc(unsigned long long size);
 void sys_m_free(void * ptr);
 void sys_c_alloc(unsigned long long size);
+void sys_pipesInfo(char * buffer);
+void sys_semsInfo(char * buffer);
 
 
 

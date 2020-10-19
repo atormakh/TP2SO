@@ -9,9 +9,9 @@ unsigned long long counter = 0;
 
 
 char * messages[] = {"Command not found", "Wrong number of arguments"};
-char * builtin_commands[] = {"help", "ps", "kill",  "block", "unblock", "nice", 0};
+char * builtin_commands[] = {"help", "ps", "kill",  "block", "unblock", "nice","pipe","sem", 0};
 char * application_commands[] = {"cat","filter","wc","loop","testSync", "testNoSync","testPrio", 0};
-void  (* builtin_run[])(int,char * * ) = {help,ps, kill, block, unblock, nice}; //faltan { mem,kill,nice,block,sem,pipe}
+void  (* builtin_run[])(int,char * * ) = {help,ps, kill, block, unblock, nice,pipes,sems}; //faltan { mem,kill,nice,block,sem,pipe}
 void * applications[]={cat,filter,wc,loop,test_sync, test_no_sync,test_prio};     //faltan {phylo, test_m}
 int waitingPids[MAX_PIPED_PROCS];
 
@@ -124,9 +124,9 @@ void exec(char * in){
         }
         
         if(i==0)
-            sys_pipe(prevPid, WRITE+1, currentPid, READ);
+            sys_pipe(NULL,prevPid, WRITE+1, currentPid, READ);
         else //crear pipe
-            sys_pipe(prevPid, WRITE, currentPid, READ);
+            sys_pipe(NULL,prevPid, WRITE, currentPid, READ);
         
         //desbloquear proceso anterior
         sys_unblock(prevPid);

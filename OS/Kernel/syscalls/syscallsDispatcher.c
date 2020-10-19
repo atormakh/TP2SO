@@ -42,7 +42,7 @@ unsigned long long syscallsDispatcher (uint64_t id, uint64_t * registers){
             sleep(registers[0]);
             break;
         case 10:
-            pipe(registers[0],registers[1],registers[2],registers[3]);
+            pipe((char *)registers[0],registers[1],registers[2],registers[3],registers[4]);
             break;
         case 11:
             return readPipe(registers[0],(void *)registers[1],registers[2]);
@@ -84,10 +84,16 @@ unsigned long long syscallsDispatcher (uint64_t id, uint64_t * registers){
             m_alloc(registers[0]);
             break;
         case 24:
-            m_free(registers[0]);
+            m_free((void *)registers[0]);
             break;
         case 25:
             c_alloc(registers[0]);
+            break;
+        case 26:
+            pipesInfo((char *)registers[0]);
+            break;
+        case 27:
+            semsInfo((char *)registers[0]);
             break;
     }
     return id;

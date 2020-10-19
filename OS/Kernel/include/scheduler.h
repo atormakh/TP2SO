@@ -58,6 +58,8 @@ int awake(void * motiveId);
 int awakeAll(void * motiveId);
 int createMotive(void * id);
 void closeMotive(void * id);
+List * getMotive(void * id);
+int printProcsInMotive(char * buffer, List * procs);
 unsigned long long getPid();
 void nice(unsigned long long pid, unsigned int priority);
 void kill(unsigned  long long pid);

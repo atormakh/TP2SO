@@ -18,6 +18,7 @@ int strcpy(char * dest, char * source);
 int strcmp(char * str1, char * str2);
 int doubleToString(double value, char * buffer);
 double stringToDouble(char *init, char *end);
+unsigned long strHash(char *str);
 int stringToInt(char * buffer);
 
 

@@ -257,7 +257,15 @@ int intToString(unsigned long long num, char * buffer)
     return intToBase(num,10,buffer);
 }
  
+unsigned long strHash(char *str){
+    unsigned long hash = 5381;
+    int c;
 
+    while ((c = *str++))
+        hash = ((hash << 5) + hash) + c; /* hash * 33 + c */
+
+    return hash;
+}
 
 int stringToInt(char * buffer){
     int res = 0; 

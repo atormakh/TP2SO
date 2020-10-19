@@ -24,6 +24,9 @@ GLOBAL sys_wait
 GLOBAL sys_m_alloc
 GLOBAL sys_m_free
 GLOBAL sys_c_alloc
+GLOBAL sys_pipesInfo
+GLOBAL sys_semsInfo
+
 
 sys_readKeyboard:  ;char* buffer, int count
 	push rbp
@@ -259,3 +262,22 @@ sys_c_alloc:
 	mov rsp, rbp
 	pop rbp
 	ret
+
+sys_pipesInfo:
+	push rbp
+	mov rbp,rsp
+	mov rax, 26
+	int 80h
+	mov rsp, rbp
+	pop rbp
+	ret
+
+sys_semsInfo:
+	push rbp
+	mov rbp,rsp
+	mov rax, 27
+	int 80h
+	mov rsp, rbp
+	pop rbp
+	ret
+

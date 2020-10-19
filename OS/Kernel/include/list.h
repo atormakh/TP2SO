@@ -12,6 +12,7 @@ typedef struct Node{
 typedef struct List{
     Node * start;
     unsigned long long size;
+    Node * iterator;
 }List;
 
 List *newList();
@@ -22,5 +23,8 @@ void * pop(List * list);
 void * get(List * list,  unsigned long long hash);
 void *peek(List *list);
 void freeList(List * list);
+void iterator(List * list);
+int hasNext(List * list);
+void * next(List * list);
 
 #endif

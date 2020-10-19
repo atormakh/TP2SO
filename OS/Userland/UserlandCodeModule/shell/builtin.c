@@ -36,3 +36,15 @@ void nice(int argc, char * args[]){
     unsigned long long prio = stringToInt(args[1]);
     sys_nice(pid,prio);
 }
+
+void pipes(){
+    char buffer[1024];
+    sys_pipesInfo(buffer);
+    puts(buffer);
+}
+
+void sems(){
+    char buffer[1024];
+    sys_semsInfo(buffer);
+    puts(buffer);
+}

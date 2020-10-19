@@ -4,14 +4,13 @@
 
 #define TOTAL_PAIR_PROCESSES 2
 #define SEM_ID "sem"
-#define TESTS_QTY "10"
+#define TESTS_QTY "1000000"
 
 int64_t global;  //shared memory
 
 void slowInc(int64_t *p, int64_t inc){
   int64_t aux = *p;
   aux += inc;
-  sys_yield();
   *p = aux;
 }
 
@@ -34,7 +33,7 @@ void inc(int argc, char * args[]){
   }
 
   
-  //if (sem) sys_closeSem(SEM_ID);
+  if (sem) sys_closeSem(SEM_ID);
   
   printf("Final value: %d\n", global);
   sys_exit(0);

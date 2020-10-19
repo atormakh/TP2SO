@@ -213,9 +213,9 @@ void ps(char * buffer){
         
         buffer += intToString( proc.priority,buffer);
         buffer += strcpy(buffer, "    ");
-        buffer += intToString(proc.rbp, buffer);
+        buffer += intToString((unsigned long long)proc.rbp, buffer);
         buffer += strcpy(buffer, "    ");
-        buffer += intToString(proc.rsp, buffer);
+        buffer += intToString((unsigned long long)proc.rsp, buffer);
         buffer += strcpy(buffer, "    ");
         switch (proc.state){
         case READY:
@@ -267,7 +267,7 @@ int createMotive(void * id){
     Motive * motive = get(scheduler.motives,(unsigned long long)id);
     if(motive!=NULL) return -1;
     
-    motive = m_alloc(sizeof(Motive));
+    motive = c_alloc(sizeof(Motive));
     if(motive == NULL){
         //error
         return -1;
@@ -285,6 +285,29 @@ void closeMotive(void * id){
     
     freeList(motive->processes);
     m_free(motive);
+}
+
+List * getMotive(void * id){
+    Motive * motive = get(scheduler.motives, (unsigned long long) id);
+    if(motive == NULL) return NULL;
+    return motive->processes;
+}
+
+int printProcsInMotive(char * buffer, List * procs){
+     int n = 0;
+     if(procs==NULL || procs->size==0){ 
+        n=strcpy(buffer,"none");
+        return n;
+     }
+    iterator(procs);
+   
+    while(hasNext(procs)){
+        int pid = ((PCB *)next(procs))->pid;
+        n+= intToString(pid, buffer+n);
+        n+= strcpy(buffer+n, "  ");
+    }
+    return n;        
+
 }
 
 

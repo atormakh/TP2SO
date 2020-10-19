@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 
+#define NULL 0
 
 void printNum(uint64_t num);
 void hlt();

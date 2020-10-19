@@ -17,4 +17,5 @@ void semWait(char * semId);
 void closeSem(char * semId);
 void acquire(int * lock);
 void release(int * lock);
+void semsInfo(char * buffer);
 #endif
