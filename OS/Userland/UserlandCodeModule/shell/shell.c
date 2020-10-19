@@ -10,9 +10,9 @@ unsigned long long counter = 0;
 
 char * messages[] = {"Command not found", "Wrong number of arguments"};
 char * builtin_commands[] = {"help", "ps", "kill",  "block", "unblock", "nice","pipe","sem","mem", 0};
-char * application_commands[] = {"cat","filter","wc","loop","testSync", "testNoSync","testPrio", 0};
-void  (* builtin_run[])(int,char * * ) = {help,ps, kill, block, unblock, nice,pipes,sems,mem}; //faltan { mem,kill,nice,block,sem,pipe}
-void * applications[]={cat,filter,wc,loop,test_sync, test_no_sync,test_prio};     //faltan {phylo, test_m}
+char * application_commands[] = {"cat","filter","wc","loop","testSync", "testNoSync","testPrio", "testMm", 0};
+void  (* builtin_run[])(int,char * * ) = {help,ps, kill, block, unblock, nice,pipes,sems,mem}; 
+void * applications[]={cat,filter,wc,loop,test_sync, test_no_sync,test_prio, test_mm};     //faltan {phylo, test_m}
 int waitingPids[MAX_PIPED_PROCS];
 
 int inController(int c, char * in, int inIndex){

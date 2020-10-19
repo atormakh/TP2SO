@@ -94,6 +94,7 @@ void freeList(List * list){
             actual = actual->next;
             m_free(prev);
         }
+        m_free(list);
     }
 }
 

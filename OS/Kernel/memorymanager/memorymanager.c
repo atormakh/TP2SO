@@ -1,6 +1,7 @@
 #include <memorymanager.h>
 #ifndef BUDDY
 #include <lib.h>
+#include <scheduler.h>
 #include <video.h>
 
 MemoryManager mm;
@@ -17,7 +18,7 @@ void initialize_mem_man(void * memory, size_t ps, size_t qty){
 
 void * m_alloc( size_t size ){
     
-   
+    
     unsigned long blocks_q = (size-1)/mm.page_size + 1;
     
     unsigned long i = 0;
@@ -84,7 +85,7 @@ unsigned long calc_idx_from_ptr(void * ptr){
 void memInfo(char * buffer){
     buffer+=strcpy(buffer, "Memory state \n");
     buffer+=strcpy(buffer, "Base Address: ");
-    buffer+=intToString(mm.base,buffer);
+    buffer+=intToString((int) mm.base,buffer);
     *buffer++='\n';
     buffer+=strcpy(buffer, "Memory Size: ");
     buffer+=intToString(mm.page_size*mm.pages_q/M,buffer);
