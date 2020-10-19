@@ -19,10 +19,14 @@ void test_mm(){
     rq = 0;
     total = 0;
 
+
     // Request as many blocks as we can
     while(rq < MAX_BLOCKS && total < MAX_MEMORY){
       mm_rqs[rq].size = GetUniform(MAX_MEMORY - total - 1) + 1;
+      printf(" %d ",mm_rqs[rq].size );
+      while(1);
       mm_rqs[rq].address = sys_m_alloc(mm_rqs[rq].size); // TODO: Port this call as required
+            
 //TODO: check if NULL
       total += mm_rqs[rq].size;
       rq++;

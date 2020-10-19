@@ -1,20 +1,8 @@
-#include <memoryDefs.h>
-#ifndef BUDDY
 #ifndef MEMORY_MANAGER_H
 #define MEMORY_MANAGER_H
+#include <memoryDefs.h>
+#ifndef BUDDY
 
-#define NULL 0
-
-#define K 1024
-#define M 1048576
-#define G 1073741824
-
-#define PAGE_SIZE K
-
-#define FREE 0
-#define TAKEN 1
-
-typedef unsigned long size_t;
 
 typedef struct MemoryManager{
     void * base;
@@ -24,12 +12,38 @@ typedef struct MemoryManager{
     unsigned long long reserved;
 }MemoryManager;
 
-void initialize_mem_man( void * memory, size_t ps, size_t qty);
-void * m_alloc( size_t size );
-void * c_alloc(size_t size);
 void * calc_ptr_from_idx(unsigned long block_idx);
 unsigned long calc_idx_from_ptr(void * ptr);
+
+
+#else
+
+
+typedef struct BuddySystem{
+    unsigned long long memSize;
+    unsigned long long minPage;
+    unsigned long long virtualSize;
+    unsigned long long size;
+    unsigned int levels;
+    unsigned long long reserved;
+    char * base;
+}BuddySystem;
+
+unsigned long long computeBuddySize(unsigned long long memSize, unsigned long long minPageSize);
+unsigned int getLevel(unsigned long long size);
+unsigned long long computeVirtualSize(unsigned long long memSize);
+int getValue(unsigned int level, unsigned int offset);
+void allocateBranch(unsigned int level, unsigned int offset);
+void setRecursivelyDown(unsigned int level, unsigned int offset,int flag);
+void * getPtr(unsigned int level, unsigned int offset);
+void freeBranch(unsigned int level, unsigned int offset);
+
+
+#endif
+
+void initialize_mem_man(void * memBase, size_t memSize, size_t minPageSize);
+void * m_alloc( size_t size );
+void * c_alloc(size_t size);
 void m_free(void * ptr);
 void memInfo(char * buffer);
-#endif
 #endif

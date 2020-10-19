@@ -6,7 +6,10 @@
 
 MemoryManager mm;
 
-void initialize_mem_man(void * memory, size_t ps, size_t qty){
+void initialize_mem_man(void * memory, size_t memSize, size_t ps){
+
+    size_t qty= (memSize-(unsigned long long)memory)/ps;
+    
     mm.bitmap=memory;
     memory += qty*sizeof(unsigned int);
     mm.base=memory;

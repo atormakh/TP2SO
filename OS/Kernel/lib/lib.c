@@ -61,8 +61,9 @@ void setBit(unsigned char * byte, int bitNumber){
 }
 
 void clearBit(unsigned char * byte, int bitNumber){
-    char mask = 0;
+    unsigned char mask = 1;
     mask=mask << bitNumber;
+    mask=255-mask;
     *byte=*byte & mask;
 }
 

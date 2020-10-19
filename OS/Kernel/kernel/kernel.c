@@ -58,13 +58,14 @@ void * initializeKernelBinary()
 int main()
 {	
 	uint32_t memSize = *(uint32_t *)0x5020*1024*1024;
-	initialize_mem_man(baseAddress ,PAGE_SIZE, (memSize-(unsigned long long)baseAddress)/PAGE_SIZE); // el ultimo parametro se puede eliminar, se calculan en funcion de parametros anteriores
+	initialize_mem_man(baseAddress ,memSize,PAGE_SIZE); // el ultimo parametro se puede eliminar, se calculan en funcion de parametros anteriores
 
 	initialize_timer();
 	initialize_scheduler();
 	initPipes();
 	createProcess(userlandCodeModuleAddress,"init",0,0);
 	unblock(0);
+	 
 	load_idt();
 	while(1);
 	return 0;
