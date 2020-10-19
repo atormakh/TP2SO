@@ -21,6 +21,7 @@ typedef struct MemoryManager{
     unsigned int * bitmap;
     size_t page_size;
     size_t pages_q;
+    unsigned long long reserved;
 }MemoryManager;
 
 void initialize_mem_man( void * memory, size_t ps, size_t qty);
@@ -29,5 +30,6 @@ void * c_alloc(size_t size);
 void * calc_ptr_from_idx(unsigned long block_idx);
 unsigned long calc_idx_from_ptr(void * ptr);
 void m_free(void * ptr);
+void memInfo(char * buffer);
 #endif
 #endif

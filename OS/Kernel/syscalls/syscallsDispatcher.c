@@ -95,6 +95,8 @@ unsigned long long syscallsDispatcher (uint64_t id, uint64_t * registers){
         case 27:
             semsInfo((char *)registers[0]);
             break;
+        case 28:
+            memInfo((char *)registers[0]);
     }
     return id;
 

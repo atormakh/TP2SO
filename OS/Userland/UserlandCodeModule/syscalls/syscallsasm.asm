@@ -26,6 +26,7 @@ GLOBAL sys_m_free
 GLOBAL sys_c_alloc
 GLOBAL sys_pipesInfo
 GLOBAL sys_semsInfo
+GLOBAL sys_memInfo
 
 
 sys_readKeyboard:  ;char* buffer, int count
@@ -280,4 +281,14 @@ sys_semsInfo:
 	mov rsp, rbp
 	pop rbp
 	ret
+
+sys_memInfo:
+	push rbp
+	mov rbp,rsp
+	mov rax, 28
+	int 80h
+	mov rsp, rbp
+	pop rbp
+	ret
+
 

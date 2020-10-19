@@ -5,18 +5,14 @@
 
 MemoryManager mm;
 
-
-
 void initialize_mem_man(void * memory, size_t ps, size_t qty){
     mm.bitmap=memory;
     memory += qty*sizeof(unsigned int);
     mm.base=memory;
     mm.page_size = ps;
     mm.pages_q = qty;
+    mm.reserved=0;
     for(unsigned long i=0; i < qty ;i++) mm.bitmap[i]=0;
-    
-
-    
 }
 
 void * m_alloc( size_t size ){
@@ -42,6 +38,7 @@ void * m_alloc( size_t size ){
     
     if(cont == blocks_q){
         mm.bitmap[i-cont] = cont;
+        mm.reserved+=cont;
         return calc_ptr_from_idx(i-cont);
     }else{
         //setear erno no sirve aca creo
@@ -72,6 +69,7 @@ void * c_alloc(size_t size){
 void m_free( void * ptr){
     if(ptr == NULL) return;
     unsigned long idx = calc_idx_from_ptr(ptr);
+    mm.reserved-=mm.bitmap[idx];
     mm.bitmap[idx] = FREE;    
 }
 
@@ -81,5 +79,36 @@ void * calc_ptr_from_idx(unsigned long block_idx){
 
 unsigned long calc_idx_from_ptr(void * ptr){
     return (unsigned long)(ptr-mm.base)/mm.page_size;
+}
+
+void memInfo(char * buffer){
+    buffer+=strcpy(buffer, "Memory state \n");
+    buffer+=strcpy(buffer, "Base Address: ");
+    buffer+=intToString(mm.base,buffer);
+    *buffer++='\n';
+    buffer+=strcpy(buffer, "Memory Size: ");
+    buffer+=intToString(mm.page_size*mm.pages_q/M,buffer);
+    buffer+=strcpy(buffer, " MB");
+    *buffer++='\n';
+    buffer+=strcpy(buffer, "Overhead: ");
+    buffer+=intToString(mm.pages_q*sizeof(unsigned int)/K,buffer);
+    buffer+=strcpy(buffer, " KB");
+    *buffer++='\n';
+    buffer+=strcpy(buffer, "Page size: ");
+    buffer+=intToString(mm.page_size/K,buffer);
+    buffer+=strcpy(buffer, " KB");
+    *buffer++='\n';
+    buffer+=strcpy(buffer, "Page quantity: ");
+    buffer+=intToString(mm.pages_q,buffer);
+    *buffer++='\n';
+    buffer+=strcpy(buffer, "Reserved Pages: ");
+    buffer+=intToString(mm.reserved,buffer);
+    *buffer++='\n';
+    buffer+=strcpy(buffer, "Free Pages: ");
+    buffer+=intToString(mm.pages_q-mm.reserved,buffer);
+    *buffer++='\n';
+     *buffer++=0;
+    
+
 }
 #endif

@@ -8,4 +8,5 @@ void unblock(int argc, char * args[]);
 void nice(int argc, char * args[]);
 void pipes();
 void sems();
+void mem();
 #endif

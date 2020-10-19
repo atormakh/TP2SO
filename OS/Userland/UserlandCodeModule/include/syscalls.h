@@ -26,6 +26,7 @@ void sys_m_free(void * ptr);
 void sys_c_alloc(unsigned long long size);
 void sys_pipesInfo(char * buffer);
 void sys_semsInfo(char * buffer);
+void sys_memInfo(char * buffer);
 
 
 

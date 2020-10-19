@@ -48,3 +48,9 @@ void sems(){
     sys_semsInfo(buffer);
     puts(buffer);
 }
+
+void mem(){
+    char buffer[1024];
+    sys_memInfo(buffer);
+    puts(buffer);
+}
