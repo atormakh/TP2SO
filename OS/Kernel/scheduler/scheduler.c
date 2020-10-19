@@ -143,9 +143,9 @@ PCB * getProc(unsigned long pid){
     return 0;
 }
 
-void kill(unsigned long long pid){
+int kill(unsigned long long pid){
     PCB * proc = getProc(pid);
-    if(proc->state == KILLED) return;
+    if(proc->state == KILLED) return -1;
     proc->state = KILLED;
     awakeAll(&proc->pid);
     closeMotive(&proc->pid);
@@ -158,24 +158,29 @@ void kill(unsigned long long pid){
     m_free(proc->rbp);
     m_free(proc->argv[0]);
     m_free(proc->argv);
+    return 1;
 }
 
-void unblock(unsigned long long pid){
+int unblock(unsigned long long pid){
     
     if(getProc(pid)->state != KILLED){
         getProc(pid)->state=READY;
         getProc(pid)->blockingRefs--;
+        return 1;
     }
+    else return -1;
 
 
 
 }
 
-void block(unsigned long long pid){
+int block(unsigned long long pid){
      if(getProc(pid)->state != KILLED){
         getProc(pid)->state=BLOCKED;
         getProc(pid)->blockingRefs++;
+        return 1;
      }
+     else return -1;
 }
 
 unsigned long long getPid(){

@@ -62,9 +62,9 @@ List * getMotive(void * id);
 int printProcsInMotive(char * buffer, List * procs);
 unsigned long long getPid();
 void nice(unsigned long long pid, unsigned int priority);
-void kill(unsigned  long long pid);
-void block(unsigned  long long pid);
-void unblock(unsigned  long long pid);
+int kill(unsigned  long long pid);
+int block(unsigned  long long pid);
+int unblock(unsigned  long long pid);
 void wait(unsigned  long long pid);
 void yield();
 

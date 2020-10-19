@@ -10,10 +10,19 @@ unsigned long long counter = 0;
 
 char * messages[] = {"Command not found", "Wrong number of arguments"};
 char * builtin_commands[] = {"help", "ps", "kill",  "block", "unblock", "nice","pipe","sem","mem", 0};
-char * application_commands[] = {"cat","filter","wc","loop","testSync", "testNoSync","testPrio", "testMm","phylo", 0};
+char * application_commands[] = {"cat","filter","wc","loop","testSync", "testNoSync","testPrio", "testMm","testProc", "phylo", 0};
 void  (* builtin_run[])(int,char * * ) = {help,ps, kill, block, unblock, nice,pipes,sems,mem}; 
-void * applications[]={cat,filter,wc,loop,test_sync, test_no_sync,test_prio, test_mm,phylo};     //faltan {phylo, test_m}
+void * applications[]={cat,filter,wc,loop,test_sync, test_no_sync,test_prio, test_mm, test_processes, phylo};     //faltan {phylo, test_m}
 int waitingPids[MAX_PIPED_PROCS];
+
+char ** getBuiltInCommands(){
+    return builtin_commands;
+}
+
+char ** getApplicationCommands(){
+    return application_commands;
+}
+
 
 int inController(int c, char * in, int inIndex){
 	

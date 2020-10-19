@@ -69,19 +69,19 @@ unsigned long long syscallsDispatcher (uint64_t id, uint64_t * registers){
             return getPid();
             break;
         case 19:
-            kill(registers[0]);
+            return kill(registers[0]);
             break;
         case 20:
-            block(registers[0]);
+            return block(registers[0]);
             break;
         case 21:
-            unblock(registers[0]);
+            return unblock(registers[0]);
             break;
         case 22:
             wait(registers[0]);
             break;
         case 23:
-            return m_alloc(registers[0]);
+            return m_alloc((void *)registers[0]);
             break;
         case 24:
             m_free((void *)registers[0]);

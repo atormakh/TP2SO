@@ -1,13 +1,22 @@
 #include "builtin.h"
 #include <stdlib.h>
+#include <shell.h>
 #include <syscalls.h>
-void help(int argc, char * args[]){
-   puts(
-        "available commands: \n"
-        "    help \n"
-        "    ps \n"
-        "for more information you can use google \n"
-    );
+
+void help(){
+    char ** builtin = getBuiltInCommands();
+    char ** applications = getApplicationCommands();
+
+   int cmd = 0;
+   puts("Built-in commands:  \n");   
+   while(builtin[cmd]!= NULL){
+       printf("%s \n", builtin[cmd++]);
+   }
+   puts("Application commands:  \n ");  
+   cmd=0; 
+   while(applications[cmd]!= NULL){
+       printf("%s \n", applications[cmd++]);
+   }
 }
 
 void ps(){

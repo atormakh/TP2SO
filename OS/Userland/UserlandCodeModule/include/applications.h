@@ -4,6 +4,7 @@
 void test_prio();
 void test_sync();
 void test_no_sync();
+void test_processes();
 void test_mm();
 int cat();
 int filter();

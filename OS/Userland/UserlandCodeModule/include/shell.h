@@ -20,5 +20,7 @@ int checkNoBuiltInCommand(char * command);
 void exec(char * in);
 void shellInputHandler();
 void shell();
+char ** getApplicationCommands();
+char ** getBuiltInCommands();
 
 #endif
