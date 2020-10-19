@@ -4,7 +4,7 @@
 
 //TO BE INCLUDED
 void long_loop(){
-  while(1);
+  while(1) sys_yield();
 }
 
 #define MAX_PROCESSES 10 //Should be around 80% of the the processes handled by the kernel
@@ -41,6 +41,7 @@ void test_processes(){
 
     // Randomly kills, blocks or unblocks processes until every one has been killed
     while (alive > 0){
+
       for(rq = 0; rq < MAX_PROCESSES; rq++){
         action = GetUniform(2) % 2; 
 
@@ -78,6 +79,7 @@ void test_processes(){
           p_rqs[rq].state = RUNNING; 
         }
     } 
+  //sys_exit(0);
   }
 }
 

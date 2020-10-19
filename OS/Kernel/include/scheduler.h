@@ -42,6 +42,7 @@ typedef struct Scheduler{
     unsigned long procIndex;
     unsigned long size;
     unsigned char init;
+    unsigned long long nextPid;
     List * motives;
 }Scheduler; 
 

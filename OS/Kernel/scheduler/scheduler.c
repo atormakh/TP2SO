@@ -25,16 +25,26 @@ void initialize_scheduler(){
     scheduler.procIndex=0;
     scheduler.size=0;
     scheduler.init=0;
+    scheduler.nextPid=0;
     initSemaphores();
 }
 
 unsigned long long createProcess(void * proc, char * name, int argc, char * argv[]){
     
     // TODO recorrer para sobreescribir en el KILLED
-    PCB * pcb = scheduler.processes + scheduler.size;
-    
+    PCB * pcb;
+    if(scheduler.size < PROC_Q)scheduler.processes[scheduler.size].state=KILLED;
+    int found = 0;
+    int i;
+    for(i=0; i<=scheduler.size && !found;i++){
+        found = (scheduler.processes[i].state == KILLED);
+    }
+    if(!found) return NULL;
+    pcb = scheduler.processes + i - 1;
+    if(i==scheduler.size + 1)scheduler.size++;
+
     pcb->state = BLOCKED;
-    pcb->pid = scheduler.size;
+    pcb->pid = scheduler.nextPid++;
     pcb->priority = 1;
     pcb->currentTicks = 1;
     unsigned long long * bp;
@@ -91,7 +101,8 @@ unsigned long long createProcess(void * proc, char * name, int argc, char * argv
     // | ...	| -> 0
     //create stack and complete with values
     pcb->rsp = (void *)stack;
-    scheduler.size++;
+
+
 
 
     PCB * current = getCurrentProc();
