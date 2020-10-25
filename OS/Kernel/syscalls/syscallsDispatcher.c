@@ -81,13 +81,13 @@ unsigned long long syscallsDispatcher (uint64_t id, uint64_t * registers){
             wait(registers[0]);
             break;
         case 23:
-            return m_alloc((void *)registers[0]);
+            return (unsigned long long)m_alloc(registers[0]);
             break;
         case 24:
             m_free((void *)registers[0]);
             break;
         case 25:
-            return c_alloc(registers[0]);
+            return (unsigned long long)c_alloc(registers[0]);
             break;
         case 26:
             pipesInfo((char *)registers[0]);

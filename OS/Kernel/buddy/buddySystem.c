@@ -118,7 +118,7 @@ void * c_alloc(size_t size){
 void m_free(void * dir){
     
     
-    int offset=((char *)dir-buddy.base)/buddy.minPage;
+    int offset=((char *)dir-(char *)buddy.base)/buddy.minPage;
     int active=0;
     int baseLevel;
     int level = buddy.levels-1;
@@ -178,7 +178,7 @@ void * getPtr(unsigned int level, unsigned  int offset){
 void memInfo(char * buffer){
     buffer+=strcpy(buffer, "Memory state \n");
     buffer+=strcpy(buffer, "Base Address: ");
-    buffer+=intToString((int) buddy.base,buffer);
+    buffer+=intToString((unsigned long long) buddy.base,buffer);
     *buffer++='\n';
     buffer+=strcpy(buffer, "Memory Size: ");
     buffer+=intToString(buddy.memSize/M,buffer);

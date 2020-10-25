@@ -20,6 +20,7 @@ void put_fork(int);
 void test(int);
 void printPhilosophers();
 void addPhilosopher();
+void removePhilosopher();
  
 int state[MAX_PHILOSOPHERS];
 int phil_num[MAX_PHILOSOPHERS];
@@ -136,7 +137,7 @@ void addPhilosopher(){
     char * args[]={param};
     phil_num[N]=N;
     sys_openSem(getId("sem_",N),0);
-    intToString(&phil_num[N],args[0]);
+    intToString((unsigned long long)&phil_num[N],args[0]);
     pids[N]=sys_createProcess(philospher,"philospher",1,args);
     sys_unblock(pids[N]);
     N++;

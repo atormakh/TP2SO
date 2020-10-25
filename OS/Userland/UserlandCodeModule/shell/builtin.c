@@ -12,7 +12,7 @@ void help(){
    while(builtin[cmd]!= NULL){
        printf("%s \n", builtin[cmd++]);
    }
-   puts("Application commands:  \n ");  
+   puts("\nApplication commands:  \n");  
    cmd=0; 
    while(applications[cmd]!= NULL){
        printf("%s \n", applications[cmd++]);

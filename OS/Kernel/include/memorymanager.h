@@ -26,7 +26,7 @@ typedef struct BuddySystem{
     unsigned long long size;
     unsigned int levels;
     unsigned long long reserved;
-    char * base;
+    unsigned char * base;
 }BuddySystem;
 
 unsigned long long computeBuddySize(unsigned long long memSize, unsigned long long minPageSize);

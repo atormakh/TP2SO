@@ -223,7 +223,7 @@ void * stringToPtr(char * buffer){
     for (int i=0; buffer[i] != '\0'; ++i) 
         res = res * 10 + buffer[i] - '0'; 
   
-    return res; 
+    return (void *)res; 
 } 
 
 int stringToInt(char * buffer){
