@@ -116,13 +116,13 @@ void printPhilosophers(){
     for(int i=0;i<N;i++){
         switch(state[i]){
             case EATING:
-                bufferCurrent+=strcpy(buffer," E ");
+                bufferCurrent+=strcpy(bufferCurrent," E ");
                 break;
             case THINKING:
-                bufferCurrent+=strcpy(buffer," . ");
+                bufferCurrent+=strcpy(bufferCurrent," . ");
                 break;
             case HUNGRY:
-                bufferCurrent+=strcpy(buffer," X ");
+                bufferCurrent+=strcpy(bufferCurrent," X ");
                 break;
         }
     }

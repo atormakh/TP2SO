@@ -26,6 +26,7 @@ typedef struct  PCB {
     char * name;
     char ** argv;
     char * memoryAddress;
+    List * childs;
     Pipe * fd[MAX_PIPES];
     int role[MAX_PIPES];
     

@@ -18,7 +18,7 @@ void help(){
        printf("%s \n", applications[cmd++]);
    }
    puts("Con ctrl+C se hace un kill de los procesos en foreground \n");
-    puts("Con ctrl+D se cierra el STDIN del proceso en foreground pasandolo a background \n");
+    puts("Con ctrl+D se cierra el STDIN del proceso en foreground pasandolo a background. Es util para probar el comando wc (consultar man wc) \n");
 //    puts("Para pasar parametros por linea de comandos separarlos por espacio, mismo si se quiere pipear o correr en background algun proceso. \n");
 //    puts("Ejemplo: phylo & corre el proceso phylo en background \n");
 //    puts("Ejemplo: phylo | filter se pipea el out de phlo al in de filter \n");

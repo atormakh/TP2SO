@@ -47,6 +47,8 @@ unsigned long long createProcess(void * proc, char * name, unsigned int argc, ch
     pcb->pid = scheduler.nextPid++;
     pcb->priority = 1;
     pcb->currentTicks = 1;
+    pcb->childs=newList();
+    add(getCurrentProc()->childs,pcb,pcb->pid);
     unsigned long long * bp;
 
     char * memoryAddress = (char *)c_alloc(PROC_MEM);
@@ -165,7 +167,12 @@ int kill(unsigned long long pid){
         closePipeProc(i,pid);
         
     }
+    iterator(proc->childs);
+    while(hasNext(proc->childs)){
+        kill(((PCB *)getNext(proc->childs))->pid);
+    }
 
+    freeList(proc->childs);
     m_free(proc->argv[0]);
     m_free(proc->argv);
     m_free(proc->memoryAddress);
