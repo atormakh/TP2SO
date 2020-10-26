@@ -5,6 +5,7 @@
 #include<scheduler.h>
 #include<time.h>
 #include<ipc.h>
+#include<pipes.h>
 #include<semaphore.h>
 
 
@@ -97,6 +98,10 @@ unsigned long long syscallsDispatcher (uint64_t id, uint64_t * registers){
             break;
         case 28:
             memInfo((char *)registers[0]);
+            break;
+        case 29:
+            closePipe(registers[0]);
+            break;
     }
     return id;
 

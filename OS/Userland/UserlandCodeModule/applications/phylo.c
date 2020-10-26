@@ -88,8 +88,7 @@ void take_fork(int ph_num){
 }
  
 void test(int ph_num){
-    if (state[ph_num] == HUNGRY && state[LEFT] != EATING && state[RIGHT] != EATING)
-    {
+    if (state[ph_num] == HUNGRY && state[LEFT] != EATING && state[RIGHT] != EATING){
         state[ph_num] = EATING;
         sys_semPost("mutex");
         sys_sleep(EATING_TIME);

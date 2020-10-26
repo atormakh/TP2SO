@@ -219,7 +219,8 @@ void shellInputHandler(){
             if(c==0){
                  sys_readKeyboard(&c,1);
                  if(c=='d'){
-                     sys_exit(0);
+                     //sys_exit(0);
+                     sys_close(WRITE+1);
                  }else if(c=='c'){
                      int i=0;
                      while(waitingPids[i]!=-1) sys_kill(waitingPids[i++]);
