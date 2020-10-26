@@ -11,7 +11,7 @@ void initialize_mem_man(void * memory, size_t memSize, size_t ps){
     size_t qty= (memSize-(unsigned long long)memory)/ps;
     
     mm.bitmap=memory;
-    memory += qty*sizeof(unsigned int);
+    memory =(char *)memory+ qty*sizeof(unsigned int);
     mm.base=memory;
     mm.page_size = ps;
     mm.pages_q = qty;
@@ -89,7 +89,7 @@ unsigned long calc_idx_from_ptr(void * ptr){
 void memInfo(char * buffer){
     buffer+=strcpy(buffer, "Memory state \n");
     buffer+=strcpy(buffer, "Base Address: ");
-    buffer+=intToString((int) mm.base,buffer);
+    buffer+=intToString((unsigned long long) mm.base,buffer);
     *buffer++='\n';
     buffer+=strcpy(buffer, "Memory Size: ");
     buffer+=intToString(mm.page_size*mm.pages_q/M,buffer);
@@ -112,6 +112,7 @@ void memInfo(char * buffer){
     buffer+=strcpy(buffer, "Free Pages: ");
     buffer+=intToString(mm.pages_q-mm.reserved,buffer);
     *buffer++='\n';
+    *buffer++=0;
     
 
 }

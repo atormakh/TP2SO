@@ -49,17 +49,16 @@ struct vbe_mode_info_structure * screen_info = (struct vbe_mode_info_structure *
 void segmentRowCopy(int dest, int src, int start, int end){
     char * framebuffer=(char *)screen_info->framebuffer;
 
-    int absSrc;
-    int absDest;
+
+
 
     char * pixelSrc;
-    char * pixelDest;
 
     for(int i = start; i<=end;i++){
-        absSrc=3*(i+src*screen_info->width);
-        absDest=3*(i+dest*screen_info->width);
+        int absSrc=3*(i+src*screen_info->width);
+        int absDest=3*(i+dest*screen_info->width);
         pixelSrc = framebuffer + absSrc;
-        pixelDest = framebuffer + absDest;
+        char * pixelDest = framebuffer + absDest;
         pixelDest[0]=pixelSrc[0];
         pixelDest[1]=pixelSrc[1];
         pixelDest[2]=pixelSrc[2];

@@ -200,10 +200,9 @@ int intToBase(unsigned long long num, int base, char*buffer){
     char stack[11];
     int c = 0;
     int i=0;
-    int remainder = 0;
     if(num==0) stack[i++]='0';
     while(num!=0){
-        remainder = num % base;
+        int remainder = num % base;
         stack[i]=remainder>=10? remainder+'A'-10:remainder+'0';
         num = num/base;
         i++;

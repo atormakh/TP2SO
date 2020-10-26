@@ -54,6 +54,7 @@ void remove(List * list,  unsigned long long hash){
         prev=node;
         node=node->next;
     }
+    if(node==NULL) return;
     if(prev==node) list->start = node->next;
     else prev->next=node->next;
     m_free(node);
@@ -86,11 +87,10 @@ void *peek(List *list){
 
 void freeList(List * list){
     if( list != NULL){
-        Node * prev = list->start;
         Node * actual = list->start;
 
         while(actual !=NULL){
-            prev = actual;
+            Node * prev = actual;
             actual = actual->next;
             m_free(prev);
         }
@@ -113,7 +113,7 @@ int hasNext(List * list){
     return list->iterator!=NULL;
 }
 
-void * next(List * list){
+void * getNext(List * list){
     void * aux = list->iterator->elem;
     list->iterator = list->iterator->next;
     return aux;

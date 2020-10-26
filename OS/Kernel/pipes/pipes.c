@@ -37,7 +37,7 @@ int pipe(char * pipeId, unsigned long pidWriter, unsigned int fdWrite, unsigned 
         createMotive(&pipe->readIndex);
 
         if(pipeId==NULL){
-            int n = strcpy(pipe->pipeId,UNNAMED);
+            int n = (int)strcpy(pipe->pipeId,UNNAMED);
             n += intToString(pipeQty,pipe->pipeId + n);
             pipe->pipeId[n]=0;
         }else
@@ -62,24 +62,24 @@ void closePipe(int fd){
 }
 
 void closePipeProc(int fd, unsigned long long pid){
-    Pipe * pipe = getProc(pid)->fd[fd];
-    if(pipe == NULL) return;
+    Pipe * pipePTR = getProc(pid)->fd[fd];
+    if(pipePTR == NULL) return;
     int permission = getProc(pid)->role[fd];
     if(permission == WRITE){ 
-        pipe->writerRefs--;
-        awakeAll(&pipe->readIndex);
+        pipePTR->writerRefs--;
+        awakeAll(&pipePTR->readIndex);
     }
     else{
-        pipe->readerRefs--;
-        awakeAll(&pipe->writeIndex);
+        pipePTR->readerRefs--;
+        awakeAll(&pipePTR->writeIndex);
     } 
-    if(pipe->readerRefs <=0 && pipe->writerRefs<=0){
-        remove(pipes, strHash(pipe->pipeId));
-        closeMotive(&pipe->readIndex);
-        closeMotive(&pipe->writeIndex);
-        m_free(pipe->buffer);
-        m_free(pipe->pipeId); 
-        m_free(pipe);
+    if(pipePTR->readerRefs <=0 && pipePTR->writerRefs<=0){
+        remove(pipes, strHash(pipePTR->pipeId));
+        closeMotive(&pipePTR->readIndex);
+        closeMotive(&pipePTR->writeIndex);
+        m_free(pipePTR->buffer);
+        m_free(pipePTR->pipeId); 
+        m_free(pipePTR);
     }
 }
 
@@ -87,26 +87,26 @@ void pipesInfo(char * buffer){
     buffer+=strcpy(buffer, "PIPE_ID | w_state | r_state | w_blocked  | r_blocked  \n");
     iterator(pipes);
     while(hasNext(pipes)){
-        Pipe * pipe = next(pipes);
-        buffer += strcpy(buffer, pipe->pipeId);
+        Pipe * pipePTR = getNext(pipes);
+        buffer += strcpy(buffer, pipePTR->pipeId);
         buffer += strcpy(buffer, "    ");
 
-        if(pipe->writerRefs > 0){
+        if(pipePTR->writerRefs > 0){
             buffer += strcpy(buffer, "true ");
         }else{
             buffer +=strcpy(buffer, "false");
         }
         buffer += strcpy(buffer, "    ");
-        if(pipe->readerRefs > 0){
+        if(pipePTR->readerRefs > 0){
             buffer += strcpy(buffer, "true ");
         }else{
             buffer +=strcpy(buffer, "false");
         }
         buffer += strcpy(buffer, "   |   ");
 
-        buffer+=printProcsInMotive(buffer, getMotive(&pipe->writeIndex));
+        buffer+=printProcsInMotive(buffer, getMotive(&pipePTR->writeIndex));
         buffer += strcpy(buffer, "   |   ");
-        buffer+=printProcsInMotive(buffer, getMotive(&pipe->readIndex));
+        buffer+=printProcsInMotive(buffer, getMotive(&pipePTR->readIndex));
         
         *buffer++='\n';
     }

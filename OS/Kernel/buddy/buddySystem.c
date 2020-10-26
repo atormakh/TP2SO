@@ -66,12 +66,12 @@ int getValue(unsigned int level, unsigned int offset){
 }
 
 int checkUpwards(unsigned int level, unsigned int offset){
-    int buddyIndex = offset%2? offset-1:offset+1;  
+    int buddyIndex = (offset%2)? offset-1:offset+1;  
     
     while(level>0 && getValue(level,buddyIndex)==0){        
         offset=offset>>1;
         level--;
-        buddyIndex = offset%2? offset-1:offset+1;
+        buddyIndex = (offset%2)? offset-1:offset+1;
         if(getValue(level,offset)==1)return 0; 
        
 
@@ -120,10 +120,10 @@ void m_free(void * dir){
     
     int offset=((char *)dir-(char *)buddy.base)/buddy.minPage;
     int active=0;
-    int baseLevel;
+    
     int level = buddy.levels-1;
     while(!active){
-        baseLevel = pow(2, level)-1;
+       int baseLevel = pow(2, level)-1;
        active=getBit(buddy.base + (baseLevel+offset)/8,(baseLevel+offset)%8);
         if(!active){
             offset=offset>>1;
@@ -139,13 +139,13 @@ void freeBranch(unsigned int level, unsigned int offset){
 
      int bit;
     
-    int buddyIndex = offset%2? offset+1:offset-1;   
+    int buddyIndex = (offset%2)? offset+1:offset-1;   
     while(level>0 && getValue(level,buddyIndex)==0){
          
          clearBit(buddy.base+bit/8,bit%8);
          offset=offset>>1;
          level--;
-         buddyIndex = offset%2? offset+1:offset-1;
+         buddyIndex = (offset%2)? offset+1:offset-1;
          bit =  pow(2, level)-1+offset;
 
     }
@@ -155,10 +155,10 @@ void freeBranch(unsigned int level, unsigned int offset){
 }
 
 void allocateBranch(unsigned int level, unsigned int offset){
-    int bit;
+
 
     for(int i = level ; i >= 0 ; i--){
-        bit =  pow(2, i)-1+offset;
+        int bit =  pow(2, i)-1+offset;
         setBit(buddy.base+bit/8,bit%8);
         offset=offset >> 1;
        

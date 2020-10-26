@@ -59,12 +59,12 @@ void loadPixelMap(infoPixelMap * info, char * pixmap[]){
     info->pixmap=pixmap;
 }
 
-colorStruct getColor(int x, int y, infoPixelMap * pixelmap){
-    char ** pixmap=pixelmap->pixmap;
+colorStruct getColor(int x, int y, infoPixelMap * pixelMap){
+    char ** pixmap=pixelMap->pixmap;
     char c = pixmap[y][x];
     int i=0;
-    while(c!=pixelmap->colors.chars[i]) i++;
-    return pixelmap->colors.colors[i];
+    while(c!=pixelMap->colors.chars[i]) i++;
+    return pixelMap->colors.colors[i];
 
     
 }

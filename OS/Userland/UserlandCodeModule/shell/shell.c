@@ -110,12 +110,11 @@ void exec(char * in){
     int currentPid;
     int inputHandlerPid; 
     int j = 0;
-    int needsWaiting=0;
     //2 loop 1 &
     
     prevPid=inputHandlerPid=sys_createProcess(shellInputHandler,"sh_input_handler",0,0);
     for(int i=0 ;i<procs;i++){
-        needsWaiting=0;
+        int needsWaiting=0;
         if((unsigned long long)cmds[i][(unsigned long long)(cmds[i][ARG_C])+1][0] != '&'){
             // hay que hacerle un wait
             needsWaiting=1;
@@ -156,16 +155,13 @@ void exec(char * in){
 //  d   1   e
 
 int processInput(char * in, ARGS * procs){
-    int processingWord;
-    int count;
     int index = 0;
     int procIndex=0;
-    int argIndex;
 
     while(in[index]){
-        processingWord=0;
-        count=0;
-        argIndex=1;
+        int processingWord=0;
+        int count=0;
+        int argIndex=1;
         while(in[index] && in[index]!='|'){
             if(processingWord && in[index]==' '){
                 processingWord=0;

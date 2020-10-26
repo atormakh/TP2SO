@@ -49,19 +49,18 @@ unsigned long long createProcess(void * proc, char * name, unsigned int argc, ch
     pcb->currentTicks = 1;
     unsigned long long * bp;
 
-    unsigned long long memoryAddress = c_alloc(PROC_MEM);
+    char * memoryAddress = (char *)c_alloc(PROC_MEM);
     unsigned long long * stack = bp = (unsigned long long *) (memoryAddress+PROC_MEM-1);
     pcb->memoryAddress=memoryAddress;
-    int qty;
-
+    
     char ** argvCopy =c_alloc((argc+1)*sizeof(char *));
     char * args = c_alloc((argc+1)*ARGS_LENGTH);
     char * index = args;
     argvCopy[0]=args;
 
     //copias todo y argv
-    for(int i=0; i <argc;i++){
-        qty=strcpy(index,argv[i]);
+    for(i=0; i <argc;i++){
+        int qty=(int)strcpy(index,argv[i]);
         argvCopy[i]=index;
         index+=qty+1;
     }
@@ -108,7 +107,7 @@ unsigned long long createProcess(void * proc, char * name, unsigned int argc, ch
 
     PCB * current = getCurrentProc();
 
-    for(int i=0;i<MAX_PIPES;i++){ 
+    for(i=0;i<MAX_PIPES;i++){ 
         pcb->fd[i]=current->fd[i];
         pcb->role[i]=current->role[i];
         if(pcb->fd[i] != NULL){
@@ -319,13 +318,13 @@ List * getMotive(void * id){
 int printProcsInMotive(char * buffer, List * procs){
      int n = 0;
      if(procs==NULL || procs->size==0){ 
-        n=strcpy(buffer,"none");
+        n=(int)strcpy(buffer,"none");
         return n;
      }
     iterator(procs);
    
     while(hasNext(procs)){
-        int pid = ((PCB *)next(procs))->pid;
+        int pid = ((PCB *)getNext(procs))->pid;
         n+= intToString(pid, buffer+n);
         n+= strcpy(buffer+n, "  ");
     }

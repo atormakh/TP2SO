@@ -111,29 +111,29 @@ void put_fork(int ph_num){
 
 
 void printPhilosophers(){
-    char bufferI[100];
-    char * buffer = bufferI;
+    char bufferStart[100];
+    char * bufferCurrent = bufferStart;
     for(int i=0;i<N;i++){
         switch(state[i]){
             case EATING:
-                buffer+=strcpy(buffer," E ");
+                bufferCurrent+=strcpy(buffer," E ");
                 break;
             case THINKING:
-                buffer+=strcpy(buffer," . ");
+                bufferCurrent+=strcpy(buffer," . ");
                 break;
             case HUNGRY:
-                buffer+=strcpy(buffer," X ");
+                bufferCurrent+=strcpy(buffer," X ");
                 break;
         }
     }
-    printf("%s\n",bufferI);
+    printf("%s\n",bufferStart);
 }
 
 void addPhilosopher(){
     printf("%s \n", "adding");
     printPhilosophers();
     sys_semWait("mutex");
-    char param[16];
+    char param[16]={0};
     char * args[]={param};
     phil_num[N]=N;
     sys_openSem(getId("sem_",N),0);

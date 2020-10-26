@@ -86,7 +86,7 @@ void semsInfo(char * buffer){
     buffer+=strcpy(buffer, "SEM_ID | value | blocked  \n");
     iterator(semaphores);
     while(hasNext(semaphores)){
-        Sem * sem = next(semaphores);
+        Sem * sem = getNext(semaphores);
         buffer += strcpy(buffer, sem->id);
         buffer += strcpy(buffer, "  |  ");
         buffer += intToString( sem->value, buffer);

@@ -25,6 +25,6 @@ void *peek(List *list);
 void freeList(List * list);
 void iterator(List * list);
 int hasNext(List * list);
-void * next(List * list);
+void * getNext(List * list);
 
 #endif
