@@ -9,4 +9,5 @@ void nice(int argc, char * args[]);
 void pipes();
 void sems();
 void mem();
+void man(int argc, char * args[]);
 #endif

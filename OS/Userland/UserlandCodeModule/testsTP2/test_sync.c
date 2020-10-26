@@ -42,7 +42,7 @@ void inc(int argc, char * args[]){
 void test_sync(){
   uint64_t i;
 
-  global = 100;
+  global = 0;
 
   printf("CREATING PROCESSES...(WITH SEM)\n");
 
