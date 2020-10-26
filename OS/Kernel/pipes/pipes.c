@@ -22,9 +22,6 @@ int pipe(char * pipeId, unsigned long pidWriter, unsigned int fdWrite, unsigned 
             //tirar error
             return -1;
         }   
-        //[.................................................]
-        //p         .
-        //          p+1=buffer
         pipe->buffer = c_alloc(PAGE_SIZE);
         pipe->pipeId = c_alloc(MAX_PIPE_NAME);
 
@@ -78,10 +75,11 @@ void closePipeProc(int fd, unsigned long long pid){
     } 
     if(pipe->readerRefs <=0 && pipe->writerRefs<=0){
         remove(pipes, strHash(pipe->pipeId));
+        closeMotive(&pipe->readIndex);
+        closeMotive(&pipe->writeIndex);
         m_free(pipe->buffer);
         m_free(pipe->pipeId); 
         m_free(pipe);
-        
     }
 }
 

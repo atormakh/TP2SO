@@ -69,7 +69,7 @@ int checkUpwards(unsigned int level, unsigned int offset){
     int buddyIndex = offset%2? offset-1:offset+1;  
     
     while(level>0 && getValue(level,buddyIndex)==0){        
-        offset/=2;
+        offset=offset>>1;
         level--;
         buddyIndex = offset%2? offset-1:offset+1;
         if(getValue(level,offset)==1)return 0; 
@@ -126,7 +126,7 @@ void m_free(void * dir){
         baseLevel = pow(2, level)-1;
        active=getBit(buddy.base + (baseLevel+offset)/8,(baseLevel+offset)%8);
         if(!active){
-            offset=offset/2;
+            offset=offset>>1;
             level--;
         }
     }
@@ -143,7 +143,7 @@ void freeBranch(unsigned int level, unsigned int offset){
     while(level>0 && getValue(level,buddyIndex)==0){
          
          clearBit(buddy.base+bit/8,bit%8);
-         offset/=2;
+         offset=offset>>1;
          level--;
          buddyIndex = offset%2? offset+1:offset-1;
          bit =  pow(2, level)-1+offset;

@@ -39,7 +39,7 @@ int inController(int c, char * in, int inIndex){
                 putchar(c);
 			}
 		}
-		else if((c>'a' && c<'z') || (c>'A' && c<'Z') || (c>'0' && c<'9') || c=='|' || c=='&' || c==' ' ){
+		else if((c>='a' && c<='z') || (c>='A' && c<='Z') || (c>='0' && c<='9') || c=='|' || c=='&' || c==' ' ){
 			in[inIndex++] = c;
 			in[inIndex]=0;
             putchar(c);
@@ -54,9 +54,14 @@ int inController(int c, char * in, int inIndex){
 void shell(){
     unsigned int inIndex=0;
     char in[MAX_INPUT];
-    strcpy(in,"hola cami");
     in[0]=0;
     char c;
+
+    unsigned long long pid = sys_createProcess(shell,"prueba",0,0);
+    unsigned long long pid2 = sys_createProcess(shell,"prueba",0,0);
+    sys_pipe(0,pid,3,pid2,3);
+    sys_kill(pid);
+    sys_kill(pid2);
     while(1){
         puts("shell@convinux>");
         sys_readKeyboard(&c,1);
@@ -66,7 +71,6 @@ void shell(){
 		}
        
         puts("\n");
-        puts(in);
 		exec(in);
         puts("\n");
 
@@ -172,7 +176,7 @@ int processInput(char * in, ARGS * procs){
             if(processingWord && in[index]==' '){
                 processingWord=0;
                 in[index]= 0;
-            }else if(!processingWord && in[index] != ' '){
+            }else if(!processingWord && in[index] !=' ' ){
                 procs[procIndex][argIndex]=in+index;
                 argIndex++;
                 count++;

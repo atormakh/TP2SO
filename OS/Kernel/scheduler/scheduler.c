@@ -233,16 +233,21 @@ void ps(char * buffer){
         buffer += strcpy(buffer, "    ");
         buffer += intToString((unsigned long long)proc.rsp, buffer);
         buffer += strcpy(buffer, "    ");
-        switch (proc.state){
-        case READY:
+        if(proc.pid == getCurrentProc()->pid){
             buffer += strcpy(buffer,"RUNNING ");
-            break;
-        case KILLED:
-            buffer += strcpy(buffer,"DEAD    ");
-            break;
-        case BLOCKED:
-            buffer += strcpy(buffer,"BLOCKED ");
-            break;
+        }
+        else{
+            switch (proc.state){
+            case READY:
+                buffer += strcpy(buffer,"READY   ");
+                break;
+            case KILLED:
+                buffer += strcpy(buffer,"DEAD    ");
+                break;
+            case BLOCKED:
+                buffer += strcpy(buffer,"BLOCKED ");
+                break;
+            }
         }
         buffer += strcpy(buffer, "    ");
         buffer += strcpy(buffer, proc.name);        

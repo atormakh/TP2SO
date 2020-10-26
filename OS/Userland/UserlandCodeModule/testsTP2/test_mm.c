@@ -2,8 +2,8 @@
 #include <syscalls.h>
 #include "test_util.h"
 
-#define MAX_BLOCKS 400*1024
-#define MAX_MEMORY 1024*1024*400 //Should be around 80% of memory managed by the MM
+#define MAX_BLOCKS 1024
+#define MAX_MEMORY 1024*400 //Should be around 80% of memory managed by the MM
 
 typedef struct MM_rq{
   void *address;
