@@ -228,8 +228,8 @@ void shellInputHandler(){
                  }
             }else{
                 inIndex=inController(c,in,inIndex);
-                sys_readKeyboard(&c,1);
             }
+             sys_readKeyboard(&c,1);
             
         }
         putchar('\n');

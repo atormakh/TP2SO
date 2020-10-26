@@ -144,6 +144,7 @@ void addPhilosopher(){
 }
 
 void removePhilosopher(){
+    if(N<=0) return;
     sys_semWait("mutex");
     printf("%s \n", "removing");
     printPhilosophers();
