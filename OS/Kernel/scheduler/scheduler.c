@@ -29,7 +29,7 @@ void initialize_scheduler(){
     initSemaphores();
 }
 
-unsigned long long createProcess(void * proc, char * name, int argc, char * argv[]){
+unsigned long long createProcess(void * proc, char * name, unsigned int argc, char * argv[]){
     
     // TODO recorrer para sobreescribir en el KILLED
     PCB * pcb;
@@ -49,12 +49,13 @@ unsigned long long createProcess(void * proc, char * name, int argc, char * argv
     pcb->currentTicks = 1;
     unsigned long long * bp;
 
-    unsigned long long * stack = bp = (unsigned long long *) (c_alloc(PROC_MEM)+PROC_MEM-1);
-    
+    unsigned long long memoryAddress = c_alloc(PROC_MEM);
+    unsigned long long * stack = bp = (unsigned long long *) (memoryAddress+PROC_MEM-1);
+    pcb->memoryAddress=memoryAddress;
     int qty;
 
-    char ** argvCopy = c_alloc(argc*sizeof(char *));
-    char * args = c_alloc(argc*ARGS_LENGTH);
+    char ** argvCopy =c_alloc((argc+1)*sizeof(char *));
+    char * args = c_alloc((argc+1)*ARGS_LENGTH);
     char * index = args;
     argvCopy[0]=args;
 
@@ -165,10 +166,11 @@ int kill(unsigned long long pid){
         closePipeProc(i,pid);
         
     }
-    
-    m_free(proc->rbp);
+
     m_free(proc->argv[0]);
     m_free(proc->argv);
+    m_free(proc->memoryAddress);
+
     return 1;
 }
 

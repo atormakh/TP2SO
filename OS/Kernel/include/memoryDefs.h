@@ -1,4 +1,4 @@
-#define BUDDY
+//#define BUDDY
 #define NULL 0
 
 #define SET 1

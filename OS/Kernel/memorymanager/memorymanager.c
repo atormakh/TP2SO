@@ -21,9 +21,7 @@ void initialize_mem_man(void * memory, size_t memSize, size_t ps){
 
 void * m_alloc( size_t size ){
     
-    
     unsigned long blocks_q = (size-1)/mm.page_size + 1;
-    
     unsigned long i = 0;
     unsigned long cont = 0;
     
@@ -48,6 +46,7 @@ void * m_alloc( size_t size ){
         //setear erno no sirve aca creo
         //podemos imprimir un log
         return NULL;
+        
     }
 }
 
@@ -73,8 +72,10 @@ void * c_alloc(size_t size){
 void m_free( void * ptr){
     if(ptr == NULL) return;
     unsigned long idx = calc_idx_from_ptr(ptr);
-    mm.reserved-=mm.bitmap[idx];
-    mm.bitmap[idx] = FREE;    
+    mm.reserved-=mm.bitmap[idx]; 
+    mm.bitmap[idx] = FREE;
+   
+    
 }
 
 void * calc_ptr_from_idx(unsigned long block_idx){
@@ -111,7 +112,6 @@ void memInfo(char * buffer){
     buffer+=strcpy(buffer, "Free Pages: ");
     buffer+=intToString(mm.pages_q-mm.reserved,buffer);
     *buffer++='\n';
-     *buffer++=0;
     
 
 }

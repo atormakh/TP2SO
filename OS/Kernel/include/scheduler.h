@@ -25,6 +25,7 @@ typedef struct  PCB {
     int blockingRefs;
     char * name;
     char ** argv;
+    char * memoryAddress;
     Pipe * fd[MAX_PIPES];
     int role[MAX_PIPES];
     
@@ -48,7 +49,7 @@ typedef struct Scheduler{
 
 void initialize_scheduler();
 void * schedule(void * rsp);
-unsigned long long createProcess(void * proc, char * name, int argc, char * argv[]);
+unsigned long long createProcess(void * proc, char * name, unsigned  int argc, char * argv[]);
 void exit(int ret);
 void ps(char * buffer);
 PCB * getCurrentProc();

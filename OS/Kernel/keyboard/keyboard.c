@@ -25,9 +25,9 @@ void keyboard_handler(){
 	else if(key==SHIFT_L+RELEASED) shiftLStatus=0;
 	else if(key==BLOCK_MAYUS) blockMayus=1-blockMayus;
 	else if(key == 59){ //F1
-		char buffer[1024];
-		ps(buffer);
-		kernelWrite(buffer,strlen(buffer));
+		char ps_buffer[1024];
+		ps(ps_buffer);
+		kernelWrite(ps_buffer,strlen(ps_buffer));
 		//buffer[(i++)%BUFFER_SIZE]=208;
 	}else if(key == 60){ //F2
 		layout=asccode;
@@ -36,10 +36,10 @@ void keyboard_handler(){
 	}else if(key<58)buffer[(i++)%BUFFER_SIZE]= layout[key][( shiftRStatus | shiftLStatus | blockMayus) - ((shiftLStatus | shiftRStatus) & blockMayus)];
     
 	if(init == 0){
-			init = 1;
-			createMotive(buffer);
-		}
-		awake(buffer);
+		init = 1;
+		createMotive(buffer);
+	}
+	awakeAll(buffer);
 }
 
 

@@ -56,12 +56,6 @@ void shell(){
     char in[MAX_INPUT];
     in[0]=0;
     char c;
-
-    unsigned long long pid = sys_createProcess(shell,"prueba",0,0);
-    unsigned long long pid2 = sys_createProcess(shell,"prueba",0,0);
-    sys_pipe(0,pid,3,pid2,3);
-    sys_kill(pid);
-    sys_kill(pid2);
     while(1){
         puts("shell@convinux>");
         sys_readKeyboard(&c,1);
@@ -230,6 +224,7 @@ void shellInputHandler(){
                  }else if(c=='c'){
                      int i=0;
                      while(waitingPids[i]!=-1) sys_kill(waitingPids[i++]);
+                     sys_exit(0);
                  }
             }else{
                 inIndex=inController(c,in,inIndex);

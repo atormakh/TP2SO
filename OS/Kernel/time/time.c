@@ -22,11 +22,9 @@ void * timer_handler(void * rsp) {
 		closeMotive(minTicks->elem);
 		remove(awakeTimes,minTicks->hash);
 		m_free(minTicks->elem);
-		minTicks = awakeTimes->start;
-		
+		minTicks = awakeTimes->start;	
 	}
 	return schedule(rsp);
-
 }
 
 void sleep(unsigned int interval){
