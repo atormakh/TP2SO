@@ -105,10 +105,10 @@ void drawPixMaps(){
 }
 
 void initTabs(){
-	for(int i=0;i<NUM_TABS;i++){
-		initTab(tabs[i]);
+	// for(int i=0;i<NUM_TABS;i++){
+	initTab(tabs[0]);	
+	// }
 
-	}
 }
 
 void initTab(tabStruct * tab){

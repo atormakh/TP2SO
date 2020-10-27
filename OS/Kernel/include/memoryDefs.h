@@ -1,5 +1,7 @@
+#include<stddef.h>
 //#define BUDDY
-#define NULL 0
+
+//#define NULL 0
 
 #define SET 1
 #define CLEAR 0
@@ -13,4 +15,3 @@
 #define FREE 0
 #define TAKEN 1
 
-typedef unsigned long size_t;

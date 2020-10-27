@@ -4,8 +4,8 @@
 #define THINKING 0
 #define HUNGRY 1
 #define EATING 2
-#define LEFT (ph_num+(N-1))%N
-#define RIGHT (ph_num+1)%N
+#define LEFT (ph_num+(num-1))%num
+#define RIGHT (ph_num+1)%num
 #define THINKING_TIME 1
 #define EATING_TIME 1
 #define MAX_PHILOSOPHERS 100
@@ -27,7 +27,7 @@ int phil_num[MAX_PHILOSOPHERS];
  
 char buffer[64];
 unsigned long long pids[MAX_PHILOSOPHERS];
-int N;
+int num;
 
 char * getId(char * prefix,int id){
     int n=0;
@@ -57,7 +57,7 @@ int phylo(){
         sys_yield();
     }
 
-    for(i=0;i<N;i++)
+    for(i=0;i<num;i++)
         sys_wait(pids[i]);
 }
  
@@ -112,7 +112,7 @@ void put_fork(int ph_num){
 void printPhilosophers(){
     char bufferStart[100];
     char * bufferCurrent = bufferStart;
-    for(int i=0;i<N;i++){
+    for(int i=0;i<num;i++){
         switch(state[i]){
             case EATING:
                 bufferCurrent+=strcpy(bufferCurrent," E ");
@@ -134,22 +134,22 @@ void addPhilosopher(){
     sys_semWait("mutex");
     char param[16]={0};
     char * args[]={param};
-    phil_num[N]=N;
-    sys_openSem(getId("sem_",N),0);
-    intToString((unsigned long long)&phil_num[N],args[0]);
-    pids[N]=sys_createProcess(philospher,"philospher",1,args);
-    sys_unblock(pids[N]);
-    N++;
+    phil_num[num]=num;
+    sys_openSem(getId("sem_",num),0);
+    intToString((unsigned long long)&phil_num[num],args[0]);
+    pids[num]=sys_createProcess(philospher,"philospher",1,args);
+    sys_unblock(pids[num]);
+    num++;
     sys_semPost("mutex");
 }
 
 void removePhilosopher(){
-    if(N<=0) return;
+    if(num<=0) return;
     sys_semWait("mutex");
     printf("%s \n", "removing");
     printPhilosophers();
-    N--;
-    sys_closeSem(getId("sem_",N));
-    sys_kill(pids[N]);
+    num--;
+    sys_closeSem(getId("sem_",num));
+    sys_kill(pids[num]);
     sys_semPost("mutex");
 }

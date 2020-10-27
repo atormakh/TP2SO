@@ -1,3 +1,4 @@
+
 #include <memorymanager.h>
 #ifdef BUDDY
 #include <lib.h>
@@ -137,7 +138,7 @@ void m_free(void * dir){
 
 void freeBranch(unsigned int level, unsigned int offset){
 
-     int bit;
+    int bit=0;
     
     int buddyIndex = (offset%2)? offset+1:offset-1;   
     while(level>0 && getValue(level,buddyIndex)==0){

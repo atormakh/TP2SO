@@ -169,9 +169,9 @@ int doubleToString(double value, char * buffer){
         buffer[c++]='-';
     }
 	unsigned long long m=value;
-	double p = value-m;
+	double p = value-m;//p+m = value-m+m
 	unsigned long long r=(p*precision+0.00001f);
-    if(m+1<value || m+p!=value || r>precision){
+    if(m+1<value || r>precision){
         buffer[c++]='.';
         buffer[c++]='-';
         buffer[c++]='1';

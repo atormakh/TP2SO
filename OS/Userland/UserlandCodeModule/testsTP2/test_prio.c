@@ -60,17 +60,18 @@ void test_prio(){
 
   printf("CHANGING PRIORITIES WHILE BLOCKED...\n");
   for(i = 0; i < TOTAL_PROCESSES; i++){
-    switch (i % 3){
-      case 0:
-        sys_nice(pids[i], 3); //medium priority 
-        break;
-      case 1:
-        sys_nice(pids[i], 3); //medium priority
-        break;
-      case 2:
-        sys_nice(pids[i], 3); //medium priority
-        break;
-    }
+    sys_nice(pids[i], 3);
+    // switch (i % 3){
+    //   case 0:
+    //     sys_nice(pids[i], 3); //medium priority 
+    //     break;
+    //   case 1:
+    //     sys_nice(pids[i], 3); //medium priority
+    //     break;
+    //   case 2:
+    //     sys_nice(pids[i], 3); //medium priority
+    //     break;
+    // }
   }
 
   printf("UNBLOCKING...\n");

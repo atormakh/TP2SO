@@ -100,7 +100,7 @@ int doubleToString(double value, char * buffer){
 	unsigned long long m=value;
 	double p = value-m;
 	unsigned long long r=(p*precision+0.00001f);
-    if(m+1<value || m+p!=value || r>precision){
+    if(m+1<value || r>precision){
         buffer[c++]='.';
         buffer[c++]='-';
         buffer[c++]='1';
@@ -187,9 +187,7 @@ int getChar(){
         
         hlt();
     }
-    //printf("count %d \n", count);
-    while(1);
-    return count==0?-1:(int)character;
+    return (int)character;
 }
 
 int intToString(unsigned long long num, char * buffer)

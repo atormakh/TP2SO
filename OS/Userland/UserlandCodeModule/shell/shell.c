@@ -82,7 +82,6 @@ void exec(char * in){
     int procs = processInput(in,cmds);
     int validCommand=0;
 
-    //hola a b | algo
     //nos fijamos si el primer comando  es builtin,
     //en tal caso verificamos que no este intentando pipearlo ni correrlo en background
     if((validCommand=checkBuiltInCommand(cmds[0][COMMAND]))>=0){
@@ -110,7 +109,6 @@ void exec(char * in){
     int currentPid;
     int inputHandlerPid; 
     int j = 0;
-    //2 loop 1 &
     
     prevPid=inputHandlerPid=sys_createProcess(shellInputHandler,"sh_input_handler",0,0);
     for(int i=0 ;i<procs;i++){
@@ -134,10 +132,9 @@ void exec(char * in){
         
         if(i==0)
             sys_pipe(NULL,prevPid, WRITE+1, currentPid, READ);
-        else //crear pipe
+        else 
             sys_pipe(NULL,prevPid, WRITE, currentPid, READ);
         
-        //desbloquear proceso anterior
         sys_unblock(prevPid);
         prevPid = currentPid;
     }
@@ -219,7 +216,6 @@ void shellInputHandler(){
             if(c==0){
                  sys_readKeyboard(&c,1);
                  if(c=='d'){
-                     //sys_exit(0);
                      sys_close(WRITE+1);
                  }else if(c=='c'){
                      int i=0;

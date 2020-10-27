@@ -3,6 +3,8 @@
 
 List *newList(){
     List *list = c_alloc(PAGE_SIZE);
+    if(list == NULL)
+        return NULL;
     list->size = 0;
     list->start = 0;
     return list;
@@ -12,6 +14,9 @@ void add(List *list, void * val, unsigned long long hash){
     Node * next = list->start;
     Node * prev = next;
     Node * newNode = (Node *)m_alloc(sizeof(Node));
+    if(newNode == NULL){
+        return;
+    }
 
     if(next == NULL){
         list->start = newNode;
@@ -39,6 +44,8 @@ void push(List *list, void *val, unsigned long long hash){
     Node *head = list->start;
     Node *new_node;
     new_node = (Node *)c_alloc(sizeof(Node));
+    if(new_node == NULL)
+        return;
 
     new_node->elem = val;
     new_node->hash = hash;

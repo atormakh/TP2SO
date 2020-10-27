@@ -3,7 +3,7 @@
 #include "test_util.h"
 
 #define MAX_BLOCKS 10
-#define MAX_MEMORY 400*1024*1024 //Should be around 80% of memory managed by the MM
+#define MAX_MEMORY (400*1024*1024) //Should be around 80% of memory managed by the MM
 
 typedef struct MM_rq{
   void *address;
@@ -48,7 +48,6 @@ void test_mm(){
       if (mm_rqs[i].address != NULL)
         sys_m_free(mm_rqs[i].address);  // TODO: Port this call as required
     
-    sys_exit(0);
   } 
   
 }

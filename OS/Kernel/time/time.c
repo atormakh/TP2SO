@@ -33,6 +33,8 @@ void sleep(unsigned int interval){
 	unsigned long * time = get(awakeTimes,awakeTime);
 	if(time == NULL){
 		time = (unsigned long * ) m_alloc(sizeof(unsigned long));
+		if(time == NULL)
+			return;
 		*time = awakeTime;
 		createMotive(time);
 		add(awakeTimes,time,*time);

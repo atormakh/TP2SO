@@ -43,8 +43,6 @@ void * m_alloc( size_t size ){
         mm.reserved+=cont;
         return calc_ptr_from_idx(i-cont);
     }else{
-        //setear erno no sirve aca creo
-        //podemos imprimir un log
         return NULL;
         
     }
@@ -83,7 +81,7 @@ void * calc_ptr_from_idx(unsigned long block_idx){
 }
 
 unsigned long calc_idx_from_ptr(void * ptr){
-    return (unsigned long)(ptr-mm.base)/mm.page_size;
+    return (unsigned long)((char *)ptr-(char *)(mm.base))/mm.page_size;
 }
 
 void memInfo(char * buffer){

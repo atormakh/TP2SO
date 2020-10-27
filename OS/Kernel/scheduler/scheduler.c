@@ -5,18 +5,6 @@
 #include <lib.h>
 #include <semaphore.h>
 
-/*
-.Crear y finalizar procesos.
-● Obtener el ID del proceso que llama.
-● Listar procesos.
-● Matar un proceso.
-● Modificar la prioridad de un proceso.
-● Cambiar el estado de un proceso.
-● Renunciar al CPU
-*/
-
-//pipe(pid1,fd_write, pid2, fd_read)
-//close(fd)
 
 Scheduler scheduler;
 
@@ -39,7 +27,7 @@ unsigned long long createProcess(void * proc, char * name, unsigned int argc, ch
     for(i=0; i<=scheduler.size && !found;i++){
         found = (scheduler.processes[i].state == KILLED);
     }
-    if(!found) return NULL;
+    if(!found) return 0;
     pcb = scheduler.processes + i - 1;
     if(i==scheduler.size + 1)scheduler.size++;
 
@@ -52,11 +40,17 @@ unsigned long long createProcess(void * proc, char * name, unsigned int argc, ch
     unsigned long long * bp;
 
     char * memoryAddress = (char *)c_alloc(PROC_MEM);
+    if(memoryAddress == NULL)
+        return 0;
+
     unsigned long long * stack = bp = (unsigned long long *) (memoryAddress+PROC_MEM-1);
     pcb->memoryAddress=memoryAddress;
     
     char ** argvCopy =c_alloc((argc+1)*sizeof(char *));
     char * args = c_alloc((argc+1)*ARGS_LENGTH);
+    if(args == NULL || argvCopy == NULL)
+        return 0; 
+
     char * index = args;
     argvCopy[0]=args;
 
@@ -158,7 +152,8 @@ PCB * getProc(unsigned long pid){
 
 int kill(unsigned long long pid){
     PCB * proc = getProc(pid);
-    if(proc->state == KILLED) return -1;
+
+    if(proc == NULL || proc->state == KILLED) return -1;
     proc->state = KILLED;
     awakeAll(&proc->pid);
     closeMotive(&proc->pid);
@@ -181,10 +176,14 @@ int kill(unsigned long long pid){
 }
 
 int unblock(unsigned long long pid){
+    PCB * proc= getProc(pid);
+    if(proc==NULL){
+        return -1;
+    }
     
-    if(getProc(pid)->state != KILLED){
-        getProc(pid)->state=READY;
-        getProc(pid)->blockingRefs--;
+    if(proc->state != KILLED){
+        proc->state=READY;
+        proc->blockingRefs--;
         return 1;
     }
     else return -1;
@@ -194,12 +193,16 @@ int unblock(unsigned long long pid){
 }
 
 int block(unsigned long long pid){
-     if(getProc(pid)->state != KILLED){
-        getProc(pid)->state=BLOCKED;
-        getProc(pid)->blockingRefs++;
+    PCB * proc= getProc(pid);
+    if(proc==NULL){
+        return -1;
+    }
+    if(proc->state != KILLED){
+        proc->state=BLOCKED;
+        proc->blockingRefs++;
         return 1;
-     }
-     else return -1;
+    }
+    else return -1;
 }
 
 unsigned long long getPid(){
@@ -209,7 +212,10 @@ unsigned long long getPid(){
 
 void nice(unsigned long long pid, unsigned int priority){
     if(priority<MIN_TICKS || priority > MAX_TICKS) return;
-    getProc(pid)->priority=priority;
+    PCB * proc = getProc(pid);
+    if(proc == NULL)
+        return;
+    proc->priority=priority;
 }
 
 void exit(int ret){
@@ -220,7 +226,8 @@ void exit(int ret){
 
 void wait(unsigned  long long pid){
     PCB * proc = getProc(pid);
-    if(proc->state==KILLED) return;
+    if(proc == NULL || proc->state==KILLED)
+        return;
     createMotive(&proc->pid);
     blockMotive(&proc->pid,getCurrentProc()->pid);
     
@@ -269,6 +276,9 @@ void ps(char * buffer){
 
 int setProcFD(unsigned long pid,unsigned int fd, Pipe * pipe, unsigned int permission){
     PCB * proc = getProc(pid);
+    if(proc == NULL){
+        return -1;
+    }
     proc->fd[fd]=pipe;
     proc->role[fd]=permission;
     return 0;
@@ -276,12 +286,16 @@ int setProcFD(unsigned long pid,unsigned int fd, Pipe * pipe, unsigned int permi
 
 
 int blockMotive(void * id,unsigned long pid){
-    if(getProc(pid)->state == KILLED) return 0; 
+    PCB * proc = getProc(pid);
+    if(proc == NULL){
+        return 0;
+    }
+    if(proc->state == KILLED) return 0; 
     Motive * motive = get(scheduler.motives, (unsigned long long) id);
     if(motive == NULL){
         return 0;
     }
-    PCB * proc = getProc(pid);
+  
     push(motive->processes,proc,proc->pid);
     proc->state=BLOCKED;
     proc->blockingRefs++;

@@ -19,6 +19,8 @@ void openSem(char * semId, int value){
     sem =(Sem *) get(semaphores, strHash(semId));
     if(sem == NULL){
         sem = (Sem *) c_alloc(sizeof(Sem));
+        if(sem == NULL)
+            return;
         strcpy(sem->id, semId);
         createMotive(sem);
         push(semaphores, sem,strHash(semId));
