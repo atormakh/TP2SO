@@ -75,9 +75,11 @@ void man(int argc, char * args[]){
 
 
 void ps(){
-    char buffer[1024];
+    char * buffer = sys_m_alloc(80*100);
+    if(buffer == 0) return;
     sys_ps(buffer);
     puts(buffer);
+    sys_m_free(buffer);
 }
 
 void kill(int argc, char * args[]){

@@ -25,9 +25,11 @@ void keyboard_handler(){
 	else if(key==SHIFT_L+RELEASED) shiftLStatus=0;
 	else if(key==BLOCK_MAYUS) blockMayus=1-blockMayus;
 	else if(key == 59){ //F1
-		char ps_buffer[1024];
+		char * ps_buffer = m_alloc(100*80);
+		if(ps_buffer==NULL) return;
 		ps(ps_buffer);
 		kernelWrite(ps_buffer,strlen(ps_buffer));
+		m_free(ps_buffer);
 		//buffer[(bufferIndex++)%BUFFER_SIZE]=208;
 	}else if(key == 60){ //F2
 		layout=asccode;

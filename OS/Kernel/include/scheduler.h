@@ -4,7 +4,7 @@
 #include<pipes.h>
 #include<list.h>
 
-#define PROC_Q 200
+#define PROC_Q 100
 #define SAVED_REGISTERS 15
 #define RSI_POS 6
 #define PROC_MEM (10*PAGE_SIZE)

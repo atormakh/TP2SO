@@ -7,7 +7,7 @@ void long_loop(){
   while(1) sys_yield();
 }
 
-#define MAX_PROCESSES 160 //Should be around 80% of the the processes handled by the kernel
+#define MAX_PROCESSES 80 //Should be around 80% of the the processes handled by the kernel
 
 enum State {ERROR, RUNNING, BLOCKED, KILLED};
 

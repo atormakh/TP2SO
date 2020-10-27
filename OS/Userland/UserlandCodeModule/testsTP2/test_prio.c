@@ -22,7 +22,7 @@ void endless_loop(){
   
 }
 
-#define TOTAL_PROCESSES 3
+#define TOTAL_PROCESSES 10
 
 void test_prio(){
 
