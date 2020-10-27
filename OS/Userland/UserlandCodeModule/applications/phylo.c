@@ -63,9 +63,9 @@ int phylo(){
  
 void *philospher(int argc, char * args[]){
     
-    int * num = stringToPtr(args[0]);
+    int * number = stringToPtr(args[0]);
     while(1){
-        int *i = num;
+        int *i = number;
 
         sys_sleep(THINKING_TIME);
         
