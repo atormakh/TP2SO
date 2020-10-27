@@ -24,7 +24,7 @@ int pipe(char * pipeId, unsigned long pidWriter, unsigned int fdWrite, unsigned 
         pipe->buffer = c_alloc(PAGE_SIZE);
         pipe->pipeId = c_alloc(MAX_PIPE_NAME);
 
-        if(pipe->buffer == NULL && pipe->pipeId ==NULL)
+        if(pipe->buffer == NULL || pipe->pipeId ==NULL)
             return -1;
 
         pipe->writeIndex=0;

@@ -26,7 +26,7 @@ void add(List *list, void * val, unsigned long long hash){
         return;
     }
 
-    while ( next!=NULL && hash-next->hash > 0){
+    while ( next!=NULL && hash > next->hash){
         prev = next;
         next = next->next;
     }
