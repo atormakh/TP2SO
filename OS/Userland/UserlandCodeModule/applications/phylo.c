@@ -145,6 +145,7 @@ void addPhilosopher(){
 
 void removePhilosopher(){
     if(num<=0) return;
+    if(state[num-1]==EATING)put_fork(num-1);
     sys_semWait("mutex");
     printf("%s \n", "removing");
     printPhilosophers();
